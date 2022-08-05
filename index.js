@@ -18,6 +18,11 @@ app.get("/", (req, res)=> {
     res.render("home");
 });
 
+
+app.get("/home", (req, res) => {
+    res.redirect("/home.ejs")
+})
+
 app.listen(3000, ()=> {
     console.log("Movie App is listening on port 3000");
 });
