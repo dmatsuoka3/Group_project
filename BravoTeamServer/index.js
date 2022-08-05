@@ -34,6 +34,10 @@ app.get("/", (req, res) => {
     res.render("home.ejs");
 });
 
+app.get("/createAccount", (req, res) => {
+    res.render("createAccount.ejs")
+})
+
 
 //BLUEPRINT
     //SCHEMA
