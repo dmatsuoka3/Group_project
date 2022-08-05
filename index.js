@@ -18,6 +18,9 @@ app.get("/", (req, res)=> {
     res.render("home");
 });
 
+app.get("/result", (req, res)=> {
+    res.render("result");
+});
 
 app.get("/home", (req, res) => {
     res.redirect("/home.ejs")
