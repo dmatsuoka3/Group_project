@@ -51,9 +51,9 @@ const upload = multer({
     }
 });
 
-app.get("/", (req, res) => {
-    res.render("home.ejs");
-});
+// app.get("/", (req, res) => {
+//     res.render("home.ejs");
+// });
 
 app.get("/createAccount", (req, res) => {
     res.render("createAccount.ejs")
@@ -90,7 +90,7 @@ app.get('/', (req, res) => {
             console.log(err);
         } else {
            // res.render('home.ejs');
-            res.render('home.ejs', {dataImg: results});
+            res.render('home', {data: results});
         }
     });
 });
