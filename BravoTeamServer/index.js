@@ -92,7 +92,7 @@ app.get('/', (req, res) => {
            // res.render('home.ejs');
             res.render('home', {data: results});
         }
-    });
+    }).sort({ timeCreated: 'desc' });
 });
 
 // Create
