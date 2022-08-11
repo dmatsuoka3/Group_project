@@ -7,12 +7,13 @@ body {
     --border-radius: 4px;
 
     margin: 0;
+    box-sizing: border-box;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    background-size: cover;
+    font-size: 10px;
+   
 }
 
 .container {
@@ -22,7 +23,7 @@ body {
     padding: 2rem;
     border: 1px solid gray;
     border-radius: var(--border-radius);
-    background: white;
+    background: white; 
 }
 
 .container, 
@@ -119,6 +120,7 @@ body {
     
     text-align: center;
     color: gray;
+    font-size: 10px;
 }
 
 .account {
