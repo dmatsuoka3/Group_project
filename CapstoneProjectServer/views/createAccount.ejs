@@ -16,7 +16,7 @@
 
 <body>
     <div class="container">
-        <form class="form form--hidden" id="createAccount" action="" method="post">
+        <form class="form form--hidden" id="createAccount" action="/createAccount" method="post" enctype="multipart/form-data">
             <h1 class="form__title">No Name</h1>
             
             <div class="text">
@@ -30,18 +30,18 @@
             <div class="form__message form__message--error"></div>
 
             <div class="form__input-group">
-                <input type="text" class="form__input" autofocus placeholder="Phone Number or Email">
+                <input type="text" name="email" class="form__input" autofocus placeholder="Phone Number or Email">
             </div>
             <div class="form__input-group">
-                <input type="text" class="form__input" autofocus placeholder="Full Name">
-            </div>
-
-            <div class="form__input-group">
-                <input type="text" class="form__input" autofocus placeholder="Username">
+                <input type="text" name="name" class="form__input" autofocus placeholder="Full Name">
             </div>
 
             <div class="form__input-group">
-                <input type="password" class="form__input" autofocus placeholder=" Password">
+                <input type="text" name="username" class="form__input" autofocus placeholder="Username">
+            </div>
+
+            <div class="form__input-group">
+                <input type="password" class="form__input" name="password" autofocus placeholder=" Password">
                 <div class="form__input-error-message"></div>
             </div>
 
@@ -52,13 +52,13 @@
             <div class="text">
                 <p>By signing up, you agree to our Terms, <a href="#">Privacy Policy</a>  and  <a href="#">Cookies Policy</a>.</p>
             </div>
-            <button class="form__button" type="submit">Sign up</button>
+            <button class="form__button" href="/" type="submit">Sign up</button>
            
         </form>
 
         <div class="text account">
             <p class="form__text">
-                Have an account?<a class="form__link" href="./" id="linkLogin">Log in</a>
+                Have an account?<a class="form__link" href="/login" id="linkLogin">Log in</a>
             </p>
 
         </div>
