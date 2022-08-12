@@ -16,18 +16,6 @@ const logger = require("morgan");
     app.use(express.json());
     app.use(express.urlencoded({extended:false}));
 
-//session 
-app.use(session({
-    secret: "my secret key",
-    saveUninitialized: true,
-    resave: false
-}));
-
-app.use((req, res, next) => {
-    res.locals.message = req.session.message;
-    delete req.session. message;
-    next();
-});
 
 //imports all the routes here
 const userRoute = require("./routes/users")
@@ -56,8 +44,8 @@ mongoose
 
 
  //routes handler 
-app.use("/", userRoute)
-/* app.use("", require("./routes/routes")); */
+app.use("", userRoute);
+
 
 
 
