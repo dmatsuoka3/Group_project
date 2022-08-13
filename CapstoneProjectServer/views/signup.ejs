@@ -16,7 +16,7 @@
 
 <body>
     <div class="container">
-        <form class="form form--hidden" id="createAccount" action="/signup" method="post" >
+        <form class="form form--hidden" id="createAccount" action="/signup" method="POST" >
             <h1 class="form__title">PhotoSnap</h1>
             
             <div class="text">
@@ -30,7 +30,7 @@
             <div class="form__message form__message--error"></div>
 
             <div class="form__input-group">
-                <input type="text" name="email" class="form__input" autofocus placeholder="Phone Number or Email" required>
+                <input type="text" name="email" class="form__input" autofocus placeholder="Email" required>
             </div>
             <div class="form__input-group">
                 <input type="text" name="name" class="form__input" autofocus placeholder="Full Name" required>
@@ -58,7 +58,7 @@
 
         <div class="text account">
             <p class="form__text">
-                Have an account?<a class="form__link" href="/login" id="linkLogin">Log in</a>
+                Have an account?<a class="form__link" href="/" id="linkLogin">Log in</a>
             </p>
 
         </div>
