@@ -36,7 +36,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/home", (req, res) => {
-  res.render("home.ejs");
+  res.render("login.ejs");
 });
 
 router.get("/userspage", isLoggedIn, (req, res) => {
