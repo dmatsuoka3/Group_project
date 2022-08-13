@@ -13,6 +13,10 @@ const logger = require("morgan");
     app.set("view engine", "ejs");
     app.use(express.static("uploads"));
 
+    //body parser
+    app.use(express.json());
+    app.use(express.urlencoded({extended:false}));
+    
 
 
 
