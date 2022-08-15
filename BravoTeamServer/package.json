@@ -20,6 +20,7 @@
     "ajax": "^0.0.4",
     "axios": "^0.27.2",
     "method-override": "^3.0.0",
+    "mongoose-delete": "^0.5.4",
     "multer": "^1.4.5-lts.1"
   }
 }

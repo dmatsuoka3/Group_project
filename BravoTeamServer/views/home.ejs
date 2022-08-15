@@ -173,8 +173,9 @@
                 <div class="feeds">
 
                     <!------------------------------- FEEDS photo data -------------------------->
+                    
                     <% data.forEach((element)=> { %> 
-                    <div class="feed">
+                    <div id="feed" class="feed">
                         <div class="head">
                             <div class="user">
                                 <div class="profile-photo">
@@ -194,7 +195,8 @@
                                     <div id="dropdown-container" class="dropdown-content">
                                         <a href="/update/<%= element._id %>"><div>Update</div></a>
                                         <a href="/home/<%= element._id %>"><div>Delete</div></a>
-                                   </div>
+                                        <!-- <div id="delete" onclick="removeTag()">Delete</div> -->
+                                    </div>
                                 </div>
                             <!-- </div> -->
                             

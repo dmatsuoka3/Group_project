@@ -260,4 +260,28 @@ function myFunction() {
     }
   }
 
+
+// onclick Delete
+
+// function remove(element) {
+//     element.parentNode.removeChild(element);
+// }
+
+// var deleteTag = document.getElementById('delete');
+// deleteTag.onclick = function() {
+//     document.getElementById('feed').remove();
+//     this.remove();
+//     return false;
+// }
+
+// function removeTag() {
+//     var element = document.getElementById('feed');
+//     element.parentNode.removeChild(element);
+//     return false;
+// }
+
+function removeTag() {
+    $('#feed').remove();
+}
+
 // THE END
