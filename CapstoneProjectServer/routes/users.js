@@ -40,7 +40,8 @@ router.get("/home", (req, res) => {
 });
 
 router.get("/userspage", isLoggedIn, (req, res) => {
-  res.render("userspage.ejs");
+  // res.render("userspage.ejs");
+  res.redirect("/postHome");
 });
 
 router.get("/signup", (req, res) => {
