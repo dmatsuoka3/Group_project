@@ -101,7 +101,7 @@ app.post('/posts', upload.single('image'), async (req, res) => {
 
     ImageModel.create({
         caption: req.body.caption,
-        img: req.file.filename,   
+        img: req.file.filename,
     }, (error, result)=> {
         if(error) {
         res.send(error.message);
