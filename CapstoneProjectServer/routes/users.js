@@ -10,6 +10,7 @@ const LocalStrategy = require("passport-local");
 
 // BLUEPRINTS
 const UserModel = require("../models/User");
+const ImageModel =require("../models/ImagePost")
 
 router.use(
   require("express-session")({
@@ -41,11 +42,11 @@ router.get("/home", (req, res) => {
 
 router.get("/userspage", isLoggedIn, (req, res) => {
   res.render("userspage.ejs");
-});
-
+}); 
+/* 
 router.get("/signup", (req, res) => {
   res.render("signup.ejs");
-});
+}); */
 
 router.post("/signup", (req, res) => {
   const newUser = new UserModel({ 
