@@ -14,6 +14,8 @@ const e = require("express");
     app.use(express.json());
     app.use(express.urlencoded({extended:false}));
 
+var mongoose_delete = require('mongoose-delete');
+
 //CONNECTION Mongoose
 const { DB, URI } = process.env;
 
@@ -82,6 +84,8 @@ app.get("/createAccount", (req, res) => {
         }
     });
 
+    imageSchema.plugin(mongoose_delete);
+
     //MODEL
     let ImageModel = new mongoose.model("imagesPost", imageSchema);
 
@@ -92,31 +96,63 @@ app.get('/', (req, res)=> {
 // Read
 app.get('/home', (req, res) => {
 
-    ImageModel.find({}, (err, results)=> {
+    ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
             console.log(err);
         } else {
-           // res.render('home.ejs');
+            // res.render('home.ejs');
             res.render('home', {data: results});
         }
     }).sort({ timeCreated: 'desc' });
+    
+    // ImageModel.find({}, (err, results)=> {
+    //     if(err) {
+    //         console.log(err);
+    //     } else {
+    //        // res.render('home.ejs');
+    //         res.render('home', {data: results});
+    //     }
+    // }).sort({ timeCreated: 'desc' });
 });
 
 // Create
 app.post('/posts', upload.single('image'), async (req, res) => {
     console.log(req.file);
 
-    ImageModel.create({
+    const theImage = new ImageModel({
         caption: req.body.caption,
-        img: req.file.filename,   
-    }, (error, result)=> {
-      if(error) {
-          res.send(error.message);
-      } else {
-          res.redirect("/");
-      }
-    }
-    );
+        img: req.file.filename,
+    });
+
+    theImage.save(function() {
+        theImage.delete(function() {
+            theImage.restore(function() {
+                // mongodb: {deleted: false,}
+            });
+        });
+    });
+
+    res.redirect("/");
+    // ImageModel.create({
+    //     caption: req.body.caption,
+    //     img: req.file.filename,   
+    // }, 
+    //     (error, result)=> {
+        
+    //     // delete(function() {
+    //     //     restore(function() {
+
+    //     //     })
+    //     // });
+
+    //     if(error) {
+    //         res.send(error.message);
+    //     } else {
+    //         res.redirect("/");
+    //     }
+    //     }
+
+    // );
 });
 
 app.get('/new', (req, res)=> {
@@ -155,8 +191,19 @@ app.put('/update/:id', (req, res)=> {
 });
 
 // Delete
+// app.get('/home/:id', (req, res)=> {
+//     ImageModel.findByIdAndDelete(req.params.id, (error, result)=> {
+//         if(error) {
+//             console.log("Something went wrong delete from database");
+//         } else {
+//             console.log("This post has been deleted", result);
+//             res.redirect("/");
+//         }
+//     });
+// });
+
 app.get('/home/:id', (req, res)=> {
-    ImageModel.findByIdAndDelete(req.params.id, (error, result)=> {
+    ImageModel.deleteById(req.params.id, (error, result)=> {
         if(error) {
             console.log("Something went wrong delete from database");
         } else {
@@ -165,6 +212,7 @@ app.get('/home/:id', (req, res)=> {
         }
     });
 });
+
 
 const port = process.env.PORT || 3000;
     app.listen(port, () => console.log(`Bravo Team app is listening on ${port}`));

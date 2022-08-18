@@ -153,7 +153,7 @@
                     </div>
                 </div>
                 <!----------------------------------END OF STORIES---------------------------------------------->
-                <form class="create-post">
+                <form action="/new" class="create-post">
                     <div class="profile-photo">
                         <img src="images/profile-1.jpg" alt="">
                     </div>
@@ -162,6 +162,66 @@
                 </form>
                 <!-----------------------------------FEEDS----------------------------------------------------->
                 <div class="feeds">
+                    
+                    <!------------------------------- FEEDS photo data -------------------------->
+                    
+                    <% data.forEach((element)=> { %> 
+                        <div id="feed" class="feed">
+                            <div class="head">
+                                <div class="user">
+                                    <div class="profile-photo">
+                                        <img src="images/profile-13.jpg" alt="">
+                                    </div>
+                                    <div class="ingo">
+                                        <h3>Lana Rose</h3>
+                                        <small><%= element.timeCreated %> </small>
+                                    </div>    
+                                </div>
+    
+                                <!-- <div class="dropdown-container" tabindex="1" style="cursor: pointer;"> -->
+                                    <div id="dropdown" class="dropdown">
+                                        <span class="edit">
+                                            <i class="uil uil-ellipsis-h"></i>
+                                        </span>
+                                        <div id="dropdown-container" class="dropdown-content">
+                                            <a href="/update/<%= element._id %>"><div>Update</div></a>
+                                            <a href="/home/<%= element._id %>"><div>Delete</div></a>
+                                            <!-- <div id="delete" onclick="removeTag()">Delete</div> -->
+                                        </div>
+                                    </div>
+                                <!-- </div> -->
+                                
+                            </div>
+    
+                            <div class="photo">
+                                <img src="/images/<%= element.img %>" alt="...">
+                            </div>
+                            <%// }); %>
+                            <div class="action-buttons">
+                                <div class="interaction-buttons">
+                                    <span><i class="uil uil-heart"></i></span>
+                                    <span><i class="uil uil-comment-dots"></i></span>
+                                    <span><i class="uil uil-share-alt"></i></span>
+                                </div>
+                                <div class="bookmark">
+                                    <span><i class="uil uil-bookmark-full"></i></span>
+                                </div>
+                            </div>
+                            <div class="liked-by">
+                                <span><img src="images/profile-10.jpg" alt=""></span>
+                                <span><img src="images/profile-4.jpg" alt=""></span>
+                                <span><img src="images/profile-15.jpg" alt=""></span>
+                                <p>Liked by <b>Ernest Achiever</b> and <b>2,323 others</b></p>
+                            </div>
+                            <div class="caption">
+                                <%= element.caption %>
+                                <!-- <p><b>Lana Rose</b> Lorem ipsum dolor sit quisquam eisu.<span class="harsh-tag">#lifestyle</span></p> -->
+                            </div>
+                            <div class="comments text-muted">View all 277 comment</div>
+                        </div>
+    
+                    <% }); %>
+                    
                     <!-------------------------------FEED #1--------------------------------------------------->
                     <div class="feed">
                         <div class="head">
