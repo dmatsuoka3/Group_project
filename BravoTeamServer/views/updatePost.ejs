@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UpdatePost</title>
+</head>
+<body>
+    
+    <h1>Update Page</h1>
+
+    <div>
+        <form action="/update/<%= data._id %>?_method=PUT" method="POST">
+
+            <div>
+                <label for="caption">Caption</label>
+                <textarea name="caption" placeholder="caption"><%= data.caption %></textarea>
+            </div>
+
+            <a href="/">Cancel</a>
+            <button type="submit">Save</button>
+        </form>
+    </div>
+
+</body>
+</html>

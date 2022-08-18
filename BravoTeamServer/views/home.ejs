@@ -153,7 +153,7 @@
                     </div>
                 </div>
                 <!----------------------------------END OF STORIES---------------------------------------------->
-                <form class="create-post">
+                <form action="/new" class="create-post">
                     <div class="profile-photo">
                         <img src="images/profile-1.jpg" alt="">
                     </div>
@@ -162,19 +162,25 @@
                 </form>
 
                 
+<<<<<<< HEAD
                     <div>
                         <a href="/newpost">
+=======
+                    <!-- <div>
+                        <a href="/new">
+>>>>>>> origin/master
                             <i class="fa-solid fa-circle-plus"></i>
                             New Post
                         </a>
-                    </div>
+                    </div> -->
                 
                 <!-----------------------------------FEEDS----------------------------------------------------->
                 <div class="feeds">
 
                     <!------------------------------- FEEDS photo data -------------------------->
+                    
                     <% data.forEach((element)=> { %> 
-                    <div class="feed">
+                    <div id="feed" class="feed">
                         <div class="head">
                             <div class="user">
                                 <div class="profile-photo">
@@ -185,9 +191,20 @@
                                     <small><%= element.timeCreated %> </small>
                                 </div>    
                             </div>
-                            <span class="edit">
-                                <i class="uil uil-ellipsis-h"></i>
-                            </span>
+
+                            <!-- <div class="dropdown-container" tabindex="1" style="cursor: pointer;"> -->
+                                <div id="dropdown" class="dropdown">
+                                    <span class="edit">
+                                        <i class="uil uil-ellipsis-h"></i>
+                                    </span>
+                                    <div id="dropdown-container" class="dropdown-content">
+                                        <a href="/update/<%= element._id %>"><div>Update</div></a>
+                                        <a href="/home/<%= element._id %>"><div>Delete</div></a>
+                                        <!-- <div id="delete" onclick="removeTag()">Delete</div> -->
+                                    </div>
+                                </div>
+                            <!-- </div> -->
+                            
                         </div>
 
                         <div class="photo">
@@ -231,9 +248,12 @@
                                     <small>Dubai, 15 MINUTES AGO</small>
                                 </div>    
                             </div>
-                            <span class="edit">
-                                <i class="uil uil-ellipsis-h"></i>
-                            </span>
+                            
+                            
+                                <span class="three-dots">
+                                    <i class="uil uil-ellipsis-h"></i>
+                                </span>
+
                         </div>
 
                         <div class="photo">
