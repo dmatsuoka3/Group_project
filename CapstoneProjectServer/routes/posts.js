@@ -8,12 +8,12 @@ const multer = require("multer");
 const storage = multer.diskStorage({
     // destination for files
     destination: function (request, file, callback) {
-      callback(null, './assets/images');
+    callback(null, './assets/images');
     },
-  
+
     // add back the extension
     filename: function (request, file, callback) {
-      callback(null, Date.now() + file.originalname);
+    callback(null, Date.now() + file.originalname);
     },
 });
 
@@ -90,7 +90,7 @@ router.put('/update/:id', (req, res)=> {
     // let updateCaption = req.body.caption;
     
     ImageModel.findByIdAndUpdate({_id: req.params.id},
-         {caption: req.body.caption},
+        {caption: req.body.caption},
         (error, result)=> {
             if(error) {
                 res.send(error.message);

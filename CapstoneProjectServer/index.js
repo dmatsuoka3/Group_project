@@ -30,6 +30,19 @@ connectDB();
 const userRoute = require("./routes/users")
 const postRoute = require("./routes/posts");
 
+//Takes user from home/landing page to the editprofile page
+app.get('/editprofile', (req, res)=> {
+    res.render("editprofile");
+  });
+  //Redirects user from editprofile page to home/landing page via "house/home" icon
+  app.get('/editprofile', (req, res)=> {
+    res.redirect("/postHome");
+  });
+  //Redirects user from editprofile page to home/landing page via "newpost/plus" icon
+  app.get('/editprofile', (req, res)=> {
+    res.redirect("/newpost");
+  });
+
 //ROUTE HANDLER
 app.use("", userRoute);
 app.use("", postRoute);
