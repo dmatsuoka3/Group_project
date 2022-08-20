@@ -3,6 +3,8 @@ const express = require("express");
 
 const multer = require("multer");
 
+var profilePic = {}
+
 
 // define storage for the images
 const storage = multer.diskStorage({
@@ -40,6 +42,10 @@ router.get('/postHome', (req, res) => {
             console.log(err);
         } else {
             // res.render('home.ejs');
+                /* getProfilePic('', function(results) {
+                    profilePic = results
+                }) */
+                
             res.render('userspage.ejs', {data: results});
         }
     }).sort({ timeCreated: 'desc' });

@@ -94,28 +94,6 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
-//Takes user from home/landing page to the editprofile page
-router.get('/editprofile', (req, res)=> {
-  res.render("editprofile");
-});
-//Redirects user from editprofile page to home/landing page via "house/home" icon
-router.get('/editprofile', (req, res)=> {
-  res.redirect("userspage");
-});
-//Redirects user from editprofile page to home/landing page via "newpost/plus" icon
-router.get('/editprofile', (req, res)=> {
-  res.redirect("new");
-});
-//
-router.get('/editphoto', (req, res)=> {
-  res.render("editphoto");
-});
-//
-router.get('/editprofile', (req, res)=> {
-  res.redirect("editphoto");
-});
-
-
 
 
 

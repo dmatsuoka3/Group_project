@@ -30,19 +30,26 @@
 
     <div class="py-3"></div>
     <div class="container w-50 rounded bg-light" style="border: 1px solid black;">
-        <form>
+        <form action="/updateprofilepic" method="post" enctype="multipart/form-data">
             <div>
                 <div>
-                    <h1>AccBootCamp</h1>
-                    <img alt="Change profile photo" height="100" width="100" class="rounded" src="">
-                    <a href="/editphoto" class="btn btn-danger">Edit profile photo</a>
-                    <div>
+                    <h1>Edit profile</h1>
+                    <img alt="Change profile photo" height="100" width="100" class="rounded-circle"
+                        src="/images/<%= data[0].img %>">
+                        <% console.log(data) %>
+                    <!-- <a href="/editphoto" class="btn btn-secondary">Edit profile photo</a> -->
+                    
+                    <input type="file" name="image">
+                    <button class="btn btn-secondary" type="submit">Submit</button>
+                    <!-- <div>
                         <form>
                             <input type="file">
                         </form>
-                    </div>
+                    </div> -->
                 </div>
             </div>
+        </form>
+        <form>
             <div class="mb-3 row">
                 <label class="col-sm-2" for="Name">Name</label>
                 <div class="col-sm-10" style="width: 100%; max-width: 355px;">
@@ -63,7 +70,8 @@
             </div>
             <div class="mb-3 row">
                 <label class="col-sm-2" for="Bio">Bio</label>
-                <div class="col-sm-10"><textarea rows="6" cols="50" maxlength="150" placeholder="Enter your bio here...."></textarea>
+                <div class="col-sm-10"><textarea rows="6" cols="50" maxlength="150"
+                        placeholder="Enter your bio here...."></textarea>
                 </div>
             </div>
             <div class="mb-3 row">
@@ -116,13 +124,13 @@
             <div class="mb-3 row">
                 <label class="col-sm-2"></label>
                 <div class="col-sm-10">
-                    <div><button type="button">Submit</button>
-                        <div class="py-1"><button type="button">Temporarily deactivate my
-                                account</button></div>
-                    </div>
+                    <button class="btn btn-secondary" type="button">Submit</button>
+                    <button class="btn btn-secondary" type="button">Delete my
+                        account</button>
                 </div>
             </div>
-        </form>
+    </div>
+    </form>
     </div>
 </body>
 
