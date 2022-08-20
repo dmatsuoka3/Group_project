@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const express = require("express");
+const { default: mongoose, Schema } = require("mongoose");
 
 const multer = require("multer");
 
@@ -27,6 +28,7 @@ const upload = multer({
 
 // BLUEPRINTS
 const ImageModel = require("../models/Post");
+const UserModel = require("../models/User");
 
 // router.get('/', (req, res)=> {
 //     res.redirect('/home');
@@ -48,21 +50,85 @@ router.get('/postHome', (req, res) => {
 
 // Create
 router.post('/posts', upload.single('image'), async (req, res) => {
-    console.log(req.file);
+    
+    // const userId = req.user.id; //change this to logged -in user id
 
-    const theImage = new ImageModel({
-        caption: req.body.caption,
-        img: req.file.filename,
+    const user = new UserModel({
+        _id: new mongoose.Types.ObjectId()
     });
 
-    theImage.save(function() {
-        theImage.delete(function() {
-            // mongodb: {deleted: true,}
-            theImage.restore(function() {
-                // mongodb: {deleted: false,}
-            });
+    // const theImage = new ImageModel({
+    //     user: new mongoose.Types.ObjectId(),
+    //     caption: req.body.caption,
+    //     img: req.file.filename,
+    // });
+    
+    user.save(function() {
+
+        const theImage = new ImageModel({
+            caption: req.body.caption,
+            img: req.file.filename,
+            user: user._id
         });
+
+        theImage.save(function() {
+            theImage.delete(function() {
+                // mongodb: {deleted: true,}
+                theImage.restore(function() {
+                    // mongodb: {deleted: false,}
+                });
+            });
+        })
+        //  UserModel.findOne({_id: user._id}).populate('theImage')
+        //  .then(element => {
+        //     res.json(element);
+        //  });
+
+        // ImageModel.findOne({ user: user._id }).
+        // populate('user').
+        // exec(function (err, story) {
+        //     if (err) return handleError(err);
+        //     // console.log('The author is %s', story.author.name);
+        //      // prints "The author is Ian Fleming"
+        //  });
+
+         // UserModel.findById(userId).populate("posts");
+        //  ImageModel.findOne({caption: req.body.caption})
+        //  .populate('user')
+        //  .exec(function(err, result){
+        //      if(err) {
+        //          console.log(err)
+        //      } else {
+        //          console.log("The user is " + result);
+        //      }
+        //  });
     });
+    
+    UserModel.findOne({})
+    .populate({path: 'posts', model: UserModel})
+    .exec(function(err, result){
+        if(err) {
+            console.log(err)
+        } else {
+
+            console.log("The result is " + result);
+        }
+    });
+
+
+    // const theImage = new ImageModel({
+    //     caption: req.body.caption,
+    //     img: req.file.filename,
+    // });
+    
+    // theImage.save(function() {
+    //     theImage.delete(function() {
+    //         // mongodb: {deleted: true,}
+    //         theImage.restore(function() {
+    //             // mongodb: {deleted: false,}
+    //         });
+    //     });
+    // });
 
     res.redirect("/postHome");
 });

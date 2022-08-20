@@ -1,7 +1,16 @@
 const mongoose = require('mongoose');
 var mongoose_delete = require('mongoose-delete');
 
-let imageSchema = new mongoose.Schema({
+// const Schema = mongoose.Schema;
+
+const imageSchema = new mongoose.Schema({
+    
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        // ref: "UserModel"
+        ref: "UserModel"
+    },    
+    
     caption: {
         type: String,
     },
@@ -15,7 +24,12 @@ let imageSchema = new mongoose.Schema({
     img: {
         type: String,
         default: 'placeholder.jpg',
-    }
+    },
+
+    // user: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "UserModel"
+    // }
 });
 
 imageSchema.plugin(mongoose_delete);

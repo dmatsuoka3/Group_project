@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
+// const Schema = mongoose.Schema;
+// const ImageModel = require('./Post');
+
 const userSchema = new mongoose.Schema(
     {
+        _id: mongoose.Schema.Types.ObjectId,
+
         name: {
             type: String,
             required: true
@@ -41,11 +46,28 @@ const userSchema = new mongoose.Schema(
             type: Date,
             required: true,
             default: Date.now
-        }
-    
-    });
+        },
+
+        posts: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "imageModel"
+        }]
+    },
+    // {
+    // // defined userSchema.virtual
+    //     toJSON: {
+    //         virtuals: true
+    //     }
+    // }
+);
     
 
 userSchema.plugin(passportLocalMongoose);
+
+// userSchema.virtual("posts", {
+//     ref: "ImageModel",
+//     localField: "_id",
+//     foreignField: "userId"
+// });
 
 module.exports = mongoose.model('users', userSchema);

@@ -7,7 +7,6 @@ const app = express();
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
-
 // BLUEPRINTS
 const UserModel = require("../models/User");
 
@@ -41,6 +40,7 @@ router.get("/home", (req, res) => {
 
 router.get("/userspage", isLoggedIn, (req, res) => {
   // res.render("userspage.ejs");
+  
   res.redirect("/postHome");
 });
 
@@ -79,6 +79,8 @@ router.post("/login",passport.authenticate("local", {
       successRedirect: "/userspage",
       failureRedirect: "/login",
   }),
+
+  
   function (req, res) {
     // We don't need anything in our callback function
   }

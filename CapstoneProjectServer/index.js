@@ -26,9 +26,12 @@ const logger = require("morgan");
 const connectDB = require("./database/connection");
 connectDB();
 
+require("./models/Post");
+require("./models/User");
+
 //IMPORT ALL THE ROUTE HERE
-const userRoute = require("./routes/users")
-const postRoute = require("./routes/posts");
+var userRoute = require("./routes/users");
+var postRoute = require("./routes/posts");
 
 //ROUTE HANDLER
 app.use("", userRoute);
