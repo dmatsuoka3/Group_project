@@ -5,11 +5,11 @@ var mongoose_delete = require('mongoose-delete');
 
 const imageSchema = new mongoose.Schema({
     
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        // ref: "UserModel"
-        ref: "UserModel"
-    },    
+    // user: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     // ref: "UserModel"
+    //     ref: "UserModel"
+    // },    
     
     caption: {
         type: String,
@@ -26,11 +26,16 @@ const imageSchema = new mongoose.Schema({
         default: 'placeholder.jpg',
     },
 
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserModel"
+    },    
+
     // user: {
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: "UserModel"
     // }
-});
+}, {timestamps: true});
 
 imageSchema.plugin(mongoose_delete);
 

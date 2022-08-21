@@ -6,7 +6,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 
 const userSchema = new mongoose.Schema(
     {
-        _id: mongoose.Schema.Types.ObjectId,
+        // _id: mongoose.Schema.Types.ObjectId,
 
         name: {
             type: String,
@@ -48,11 +48,15 @@ const userSchema = new mongoose.Schema(
             default: Date.now
         },
 
-        posts: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "imageModel"
-        }]
+        // posts: [{
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: "imageModel"
+        // }]
     },
+
+    {
+        timestamps: true
+    }
     // {
     // // defined userSchema.virtual
     //     toJSON: {

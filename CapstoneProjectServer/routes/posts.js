@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const express = require("express");
+const auth = require("./middleware/auth");
 const { default: mongoose, Schema } = require("mongoose");
 
 const multer = require("multer");
@@ -30,6 +31,7 @@ const upload = multer({
 const ImageModel = require("../models/Post");
 const UserModel = require("../models/User");
 
+
 // router.get('/', (req, res)=> {
 //     res.redirect('/home');
 // });
@@ -49,13 +51,14 @@ router.get('/postHome', (req, res) => {
 });
 
 // Create
-router.post('/posts', upload.single('image'), async (req, res) => {
+router.post('/posts', [auth], upload.single('image'), async (req, res) => {
     
     // const userId = req.user.id; //change this to logged -in user id
 
     const user = new UserModel({
         _id: new mongoose.Types.ObjectId()
     });
+
 
     // const theImage = new ImageModel({
     //     user: new mongoose.Types.ObjectId(),
@@ -68,7 +71,7 @@ router.post('/posts', upload.single('image'), async (req, res) => {
         const theImage = new ImageModel({
             caption: req.body.caption,
             img: req.file.filename,
-            user: user._id
+            user: req.user._id
         });
 
         theImage.save(function() {
@@ -114,7 +117,6 @@ router.post('/posts', upload.single('image'), async (req, res) => {
             console.log("The result is " + result);
         }
     });
-
 
     // const theImage = new ImageModel({
     //     caption: req.body.caption,
