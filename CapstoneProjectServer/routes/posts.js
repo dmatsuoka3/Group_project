@@ -1,7 +1,15 @@
 const router = require("express").Router();
+const { request } = require("express");
 const express = require("express");
-
+const session = require('express-session')
 const multer = require("multer");
+
+const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+    return next();
+    }
+    res.redirect("/login");
+};
 
 var profilePic = {}
 
@@ -35,7 +43,7 @@ const ImageModel = require("../models/Post");
 // });
 
 // Read
-router.get('/postHome', (req, res) => {
+router.get('/postHome', isLoggedIn, (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
@@ -46,7 +54,7 @@ router.get('/postHome', (req, res) => {
                     profilePic = results
                 }) */
                 
-            res.render('userspage.ejs', {data: results});
+            res.render('userspage.ejs', {data: results, user: req.user});
         }
     }).sort({ timeCreated: 'desc' });
     

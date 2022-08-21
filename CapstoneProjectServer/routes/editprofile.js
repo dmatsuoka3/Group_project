@@ -1,7 +1,16 @@
 const router = require("express").Router();
 const express = require("express");
+const session = require('express-session')
+const app = express()
 const multer = require("multer");
-const ImageModel = require("../models/editprofile");
+const userModel = require("../models/User");
+
+const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+    return next();
+    }
+    res.redirect("/login");
+};
 
 
 // define storage for the images
@@ -17,19 +26,6 @@ const storage = multer.diskStorage({
     },
 });
 
-function getProfilePic (userid, callback) {
-    ImageModel.find({userid: userid}, (err, results)=> {
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(results)
-            return callback(results)
-            
-        }
-    }).sort({ timeCreated: 'desc' });
-}
-
-
 
 // upload parameters for multer
 const upload = multer({
@@ -41,34 +37,30 @@ const upload = multer({
 
 
 // Read
-router.get('/editprofile', (req, res) => {
-    getProfilePic('', function(results) {
-        res.render('editprofile', {data: results})
-    })
-    
+router.get('/editprofile', isLoggedIn,  (req, res) => {
+    /* console.log(req.user.username) */
+        res.render('editprofile', {data: req})
 });
 
 // Create
-router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
-    console.log(req.file);
-
-    const theImage = new ImageModel({
-        img: req.file.filename,
-        userid: ''
-    });
-
-    theImage.save(function() {
-        theImage.delete(function() {
-            theImage.restore(function() {
-            });
-        });
-    });
-
+router.post('/updateprofilepic', isLoggedIn, upload.single('image'), async (req, res) => {
+    userModel.findByIdAndUpdate({_id: req.user._id},
+        {profile: {
+            profileimg: req.file.filename
+        }},
+        (error, result)=> {
+            if(error) {
+                console.log(req.user.id)
+            } else {
+                console.log('completed')
+            }
+        }
+    );
     res.redirect("/editprofile");
 });
 
 
-// Update
+/* // Update
 router.get('/update/:id', (req, res)=> {
 
     ImageModel.findById(req.params.id, (error, result)=> {
@@ -78,9 +70,9 @@ router.get('/update/:id', (req, res)=> {
             res.render("editprofile", {data: result});
         }
     });
-});
+}); */
 
-router.put('/update/:id', (req, res)=> {
+/* router.put('/update/:id', (req, res)=> {
 
     
     ImageModel.findByIdAndUpdate({_id: req.params.id},
@@ -93,10 +85,10 @@ router.put('/update/:id', (req, res)=> {
             }
         }
     );
-});
+}); */
 
 // Delete
-router.get('/home/:id', (req, res)=> {
+/* router.get('/home/:id', (req, res)=> {
     ImageModel.deleteById(req.params.id, (error, result)=> {
         if(error) {
             console.log("Something went wrong delete from database");
@@ -105,7 +97,7 @@ router.get('/home/:id', (req, res)=> {
             res.redirect("/editprofile");
         }
     });
-});
+}); */
 
 module.exports = router;
 
@@ -113,3 +105,4 @@ module.exports = router;
 /* db.imagesposts.aggregate([{
 $lookup: {from: "profileimages", localField: "userid", foreignField: "userid", as: "profile"}
 }]) */
+
