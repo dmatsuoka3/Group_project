@@ -15,6 +15,10 @@ let imageSchema = new mongoose.Schema({
     img: {
         type: String,
         default: 'placeholder.jpg',
+    },
+    userid: {
+        type: String,
+        default: 0
     }
 });
 

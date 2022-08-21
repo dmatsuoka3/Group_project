@@ -1,17 +1,28 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
+let profileSchema = new mongoose.Schema({
+    profileimg: {
+        type: String,
+        default: 'placeholder.jpg',
+    },
+    timeCreated: {
+        type: Date,
+        default: () => Date.now(),
+    }
+});
+
 const userSchema = new mongoose.Schema(
     {
         name: {
             type: String,
             required: true
-           
+
         },
         username: {
             type: String,
             required: true
-           
+
         },
         email: {
             type: String,
@@ -20,14 +31,14 @@ const userSchema = new mongoose.Schema(
         },
         phone: {
             type: String,
-           
+
         },
         password: {
             type: String,
             min: 6,
             max: 30
         },
-    
+
         bio: {
             type: String,
             min: 3,
@@ -36,13 +47,15 @@ const userSchema = new mongoose.Schema(
         gender: {
             type: String
         },
-    
+
         created: {
             type: Date,
             required: true,
             default: Date.now
+        },
+        profile: {
+            type: profileSchema
         }
-    
     });
     
 

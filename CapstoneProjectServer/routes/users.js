@@ -39,10 +39,6 @@ router.get("/home", (req, res) => {
   res.render("login.ejs");
 });
 
-router.get("/userspage", isLoggedIn, (req, res) => {
-  // res.render("userspage.ejs");
-  res.redirect("/postHome");
-});
 
 router.get("/signup", (req, res) => {
   res.render("signup.ejs");
@@ -57,7 +53,10 @@ router.post("/signup", (req, res) => {
     phone: req.body.phone,
     bio: req.body.bio,
     gender: req.body.gender,
-    website: req.body.website
+    website: req.body.website,
+    profile: {
+      profileimg: ''
+    }
   });
   UserModel.register(newUser, req.body.password, function (err, user) {
     if (err) {
@@ -65,7 +64,7 @@ router.post("/signup", (req, res) => {
       return res.render("signup.ejs");
     } else {
       passport.authenticate("local")(req, res, function () {
-        res.redirect("/userspage");
+        res.redirect("/postHome");
       });
     }
   })
@@ -76,11 +75,25 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login",passport.authenticate("local", {
-      successRedirect: "/userspage",
+      successRedirect: "/postHome",
       failureRedirect: "/login",
   }),
   function (req, res) {
+    console.log(req)
     // We don't need anything in our callback function
+    /* req.session.regenerate(function (err) {
+      if (err) next(err)
+  
+      // store user information in session, typically a user id
+      req.session.user = req.body.username
+  
+      // save the session before redirection to ensure page
+      // load does not happen before session is saved
+      req.session.save(function (err) {
+        if (err) return next(err)
+        res.redirect('/')
+      })
+    }) */
   }
 );
 
@@ -92,6 +105,8 @@ router.get("/logout", (req, res, next) => {
     res.redirect("/");
   });
 });
+
+
 
 
 

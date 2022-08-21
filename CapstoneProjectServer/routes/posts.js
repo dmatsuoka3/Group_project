@@ -1,19 +1,29 @@
 const router = require("express").Router();
+const { request } = require("express");
 const express = require("express");
-
+const session = require('express-session')
 const multer = require("multer");
+
+const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+    return next();
+    }
+    res.redirect("/login");
+};
+
+var profilePic = {}
 
 
 // define storage for the images
 const storage = multer.diskStorage({
     // destination for files
     destination: function (request, file, callback) {
-      callback(null, './assets/images');
+    callback(null, './assets/images');
     },
-  
+
     // add back the extension
     filename: function (request, file, callback) {
-      callback(null, Date.now() + file.originalname);
+    callback(null, Date.now() + file.originalname);
     },
 });
 
@@ -33,14 +43,18 @@ const ImageModel = require("../models/Post");
 // });
 
 // Read
-router.get('/postHome', (req, res) => {
+router.get('/postHome', isLoggedIn, (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
             console.log(err);
         } else {
             // res.render('home.ejs');
-            res.render('userspage.ejs', {data: results});
+                /* getProfilePic('', function(results) {
+                    profilePic = results
+                }) */
+                
+            res.render('userspage.ejs', {data: results, user: req.user});
         }
     }).sort({ timeCreated: 'desc' });
     
@@ -90,7 +104,7 @@ router.put('/update/:id', (req, res)=> {
     // let updateCaption = req.body.caption;
     
     ImageModel.findByIdAndUpdate({_id: req.params.id},
-         {caption: req.body.caption},
+        {caption: req.body.caption},
         (error, result)=> {
             if(error) {
                 res.send(error.message);
