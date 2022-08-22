@@ -11,7 +11,7 @@ const isLoggedIn = (req, res, next) => {
     res.redirect("/login");
 };
 
-var profilePic = {}
+/* var profilePic = {} */
 
 
 // define storage for the images

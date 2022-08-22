@@ -48,6 +48,23 @@ router.post('/updateprofilepic', isLoggedIn, upload.single('image'), async (req,
         {profile: {
             profileimg: req.file.filename
         }},
+        
+        (error, result)=> {
+            if(error) {
+                console.log(req.user.id)
+            } else {
+                console.log('completed')
+            }
+        }
+    );
+    res.redirect("/editprofile");
+});
+
+router.post('/updateprofile', isLoggedIn, async (req, res) => {
+    userModel.findByIdAndUpdate({_id: req.user._id},
+        {name: req.body.name,
+            bio: req.body.bio
+        }, 
         (error, result)=> {
             if(error) {
                 console.log(req.user.id)
