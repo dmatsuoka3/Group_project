@@ -10,6 +10,8 @@ const imageSchema = new mongoose.Schema({
     //     // ref: "UserModel"
     //     ref: "UserModel"
     // },    
+  
+    // _id: mongoose.Schema.Types.ObjectId,
     
     caption: {
         type: String,
@@ -26,17 +28,17 @@ const imageSchema = new mongoose.Schema({
         default: 'placeholder.jpg',
     },
 
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        // type: Schema.Types.ObjectId,
-        ref: "UserModel"
-    },    
+    // userId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     // type: Schema.Types.ObjectId,
+    //     ref: "UserModel"
+    // },    
 
     // user: {
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: "UserModel"
     // }
-}, {timestamps: true});
+});
 
 imageSchema.plugin(mongoose_delete);
 

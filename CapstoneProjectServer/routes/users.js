@@ -67,7 +67,8 @@ router.post("/signup", (req, res) => {
       return res.render("signup.ejs");
     } else {
       passport.authenticate("local")(req, res, function () {
-        res.redirect("/userspage/" + req.user.username);
+        // res.redirect("/userspage/" + req.user.username);
+        res.redirect("/userspage");
       });
     }
   })

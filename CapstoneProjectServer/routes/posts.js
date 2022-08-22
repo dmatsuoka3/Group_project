@@ -50,8 +50,8 @@ router.get('/userpage', (req, res) => {
 });
 
 // Create
-router.post('/posts', upload.single('image'), async (req, res) => {
-    
+router.post('/posts', upload.single('image'), async (req, res, next) => {
+
     // const userId = req.user.id; //change this to logged -in user id
 
     // const user = new UserModel({
@@ -62,10 +62,22 @@ router.post('/posts', upload.single('image'), async (req, res) => {
 
     console.log("\nHome page\nUsername: " + req.user.username
               + "\nUser Id: " + userId + "\n");
+
     const theImage = new ImageModel({
-        // user: new mongoose.Types.ObjectId(),
         caption: req.body.caption,
         img: req.file.filename,
+    });
+
+    const theUser = new UserModel({
+        username: req.user.username, 
+        email: req.user.email,
+        name: req.user.name,
+        email: req.user.email,
+        phone: req.user.phone,
+        bio: req.user.bio,
+        gender: req.user.gender,
+        website: req.user.website,
+        posts: theImage._id
     });
     
     // theImage.save(function() {
@@ -74,7 +86,7 @@ router.post('/posts', upload.single('image'), async (req, res) => {
         //     caption: req.body.caption,
         //     img: req.file.filename,
         // });
-
+    theUser.save(function() {
         theImage.save(function() {
             theImage.delete(function() {
                 // mongodb: {deleted: true,}
@@ -83,6 +95,7 @@ router.post('/posts', upload.single('image'), async (req, res) => {
                 });
             });
         })
+    })
         //  UserModel.findOne({_id: user._id}).populate('theImage')
         //  .then(element => {
         //     res.json(element);
@@ -108,8 +121,34 @@ router.post('/posts', upload.single('image'), async (req, res) => {
         //  });
     // });
     
-    // UserModel.findOne({})
-    // .populate({path: 'posts', model: UserModel})
+    // UserModel
+    // .findOne({_id: userId})
+    // .populate("posts")
+    // .then(user => {
+    //     res.json(user);
+    //     console.log("Result: " + user);
+    // })
+
+    const user = UserModel
+    .findOne({_id: userId})
+    .populate('theImage');
+    
+    console.log("\nresult: " + user);
+    // UserModel
+    // .findOne({_id: userId})
+    // .populate({path: 'posts', model: ImageModel})
+    // .exec((err, result)=> {
+    //     if(err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log("\nThe user's posts is " + result.posts + "\n");
+    //     }
+    // });
+
+
+    // UserModel.find()
+    // .select("posts _id")
+    // .populate('posts', 'caption')
     // .exec(function(err, result){
     //     if(err) {
     //         console.log(err)
@@ -126,11 +165,6 @@ router.post('/posts', upload.single('image'), async (req, res) => {
     //     console.log(error);
     // }
 
-    // const theImage = new ImageModel({
-    //     caption: req.body.caption,
-    //     img: req.file.filename,
-    // });
-    
     // theImage.save(function() {
     //     theImage.delete(function() {
     //         // mongodb: {deleted: true,}
