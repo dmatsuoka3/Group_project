@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const express = require("express");
-const auth = require("./middleware/auth");
 const { default: mongoose, Schema } = require("mongoose");
 
 const multer = require("multer");
@@ -10,7 +9,7 @@ const multer = require("multer");
 const storage = multer.diskStorage({
     // destination for files
     destination: function (request, file, callback) {
-      callback(null, './assets/images');
+      callback(null, './assets/uploads');
     },
   
     // add back the extension
@@ -37,7 +36,7 @@ const UserModel = require("../models/User");
 // });
 
 // Read
-router.get('/postHome', (req, res) => {
+router.get('/userpage', (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
@@ -51,28 +50,30 @@ router.get('/postHome', (req, res) => {
 });
 
 // Create
-router.post('/posts', [auth], upload.single('image'), async (req, res) => {
+router.post('/posts', upload.single('image'), async (req, res) => {
     
     // const userId = req.user.id; //change this to logged -in user id
 
-    const user = new UserModel({
-        _id: new mongoose.Types.ObjectId()
-    });
-
-
-    // const theImage = new ImageModel({
-    //     user: new mongoose.Types.ObjectId(),
-    //     caption: req.body.caption,
-    //     img: req.file.filename,
+    // const user = new UserModel({
+    //     _id: new mongoose.Types.ObjectId()
     // });
-    
-    user.save(function() {
 
-        const theImage = new ImageModel({
-            caption: req.body.caption,
-            img: req.file.filename,
-            user: req.user._id
-        });
+    const userId = req.user.id;
+
+    console.log("\nHome page\nUsername: " + req.user.username
+              + "\nUser Id: " + userId + "\n");
+    const theImage = new ImageModel({
+        // user: new mongoose.Types.ObjectId(),
+        caption: req.body.caption,
+        img: req.file.filename,
+    });
+    
+    // theImage.save(function() {
+        
+        // const theImage = new ImageModel({
+        //     caption: req.body.caption,
+        //     img: req.file.filename,
+        // });
 
         theImage.save(function() {
             theImage.delete(function() {
@@ -105,18 +106,25 @@ router.post('/posts', [auth], upload.single('image'), async (req, res) => {
         //          console.log("The user is " + result);
         //      }
         //  });
-    });
+    // });
     
-    UserModel.findOne({})
-    .populate({path: 'posts', model: UserModel})
-    .exec(function(err, result){
-        if(err) {
-            console.log(err)
-        } else {
+    // UserModel.findOne({})
+    // .populate({path: 'posts', model: UserModel})
+    // .exec(function(err, result){
+    //     if(err) {
+    //         console.log(err)
+    //     } else {
 
-            console.log("The result is " + result);
-        }
-    });
+    //         console.log("The result is " + result);
+    //     }
+    // });
+
+    // try {
+    //     const result = UserModel.findById(userId).populate({path: 'posts', select: 'caption username'});
+    //     console.log("\nResult: " + result + "\n");
+    // } catch(error) {
+    //     console.log(error);
+    // }
 
     // const theImage = new ImageModel({
     //     caption: req.body.caption,
@@ -132,7 +140,7 @@ router.post('/posts', [auth], upload.single('image'), async (req, res) => {
     //     });
     // });
 
-    res.redirect("/postHome");
+    res.redirect("/userpage");
 });
 
 router.get('/new', (req, res)=> {
@@ -164,7 +172,7 @@ router.put('/update/:id', (req, res)=> {
                 res.send(error.message);
             } else {
                 // res.redirect(`/update/${result._id}`);
-                res.redirect("/postHome");
+                res.redirect("/userpage");
             }
         }
     );
@@ -177,7 +185,7 @@ router.get('/home/:id', (req, res)=> {
             console.log("Something went wrong delete from database");
         } else {
             console.log("This post has been deleted", result);
-            res.redirect("/postHome");
+            res.redirect("/userpage");
         }
     });
 });

@@ -3,6 +3,7 @@ const express =require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const session = require("express-session")
+const connectEnsureLogin = require('connect-ensure-login'); // authorization
 var methodOverride = require('method-override');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -33,14 +34,10 @@ require("./models/User");
 //IMPORT ALL THE ROUTE HERE
 const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts");
-const authRoute = require("./routes/middleware/auth");
-// const auth = require("./routes/middleware/auth");
 
 //ROUTE HANDLER
 app.use("", userRoute);
 app.use("", postRoute);
-app.use("", authRoute);
-
 
 
 app.listen(port, () => console.log(`Bravo Team app is listening on http://localhost:${port}`))

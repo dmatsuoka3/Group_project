@@ -14,7 +14,8 @@ router.use(
   require("express-session")({
     secret: "Blah blah blah", 
     resave: false, 
-    saveUninitialized: false, 
+    // saveUninitialized: false, 
+    saveUninitialized: false,
   })
 );
 router.use(passport.initialize());
@@ -40,8 +41,9 @@ router.get("/home", (req, res) => {
 
 router.get("/userspage", isLoggedIn, (req, res) => {
   // res.render("userspage.ejs");
-  
-  res.redirect("/postHome");
+  console.log("\nUsername: " + req.user.username +
+              "\nSession ID: " + req.sessionID + "\n");
+  res.redirect("/userpage");
 });
 
 router.get("/signup", (req, res) => {
@@ -65,7 +67,7 @@ router.post("/signup", (req, res) => {
       return res.render("signup.ejs");
     } else {
       passport.authenticate("local")(req, res, function () {
-        res.redirect("/userspage");
+        res.redirect("/userspage/" + req.user.username);
       });
     }
   })

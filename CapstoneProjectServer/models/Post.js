@@ -26,8 +26,9 @@ const imageSchema = new mongoose.Schema({
         default: 'placeholder.jpg',
     },
 
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
+        // type: Schema.Types.ObjectId,
         ref: "UserModel"
     },    
 

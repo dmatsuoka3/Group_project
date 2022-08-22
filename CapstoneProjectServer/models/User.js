@@ -54,24 +54,32 @@ const userSchema = new mongoose.Schema(
         // }]
     },
 
-    {
-        timestamps: true
-    }
     // {
-    // // defined userSchema.virtual
-    //     toJSON: {
-    //         virtuals: true
-    //     }
+    //     timestamps: true
     // }
+    {
+    // defined userSchema.virtual
+        toJSON: {
+            virtuals: true
+        },
+
+        toObject: { 
+            virtuals: true 
+        }
+    },
+
 );
     
 
 userSchema.plugin(passportLocalMongoose);
-
-// userSchema.virtual("posts", {
-//     ref: "ImageModel",
-//     localField: "_id",
-//     foreignField: "userId"
+// userSchema.plugin(passportLocalMongoose, {
+//     findByUsername: (model, queryParameters) => model.findOne(queryParameters).populate('role', ['code']),
 // });
+
+userSchema.virtual("posts", {
+    ref: "ImageModel",
+    localField: '_id',
+    foreignField: 'userId'
+});
 
 module.exports = mongoose.model('users', userSchema);
