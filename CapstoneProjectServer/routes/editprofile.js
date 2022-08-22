@@ -63,7 +63,10 @@ router.post('/updateprofilepic', isLoggedIn, upload.single('image'), async (req,
 router.post('/updateprofile', isLoggedIn, async (req, res) => {
     userModel.findByIdAndUpdate({_id: req.user._id},
         {name: req.body.name,
-            bio: req.body.bio
+            bio: req.body.bio,
+            website: req.body.website,
+            gender: req.body.gender,
+            phone: req.body.phone,
         }, 
         (error, result)=> {
             if(error) {
@@ -105,16 +108,16 @@ router.get('/update/:id', (req, res)=> {
 }); */
 
 // Delete
-/* router.get('/home/:id', (req, res)=> {
-    ImageModel.deleteById(req.params.id, (error, result)=> {
+router.get('/deleteprofile', (req, res)=> {
+    userModel.deleteOne({_id: req.user._id}, (error, result)=> {
         if(error) {
             console.log("Something went wrong delete from database");
         } else {
             console.log("This image has been deleted", result);
-            res.redirect("/editprofile");
+            res.redirect("/login");
         }
     });
-}); */
+});
 
 module.exports = router;
 

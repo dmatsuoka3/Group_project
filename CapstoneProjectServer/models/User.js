@@ -22,17 +22,21 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true
-
         },
+
         email: {
             type: String,
             required: true
-            
         },
+
+        website: {
+            type: String,
+        },
+
         phone: {
             type: String,
-
         },
+
         password: {
             type: String,
             min: 6,
@@ -44,8 +48,9 @@ const userSchema = new mongoose.Schema(
             min: 0,
             max: 50
         },
+
         gender: {
-            type: String
+            type: String,
         },
 
         created: {

@@ -61,13 +61,14 @@
             <div class="mb-3 row">
                 <label class="col-sm-2" for="Username">Username</label>
                 <div class="col-sm-10">
-                    <input id="Username" placeholder="Username" type="text" class="form-control" value="<%= data.user.username %>" required>
+                    <input id="Username" name="username" placeholder="Username" type="text" class="form-control" value="<%= data.user.username %>" required>
                 </div>
             </div>
             <div class="mb-3 row">
                 <label class="col-sm-2" for="Website">Website</label>
                 <div class="col-sm-10">
-                    <input id="Website" placeholder="Website" type="text" class="form-control">
+                    <input id="Website" name="website" placeholder="Website" type="text" class="form-control"
+                    value="<%= data.user.website %>">
                 </div>
             </div>
             <div class="mb-3 row">
@@ -94,7 +95,7 @@
                 <label class="col-sm-2" for="Email">Email</label>
                 <div class="col-sm-10">
                     <div style="width: 100%; max-width: 355px;">
-                        <input id="Email" placeholder="Email" type="text" class="form-control">
+                        <input id="Email" name="email" placeholder="Email" type="text" class="form-control" value="<%= data.user.email %>">
                     </div>
                 </div>
             </div>
@@ -102,7 +103,7 @@
                 <label class="col-sm-2" for="Phone Number">Phone number</label>
                 <div class="col-sm-10">
                     <div style="width: 100%; max-width: 355px;">
-                        <input placeholder="Phone number" type="text" class="form-control">
+                        <input placeholder="Phone number" name="phone" type="text" class="form-control" value="<%= data.user.phone %>">
                     </div>
                 </div>
             </div>
@@ -113,13 +114,13 @@
                     <fieldset data-role="controlgroup">
                         <legend>Choose your gender:</legend>
                         <label for="male">Male</label>
-                        <input type="radio" name="gender" id="male" value="male" checked>
+                        <input type="radio" name="gender" id="male" value="male" <%= (data.user.gender == 'male' ? 'checked' : '') %>>
                         <label for="female">Female</label>
-                        <input type="radio" name="gender" id="female" value="female">
+                        <input type="radio" name="gender" id="female" value="female" <%= (data.user.gender == 'female' ? 'checked' : '') %>>
                         <label for="">Nonbinary</label>
-                        <input type="radio" name="gender" id="nonbinary" value="nonbinary">
+                        <input type="radio" name="gender" id="nonbinary" value="nonbinary" <%= (data.user.gender == 'nonbinary' ? 'checked' : '') %>>
                         <label for="Prefer not to say">Prefer not to say</label>
-                        <input type="radio" name="gender" id="na" value="na">
+                        <input type="radio" name="gender" id="na" value="na" <%= (data.user.gender == 'na' ? 'checked' : '') %>>
                     </fieldset>
                 </div>
             </div>
@@ -127,7 +128,7 @@
                 <label class="col-sm-2"></label>
                 <div class="col-sm-10">
                     <button class="btn btn-secondary" type="submit">Update profile</button>
-                    <button class="btn btn-secondary" type="button">Delete my
+                    <button class="btn btn-secondary" type="button" onclick="window.location.href='/deleteprofile'">Delete my
                         account</button>
                 </div>
             </div>
