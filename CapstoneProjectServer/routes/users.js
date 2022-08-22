@@ -45,6 +45,7 @@ router.get("/signup", (req, res) => {
 });
 
 router.post("/signup", (req, res) => {
+  console.log(req)
   const newUser = new UserModel({ 
     username: req.body.username, 
     email: req.body.email,

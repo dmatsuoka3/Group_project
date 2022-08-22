@@ -12,10 +12,10 @@
                         <img src="/images/<%= user.profile.profileimg %>" alt="">
                     </div>
                     <div class="handle">
-                        <h4>Bang Cao</h4>
-                            <p class="text-muted">
+                        <h4><%= user.name %></h4>
+                            <!-- <p class="text-muted">
                             @bCao
-                        </p>
+                        </p> -->
                     </div>
                 </a>
 
@@ -92,7 +92,7 @@
                     <!-------------------- END NOTIFICATION POPUP ---------------->
                 </a>
                 <a class="menu-item" id="messages-notification">
-                    <span><i class="uil uil-envelope-alt"><small class="notification-count">6</small></i></span><h3>Messagse</h3>
+                    <span><i class="uil uil-envelope-alt"><small class="notification-count">6</small></i></span><h3>Messages</h3>
                 </a>
                 <a class="menu-item">
                     <span><i class="uil uil-bookmark"></i></span><h3>Bookmarks</h3>
@@ -125,13 +125,13 @@
                         <div class="profile-photo">
                             <img src="images/profile-9.jpg" alt="">
                         </div>
-                        <p class="name">Katie Katie</p>
+                        <p class="name">Katie Rogers</p>
                     </div>
                     <div class="story">
                         <div class="profile-photo">
                             <img src="images/profile-10.jpg" alt="">
                         </div>
-                        <p class="name">Chloe Chloe</p>
+                        <p class="name">Chloe Smith</p>
                     </div>
                     <div class="story">
                         <div class="profile-photo">
@@ -149,7 +149,7 @@
                         <div class="profile-photo">
                             <img src="images/profile-13.jpg" alt="">
                         </div>
-                        <p class="name">MJ & Spdierman</p>
+                        <p class="name">MJ & Spiderman</p>
                     </div>
                 </div>
                 <!----------------------------------END OF STORIES---------------------------------------------->
@@ -157,7 +157,9 @@
                     <div class="profile-photo">
                         <img src="/images/<%= user.profile.profileimg %>" alt="">
                     </div>
-                    <input type="text" placeholder="What's is on your mind, Bang?" id="create-post">
+                    <%
+                    const [fname, lname] = user.name.split(' ') %>
+                    <input type="text" placeholder="What's on your mind <%= fname %>?" id="create-post">
                     <input type="submit" value="Post" class="btn btn-primary">
                 </form>
                 <!-----------------------------------FEEDS----------------------------------------------------->
@@ -211,7 +213,7 @@
                                 <span><img src="images/profile-10.jpg" alt=""></span>
                                 <span><img src="images/profile-4.jpg" alt=""></span>
                                 <span><img src="images/profile-15.jpg" alt=""></span>
-                                <p>Liked by <b>Ernest Achiever</b> and <b>2,323 others</b></p>
+                                <p>Liked by <b>Ernest Thompson</b> and <b>2,323 others</b></p>
                             </div>
                             <div class="caption">
                                 <%= element.caption %>
@@ -295,7 +297,7 @@
                             <img src="images/profile-17.jpg" alt="">
                         </div>
                         <div class="message-body">
-                            <h5>Edem Quist</h5>
+                            <h5>Eden Quist</h5>
                             <p class="text-muted">Just woke up bruh</p>
                         </div>
                     </div>
@@ -305,7 +307,7 @@
                         </div>
                         <div class="message-body">
                             <h5>Jane Doe</h5>
-                            <p class="text-bold">hello!!</p>
+                            <p class="text-bold">Hello!!</p>
                         </div>
                     </div>
                     <div class="message">
@@ -313,7 +315,7 @@
                             <img src="images/profile-15.jpg" alt="">
                         </div>
                         <div class="message-body">
-                            <h5>John Smith</h5>
+                            <h5>Dustin Wolden</h5>
                             <p class="text-bold">2 new messages</p>
                         </div>
                     </div>
@@ -323,8 +325,8 @@
                             <div class="active"></div>
                         </div>
                         <div class="message-body">
-                            <h5>MaKyla Silvia</h5>
-                            <p class="text-bold">where are u?</p>
+                            <h5>Makayla Silvia</h5>
+                            <p class="text-bold">Where are u?</p>
                             
                         </div>
                     </div>
@@ -333,8 +335,8 @@
                             <img src="images/profile-20.jpg" alt="">
                         </div>
                         <div class="message-body">
-                            <h5>Sam Sam</h5>
-                            <p class="text-bold">Do I know you dude?</p>
+                            <h5>Sam Smith</h5>
+                            <p class="text-bold">Yo!</p>
                         </div>
                     </div>
                     <div class="message">
@@ -344,7 +346,7 @@
                         </div>
                         <div class="message-body">
                             <h5>Jon Hoover</h5>
-                            <p class="text-bold">waking up bruh!</p>
+                            <p class="text-bold">Just woke up bruh!</p>
                             
                         </div>
                     </div>
@@ -354,7 +356,7 @@
                     <!------------Friend Requests-------------------->
 
                 <div class="friend-requests">
-                    <h4>Resquests</h4>
+                    <h4>Requests</h4>
                     <div class="request">
                         <div class="info">
                             <div class="profile-photo">
@@ -404,7 +406,7 @@
                                 <img src="images/profile-20.jpg" alt="">
                             </div>
                             <div>
-                                <h5>Yo Yo!</h5>
+                                <h5>Heidi Smith</h5>
                                 <p class="text-muted">
                                     3 mutual friends
                                 </p>
@@ -425,7 +427,7 @@
                                 <img src="images/profile-11.jpg" alt="">
                             </div>
                             <div>
-                                <h5>Who Who?</h5>
+                                <h5>Tom Jones</h5>
                                 <p class="text-muted">
                                     5 mutual friends
                                 </p>
@@ -446,7 +448,7 @@
             <!--============================END OF RIGHT===============================-->
         </div>
     </main>
-     <!--==================================THEME CUSTOMIZATION=================================-->
+    <!--==================================THEME CUSTOMIZATION=================================-->
         <div class="customize-theme">
     <div class="card">
         <h2>Customize your view</h2>
