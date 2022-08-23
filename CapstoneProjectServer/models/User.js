@@ -48,20 +48,19 @@ const userSchema = new mongoose.Schema(
             default: Date.now
         },
 
-        posts: {
+        posts: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "imageModel"
-        }
-    }
+            ref: "ImageModel"
+        }]
+    },
 
     // {
-    //     timestamps: true
-    // }
-    // {
+    //     timestamps: true,
     // // defined userSchema.virtual
     //     toJSON: {
     //         virtuals: true
-    //     },
+    //     }
+    // },
 
     //     toObject: { 
     //         virtuals: true 

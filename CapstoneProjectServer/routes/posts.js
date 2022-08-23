@@ -28,6 +28,7 @@ const upload = multer({
 
 // BLUEPRINTS
 const ImageModel = require("../models/Post");
+// const User = require("../models/User");
 const UserModel = require("../models/User");
 
 
@@ -61,7 +62,8 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
     const userId = req.user.id;
 
     console.log("\nHome page\nUsername: " + req.user.username
-              + "\nUser Id: " + userId + "\n");
+              + "\nUser Id: " + userId
+              + "\nEmail: " + req.user.email + "\n\n");
 
     const theImage = new ImageModel({
         caption: req.body.caption,
@@ -86,16 +88,22 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
         //     caption: req.body.caption,
         //     img: req.file.filename,
         // });
-    theUser.save(function() {
-        theImage.save(function() {
-            theImage.delete(function() {
-                // mongodb: {deleted: true,}
-                theImage.restore(function() {
-                    // mongodb: {deleted: false,}
-                });
-            });
-        })
-    })
+    // theImage.save(function() {
+        
+    //         theImage.delete(function() {
+    //             // mongodb: {deleted: true,}
+    //             theImage.restore(function() {
+    //                 // mongodb: {deleted: false,}
+    //             });
+    //         });
+       
+    // });
+
+    theImage.save().then(result => {
+        UserModel.findOne({_id: userId})
+        .populate("posts");
+        console.log(result)
+    });
         //  UserModel.findOne({_id: user._id}).populate('theImage')
         //  .then(element => {
         //     res.json(element);
@@ -129,11 +137,14 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
     //     console.log("Result: " + user);
     // })
 
-    const user = UserModel
-    .findOne({_id: userId})
-    .populate('theImage');
+    // UserModel
+    // .findOne({_id: userId})
+    // .populate('posts')
+    // .then(user => {
+    //     res.json(user);
+    // });
     
-    console.log("\nresult: " + user);
+    // console.log("\nresult: " + user);
     // UserModel
     // .findOne({_id: userId})
     // .populate({path: 'posts', model: ImageModel})
@@ -174,8 +185,26 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
     //     });
     // });
 
+    // UserModel
+    //     .findOne({_id: userId})
+    //     .populate('posts')
+    //     .then(user => {
+    //         res.json(user);
+    //         console.log("\n\nresullt: " + user +"\n\n");
+    //     });
+
     res.redirect("/userpage");
 });
+
+// router.get('/userpage', (req, res)=> {
+//     UserModel
+//     .findOne({_id: userId})
+//     .populate('posts')
+//     .then(user => {
+//         res.json(user);
+//         console.log("\n\nresullt: " + user +"\n\n");
+//     });
+// });
 
 router.get('/new', (req, res)=> {
     res.render("newPost");

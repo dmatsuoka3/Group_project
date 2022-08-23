@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 var mongoose_delete = require('mongoose-delete');
 
 // const Schema = mongoose.Schema;
+const UserModel = require("./User");
 
 const imageSchema = new mongoose.Schema({
     
@@ -16,6 +17,12 @@ const imageSchema = new mongoose.Schema({
     caption: {
         type: String,
     },
+
+    user: {
+        type: mongoose.Schema.Types.ObjectId,     
+        ref: "UserModel"
+    }, 
+
     timeCreated: {
         type: Date,
         default: () => Date.now(),
