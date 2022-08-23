@@ -70,17 +70,17 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
         img: req.file.filename,
     });
 
-    const theUser = new UserModel({
-        username: req.user.username, 
-        email: req.user.email,
-        name: req.user.name,
-        email: req.user.email,
-        phone: req.user.phone,
-        bio: req.user.bio,
-        gender: req.user.gender,
-        website: req.user.website,
-        posts: theImage._id
-    });
+    // const theUser = new UserModel({
+    //     username: req.user.username, 
+    //     email: req.user.email,
+    //     name: req.user.name,
+    //     email: req.user.email,
+    //     phone: req.user.phone,
+    //     bio: req.user.bio,
+    //     gender: req.user.gender,
+    //     website: req.user.website,
+    //     posts: theImage._id
+    // });
     
     // theImage.save(function() {
         
@@ -88,22 +88,23 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
         //     caption: req.body.caption,
         //     img: req.file.filename,
         // });
-    // theImage.save(function() {
+    theImage.save(function() {
         
-    //         theImage.delete(function() {
-    //             // mongodb: {deleted: true,}
-    //             theImage.restore(function() {
-    //                 // mongodb: {deleted: false,}
-    //             });
-    //         });
+            theImage.delete(function() {
+                // mongodb: {deleted: true,}
+                theImage.restore(function() {
+                    // mongodb: {deleted: false,}
+                });
+            });
        
-    // });
-
-    theImage.save().then(result => {
-        UserModel.findOne({_id: userId})
-        .populate("posts");
-        console.log(result)
     });
+
+    // theImage.save().then(result => {
+    //     UserModel.findOne({_id: userId})
+    //     .populate("posts");
+    //     console.log(result)
+    // });
+    
         //  UserModel.findOne({_id: user._id}).populate('theImage')
         //  .then(element => {
         //     res.json(element);

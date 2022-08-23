@@ -54,12 +54,10 @@ router.get("/signup", (req, res) => {
 
 router.post("/signup", (req, res) => {
 
-  const theImage = new ImageModel({
-        // user: req.user.id,
-        _id: new mongoose.Types.ObjectId(),
-        caption: "Testing testing",
-        // img: req.file.filename,
-  });
+  // const theImage = new ImageModel({
+  //       _id: new mongoose.Types.ObjectId(),
+  //       caption: "Testing testing",
+  // });
 
   const newUser = new UserModel({ 
     username: req.body.username, 
@@ -70,8 +68,9 @@ router.post("/signup", (req, res) => {
     bio: req.body.bio,
     gender: req.body.gender,
     website: req.body.website,
-    posts: theImage._id
+    // posts: theImage._id
   });
+  
   UserModel.register(newUser, req.body.password, function (err, user) {
     if (err) {
       console.log(err);
