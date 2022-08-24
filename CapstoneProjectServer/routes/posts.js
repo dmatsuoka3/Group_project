@@ -4,6 +4,13 @@ const { default: mongoose, Schema } = require("mongoose");
 
 const multer = require("multer");
 
+const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+    return next();
+    }
+    res.redirect("/login");
+};
+
 // define storage for the images
 const storage = multer.diskStorage({
     // destination for files
@@ -26,8 +33,8 @@ const upload = multer({
 });
 
 // BLUEPRINTS
-const UserModel = require("../models/User");
-const ImageModel = require("../models/Post");
+var UserModel = require("../models/User");
+var ImageModel = require("../models/Post");
 // const User = require("../models/User");
 // const UserModel = require("../models/User");
 
@@ -40,7 +47,7 @@ const ImageModel = require("../models/Post");
 // });
 
 // Read
-router.get('/homePost', (req, res) => {
+router.get('/homePost', isLoggedIn, (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
@@ -54,7 +61,7 @@ router.get('/homePost', (req, res) => {
 });
 
 // Create
-router.post('/posts', upload.single('image'), async (req, res, next) => {
+router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next) => {
 
     // const userId = req.user.id; //change this to logged -in user id
 
@@ -99,13 +106,19 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
 
     console.log("\n\ntheImage result: " + theImage);
 
-    // function getUserWithPosts(username) {
-    //     return UserModel.findOne({username: username})
-    //         .populate('posts').exec((err, posts) => {
-    //             console.log("\n\nPopulated User " + posts + "\n");
-    //         })
-    // }
+    // Here's the code I'm working on to populate the posts from UserModel
+    // But I'm still getting undefined on console log
+    function getUserWithPosts(username) {
+        return UserModel.findOne({username: username})
+            .populate('posts').exec((err, posts) => {
+                console.log("\n\nPopulated User " + posts + "\n");
+            })
+    }
 
+    getUserWithPosts(userName);
+
+    // this is another code I was working on to populate by using virtual
+    // but I'm getting error for not having image schema register to the Image model
     // try {
     //     const result = await UserModel.findById(userId).populate("posts");
     //     console.log("\n\nPopulate result: " + result + "\n\n");
@@ -113,8 +126,6 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
     //     console.log(err);
     //     res.status(500).send("Something went wrong, check logs");
     // }
-
-    // getUserWithPosts(userName);
 
     // UserModel.findOne({_id: userId})
     //          .populate({path: 'posts', model: 'ImageModel'})

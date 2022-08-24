@@ -40,10 +40,10 @@ const imageSchema = new mongoose.Schema({
     //     ref: "UserModel"
     // },    
 
-    // user: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "UserModel"
-    // }
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserModel"
+    }
 });
 
 imageSchema.plugin(mongoose_delete);
