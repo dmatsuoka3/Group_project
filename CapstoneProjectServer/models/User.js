@@ -52,15 +52,19 @@ const userSchema = new mongoose.Schema(
         //     type: mongoose.Schema.Types.ObjectId,
         //     ref: 'ImageModel'
         // }]
+
+        posts: [{
+            type: 
+        }]
     },
 
-    {
-        timestamps: true,
-    // defined userSchema.virtual
-        toJSON: {
-            virtuals: true
-        }
-    },
+    // {
+    //     timestamps: true,
+    // // defined userSchema.virtual
+    //     toJSON: {
+    //         virtuals: true
+    //     }
+    // },
 
     //     toObject: { 
     //         virtuals: true 
@@ -75,11 +79,10 @@ userSchema.plugin(passportLocalMongoose);
 //     findByUsername: (model, queryParameters) => model.findOne(queryParameters).populate('role', ['code']),
 // });
 
-userSchema.virtual("posts", {
-    ref: "ImageModel",
-    foreignField: 'userId',
-    localField: '_id'
-});
+// userSchema.virtual("posts", {
+//     ref: "ImageModel",
+//     foreignField: 'userId',
+//     localField: '_id'
+// });
 
 module.exports = mongoose.model('users', userSchema);
-const ImageModel = require('./Post');
