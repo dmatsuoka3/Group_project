@@ -73,14 +73,14 @@ const userSchema = new mongoose.Schema(
             default: Date.now
         },
 
-        // posts: [{
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: 'ImageModel'
-        // }]
-
         posts: [{
-            type: imageSchema
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'ImageModel'
         }]
+
+        // posts: [{
+        //     type: imageSchema
+        // }]
     },
 
     // {

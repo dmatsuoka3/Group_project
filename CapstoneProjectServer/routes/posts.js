@@ -63,8 +63,6 @@ router.get('/homePost', isLoggedIn, (req, res) => {
 // Create
 router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next) => {
 
-    // const userId = req.user.id; //change this to logged -in user id
-
     // const user = new UserModel({
     //    posts: [theImage]
     // });
@@ -79,47 +77,47 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next)
               // + "\n\nUserModel: " + user + "\n"
     );
 
-    const theUser = new UserModel({
-        posts: [{
-            caption: req.body.caption,
-            img: req.file.filename,
-        }]
-    });
+    // const theUser = new UserModel({
+    //     posts: [{
+    //         caption: req.body.caption,
+    //         img: req.file.filename,
+    //     }]
+    // });
 
-    theUser.save();
+    // theUser.save();
    
-    // const theImage = new ImageModel({
-    //     caption: req.body.caption,
-    //     img: req.file.filename,
-    //     // user: req.user.id
-    //     // profile: {
-    //     //     profileimg: req.file.filename
-    //     // },
-    // });
+    const theImage = new ImageModel({
+        caption: req.body.caption,
+        img: req.file.filename,
+        user: req.user.id
+        // profile: {
+        //     profileimg: req.file.filename
+        // },
+    });
     
-    // theImage.save(function() {
+    theImage.save(function() {
         
-    //     theImage.delete(function() {
-    //         // mongodb: {deleted: true,}
-    //         theImage.restore(function() {
-    //         // mongodb: {deleted: false,}
-    //         });
-    //     });
-    // });
+        theImage.delete(function() {
+            // mongodb: {deleted: true,}
+            theImage.restore(function() {
+            // mongodb: {deleted: false,}
+            });
+        });
+    });
  
 
-    // console.log("\n\ntheImage result: " + theImage);
+    console.log("\n\ntheImage result: " + theImage);
 
     // Here's the code I'm working on to populate the posts from UserModel
     // But I'm still getting undefined on console log
-    // function getUserWithPosts(username) {
-    //     return UserModel.findOne({username: username})
-    //         .populate('posts').exec((err, posts) => {
-    //             console.log("\n\nPopulated User " + posts + "\n");
-    //         })
-    // }
+    function getUserWithPosts(username) {
+        return UserModel.findOne({username: username})
+            .populate('posts').exec((err, posts) => {
+                console.log("\n\nPopulated User " + posts + "\n");
+            })
+    }
 
-    // getUserWithPosts(userName);
+    getUserWithPosts(userName);
 
     // this is another code I was working on to populate by using virtual
     // but I'm getting error for not having image schema register to the Image model
