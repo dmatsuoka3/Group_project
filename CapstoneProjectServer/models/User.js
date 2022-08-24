@@ -2,7 +2,32 @@ const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const { Schema } = mongoose;
-imageSchema = require('./Post');
+
+const imageSchema = new mongoose.Schema({
+
+    caption: {
+        type: String,
+    },
+
+    // user: {
+    //     type: mongoose.Schema.Types.ObjectId,     
+    //     ref: "UserModel"
+    // }, 
+
+    timeCreated: {
+        type: Date,
+        default: () => Date.now(),
+    },
+
+    snippet: {
+        type: String,
+    },
+    img: {
+        type: String,
+        default: 'placeholder.jpg',
+    },
+
+});
 
 const userSchema = new mongoose.Schema(
     {
@@ -48,14 +73,14 @@ const userSchema = new mongoose.Schema(
             default: Date.now
         },
 
-        posts: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'ImageModel'
-        }]
-
         // posts: [{
-        //     type: imageSchema
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'ImageModel'
         // }]
+
+        posts: [{
+            type: imageSchema
+        }]
     },
 
     // {
