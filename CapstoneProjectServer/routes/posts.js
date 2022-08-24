@@ -106,13 +106,13 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
     //         })
     // }
 
-    try {
-        const result = await UserModel.findById(userId).populate("posts");
-        console.log("\n\nPopulate result: " + result + "\n\n");
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Something went wrong, check logs");
-    }
+    // try {
+    //     const result = await UserModel.findById(userId).populate("posts");
+    //     console.log("\n\nPopulate result: " + result + "\n\n");
+    // } catch (err) {
+    //     console.log(err);
+    //     res.status(500).send("Something went wrong, check logs");
+    // }
 
     // getUserWithPosts(userName);
 

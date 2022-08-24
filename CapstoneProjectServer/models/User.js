@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const { Schema } = mongoose;
-// const ImageModel = require('./Post');
+imageSchema = require('./Post');
 
 const userSchema = new mongoose.Schema(
     {
@@ -53,9 +53,9 @@ const userSchema = new mongoose.Schema(
         //     ref: 'ImageModel'
         // }]
 
-        posts: [{
-            type: 
-        }]
+        // posts: [{
+        //     type: imageSchema
+        // }]
     },
 
     // {
