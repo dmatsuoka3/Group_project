@@ -127,6 +127,9 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next)
     //     res.status(500).send("Something went wrong, check logs");
     // }
 
+// *********************************************************************************
+//             Ignore all the comments below
+
     // UserModel.findOne({_id: userId})
     //          .populate({path: 'posts', model: 'ImageModel'})
     //     .then(p=>console.log("\nResult: " + p + "\n\n"))
