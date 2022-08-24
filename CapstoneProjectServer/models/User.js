@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
-// const Schema = mongoose.Schema;
-const ImageModel = require('./Post');
+const { Schema } = mongoose;
+// const ImageModel = require('./Post');
 
 const userSchema = new mongoose.Schema(
     {
-        // _id: mongoose.Schema.Types.ObjectId,
+       // _id: mongoose.Schema.Types.ObjectId,
 
         name: {
             type: String,
@@ -50,20 +50,17 @@ const userSchema = new mongoose.Schema(
 
         // posts: [{
         //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: "ImageModel"
+        //     ref: 'ImageModel'
         // }]
-        posts: {
-            type: ImageModel
-        }
     },
 
-    // {
-    //     timestamps: true,
-    // // defined userSchema.virtual
-    //     toJSON: {
-    //         virtuals: true
-    //     }
-    // },
+    {
+        timestamps: true,
+    // defined userSchema.virtual
+        toJSON: {
+            virtuals: true
+        }
+    },
 
     //     toObject: { 
     //         virtuals: true 
@@ -78,10 +75,11 @@ userSchema.plugin(passportLocalMongoose);
 //     findByUsername: (model, queryParameters) => model.findOne(queryParameters).populate('role', ['code']),
 // });
 
-// userSchema.virtual("posts", {
-//     ref: "ImageModel",
-//     localField: '_id',
-//     foreignField: 'userId'
-// });
+userSchema.virtual("posts", {
+    ref: "ImageModel",
+    foreignField: 'userId',
+    localField: '_id'
+});
 
 module.exports = mongoose.model('users', userSchema);
+const ImageModel = require('./Post');

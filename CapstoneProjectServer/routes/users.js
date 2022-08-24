@@ -9,7 +9,7 @@ const LocalStrategy = require("passport-local");
 
 // BLUEPRINTS
 const UserModel = require("../models/User");
-const ImageModel = require("../models/Post");
+// const ImageModel = require("../models/Post");
 const { default: mongoose } = require("mongoose");
 
 router.use(
@@ -45,7 +45,8 @@ router.get("/userspage", isLoggedIn, (req, res) => {
   // res.render("userspage.ejs");
   console.log("\nUsername: " + req.user.username +
               "\nSession ID: " + req.sessionID + "\n");
-  res.redirect("/userpage");
+  // res.redirect("/userpage");
+  res.redirect("/homePost");
 });
 
 router.get("/signup", (req, res) => {
@@ -56,7 +57,6 @@ router.post("/signup", (req, res) => {
 
   // const theImage = new ImageModel({
   //       _id: new mongoose.Types.ObjectId(),
-  //       caption: "Testing testing",
   // });
 
   const newUser = new UserModel({ 
@@ -68,7 +68,6 @@ router.post("/signup", (req, res) => {
     bio: req.body.bio,
     gender: req.body.gender,
     website: req.body.website,
-    // posts: theImage._id
   });
   
   UserModel.register(newUser, req.body.password, function (err, user) {

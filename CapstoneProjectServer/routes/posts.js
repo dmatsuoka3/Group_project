@@ -4,7 +4,6 @@ const { default: mongoose, Schema } = require("mongoose");
 
 const multer = require("multer");
 
-
 // define storage for the images
 const storage = multer.diskStorage({
     // destination for files
@@ -27,9 +26,13 @@ const upload = multer({
 });
 
 // BLUEPRINTS
+const UserModel = require("../models/User");
 const ImageModel = require("../models/Post");
 // const User = require("../models/User");
-const UserModel = require("../models/User");
+// const UserModel = require("../models/User");
+
+// const User = require("../models/User");
+// const UserModel = require("../models/User");
 
 
 // router.get('/', (req, res)=> {
@@ -37,7 +40,7 @@ const UserModel = require("../models/User");
 // });
 
 // Read
-router.get('/userpage', (req, res) => {
+router.get('/homePost', (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
@@ -56,31 +59,25 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
     // const userId = req.user.id; //change this to logged -in user id
 
     // const user = new UserModel({
-    //     _id: new mongoose.Types.ObjectId()
+    //    posts: [theImage]
     // });
 
     const userId = req.user.id;
+    const userName = req.user.username;
 
-    console.log("\nHome page\nUsername: " + req.user.username
+    console.log("\nHome page\nUsername: " + userName
               + "\nUser Id: " + userId
-              + "\nEmail: " + req.user.email + "\n\n");
+              + "\nEmail: " + req.user.email + "\n\n"
+              + "object: " + req.user + "\n"
+              // + "\n\nUserModel: " + user + "\n"
+    );
+
 
     const theImage = new ImageModel({
         caption: req.body.caption,
         img: req.file.filename,
+        // user: req.user.id
     });
-
-    // const theUser = new UserModel({
-    //     username: req.user.username, 
-    //     email: req.user.email,
-    //     name: req.user.name,
-    //     email: req.user.email,
-    //     phone: req.user.phone,
-    //     bio: req.user.bio,
-    //     gender: req.user.gender,
-    //     website: req.user.website,
-    //     posts: theImage._id
-    // });
     
     // theImage.save(function() {
         
@@ -88,27 +85,65 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
         //     caption: req.body.caption,
         //     img: req.file.filename,
         // });
+
     theImage.save(function() {
         
-            theImage.delete(function() {
-                // mongodb: {deleted: true,}
-                theImage.restore(function() {
-                    // mongodb: {deleted: false,}
-                });
+        theImage.delete(function() {
+            // mongodb: {deleted: true,}
+            theImage.restore(function() {
+            // mongodb: {deleted: false,}
             });
-       
+        });
     });
+ 
 
+    console.log("\n\ntheImage result: " + theImage);
+
+    // function getUserWithPosts(username) {
+    //     return UserModel.findOne({username: username})
+    //         .populate('posts').exec((err, posts) => {
+    //             console.log("\n\nPopulated User " + posts + "\n");
+    //         })
+    // }
+
+    try {
+        const result = await UserModel.findById(userId).populate("posts");
+        console.log("\n\nPopulate result: " + result + "\n\n");
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong, check logs");
+    }
+
+    // getUserWithPosts(userName);
+
+    // UserModel.findOne({_id: userId})
+    //          .populate({path: 'posts', model: 'ImageModel'})
+    //     .then(p=>console.log("\nResult: " + p + "\n\n"))
+    //     .catch(error=>console.log(error))
+
+    // const theUser = new UserModel({
+    //     // name: req.body.name,
+    //     // username: req.u.username,
+    //     // email: req.body.email,
+    //     posts: [theImage]
+    //  });
+
+    //  theUser.save(function(error, result) {
+    //     if(error) {
+    //         console.log(error);
+    //     } else if(result) {
+    //         console.log("\n\nResult: " + result + "\n");
+    //     }
+    //  });
+    
     // theImage.save().then(result => {
     //     UserModel.findOne({_id: userId})
-    //     .populate("posts");
-    //     console.log(result)
+    //     .populate("posts")
+    //     .then(p=>console.log("\nResult: " + p + "\n\n"))
+    //     .catch(error=>console.log(error))
     // });
-    
-        //  UserModel.findOne({_id: user._id}).populate('theImage')
-        //  .then(element => {
-        //     res.json(element);
-        //  });
+  
+    // UserModel.findOne({}).populate({ path: 'created_by', model: 'User' }) 
 
         // ImageModel.findOne({ user: user._id }).
         // populate('user').
@@ -194,10 +229,10 @@ router.post('/posts', upload.single('image'), async (req, res, next) => {
     //         console.log("\n\nresullt: " + user +"\n\n");
     //     });
 
-    res.redirect("/userpage");
+    res.redirect("/homePost");
 });
 
-// router.get('/userpage', (req, res)=> {
+// router.get('/homePost', (req, res)=> {
 //     UserModel
 //     .findOne({_id: userId})
 //     .populate('posts')
@@ -236,7 +271,7 @@ router.put('/update/:id', (req, res)=> {
                 res.send(error.message);
             } else {
                 // res.redirect(`/update/${result._id}`);
-                res.redirect("/userpage");
+                res.redirect("/homePost");
             }
         }
     );
@@ -249,7 +284,7 @@ router.get('/home/:id', (req, res)=> {
             console.log("Something went wrong delete from database");
         } else {
             console.log("This post has been deleted", result);
-            res.redirect("/userpage");
+            res.redirect("/homePost");
         }
     });
 });

@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
 var mongoose_delete = require('mongoose-delete');
 
-// const Schema = mongoose.Schema;
-const UserModel = require("./User");
+const { Schema } = mongoose;
 
 const imageSchema = new mongoose.Schema({
     
     // user: {
-    //     type: mongoose.Schema.Types.ObjectId,
+    //     type: Schema.Types.ObjectId,
     //     // ref: "UserModel"
-    //     ref: "UserModel"
+    //     ref: 'UserModel'
     // },    
   
     // _id: mongoose.Schema.Types.ObjectId,
@@ -18,10 +17,10 @@ const imageSchema = new mongoose.Schema({
         type: String,
     },
 
-    user: {
-        type: mongoose.Schema.Types.ObjectId,     
-        ref: "UserModel"
-    }, 
+    // user: {
+    //     type: mongoose.Schema.Types.ObjectId,     
+    //     ref: "UserModel"
+    // }, 
 
     timeCreated: {
         type: Date,
