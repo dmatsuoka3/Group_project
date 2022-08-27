@@ -107,9 +107,10 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
         //     profileimg: req.file.filename
         // },
         postedBy: userName
+        
     });
     
-    theImage.save(function() {
+    await theImage.save(function() {
         
         theImage.delete(function() {
             // mongodb: {deleted: true,}
@@ -211,26 +212,15 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
     //     res.status(500).send("Something went wrong, check logs");
     // }
 
-    console.log("\n\nimage id: " + theImage._id + "\n");
-    try {
-        const result = await ImageModel.findById(theImage._id).populate("postedBy").exec();
-        console.log("\n\nPopulate result: " + result + "\n\n");
+    // console.log("\n\nimage id: " + theImage._id + "\n");
+    // try {
+    //     const result = await ImageModel.findById(theImage._id).populate("postedBy").exec();
+    //     console.log("\n\nPopulate result: " + result + "\n\n");
 
-        // UserModel.updateOne({
-        //     _id: userId
-        // }, {$set: {
-        //     result
-        // }}, function(error) {
-        //     if(error) {
-        //         console.log(error);
-        //     } else {
-        //         console.log("\n\nInsert successful");
-        //     }
-        // });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Something went wrong, check logs");
-    }
+    // } catch (err) {
+    //     console.log(err);
+    //     res.status(500).send("Something went wrong, check logs");
+    // }
 
     // console.log("\nPosted by: username: " + theImage.postedBy.username + "\n\n");
 
