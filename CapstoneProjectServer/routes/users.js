@@ -50,6 +50,7 @@ router.get("/userspage", (req, res) => {
   res.redirect("/homePost");
 });
 
+
 router.get("/signup", (req, res) => {
   res.render("signup.ejs");
 });

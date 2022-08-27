@@ -4,6 +4,7 @@ const { default: mongoose, Schema } = require("mongoose");
 
 const multer = require("multer");
 
+
 const isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
     return next();
@@ -11,16 +12,21 @@ const isLoggedIn = (req, res, next) => {
     res.redirect("/login");
 };
 
+var profilePic = {}
+
 // define storage for the images
 const storage = multer.diskStorage({
     // destination for files
     destination: function (request, file, callback) {
-      callback(null, './assets/uploads');
+    callback(null, './assets/uploads');
+
+    // Ben's code
+    callback(null, './assets/images');
     },
-  
+
     // add back the extension
     filename: function (request, file, callback) {
-      callback(null, Date.now() + file.originalname);
+    callback(null, Date.now() + file.originalname);
     },
 });
 
@@ -54,7 +60,12 @@ router.get('/homePost', isLoggedIn, (req, res) => {
         if(err) {
             console.log(err);
         } else {
-            // console.log(user);
+
+            // res.render('home.ejs');
+                /* getProfilePic('', function(results) {
+                    profilePic = results
+                }) */
+                 
             res.render('userspage.ejs', {data: results});
         }
     }).sort({ timeCreated: 'desc' });
@@ -249,7 +260,7 @@ router.put('/update/:id', (req, res)=> {
     // let updateCaption = req.body.caption;
     
     ImageModel.findByIdAndUpdate({_id: req.params.id},
-         {caption: req.body.caption},
+        {caption: req.body.caption},
         (error, result)=> {
             if(error) {
                 res.send(error.message);

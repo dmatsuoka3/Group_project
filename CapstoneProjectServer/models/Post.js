@@ -30,6 +30,7 @@ const imageSchema = new mongoose.Schema({
         type: String,
         default: 'placeholder.jpg',
     },
+
    
 
     // postedBy: {
@@ -39,6 +40,11 @@ const imageSchema = new mongoose.Schema({
 
     postedBy: {
         type: String
+    },
+    
+    userid: {
+        type: String,
+        default: 0
     }
 });
 

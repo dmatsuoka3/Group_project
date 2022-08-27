@@ -18,7 +18,6 @@ const Bg2 = document.querySelector('.bg-2');
 const Bg3 = document.querySelector('.bg-3');
 
 
-
 // ================ SIDEBAR ===============
 
 // remove active class from all menu items

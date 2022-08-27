@@ -30,21 +30,21 @@ let connectionObject = {
 };
 
 mongoose
- .connect(url, connectionObject)
+.connect(url, connectionObject)
  //PROMISES TO GET CONFIRMATION THAT IT WORKS
- .then(() => {console.log(`Connected to the ${DB} database`);})
- .catch((error) => console.log(`Issues connecting to the ${DB} database: ${error}`));
+.then(() => {console.log(`Connected to the ${DB} database`);})
+.catch((error) => console.log(`Issues connecting to the ${DB} database: ${error}`));
 
 // define storage for the images
 const storage = multer.diskStorage({
     // destination for files
     destination: function (request, file, callback) {
-      callback(null, './public/uploads/images');
+    callback(null, './public/uploads/images');
     },
-  
+
     // add back the extension
     filename: function (request, file, callback) {
-      callback(null, Date.now() + file.originalname);
+    callback(null, Date.now() + file.originalname);
     },
 });
 
@@ -155,9 +155,23 @@ app.post('/posts', upload.single('image'), async (req, res) => {
     // );
 });
 
-app.get('/new', (req, res)=> {
-    res.render("newPost");
+app.get('/newpost', (req, res)=> {
+    res.render("newpost");
 });
+
+//Takes user from home/landing page to the editprofile page
+app.get('/editprofile', (req, res)=> {
+    res.render("editprofile");
+});
+//Redirects user from editprofile page to home/landing page via "house/home" icon
+app.get('/editprofile', (req, res)=> {
+    res.redirect("/");
+});
+//Redirects user from editprofile page to home/landing page via "newpost/plus" icon
+app.get('/editprofile', (req, res)=> {
+    res.redirect("/newpost");
+});
+
 
 // Update
 app.get('/update/:id', (req, res)=> {
