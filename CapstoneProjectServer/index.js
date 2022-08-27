@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const session = require("express-session")
 const connectEnsureLogin = require('connect-ensure-login'); // authorization
 var methodOverride = require('method-override');
+const { Schema } = mongoose; // To get access to mongoose.Schema
 const app = express();
 const port = process.env.PORT || 3000;
 const logger = require("morgan");

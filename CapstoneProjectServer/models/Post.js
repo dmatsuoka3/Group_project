@@ -6,12 +6,9 @@ const { Schema } = mongoose;
 const imageSchema = new mongoose.Schema({
     
     // user: {
-    //     type: Schema.Types.ObjectId,
-    //     // ref: "UserModel"
+    //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'UserModel'
-    // },    
-  
-    // _id: mongoose.Schema.Types.ObjectId,
+    // }, 
     
     caption: {
         type: String,
@@ -33,19 +30,27 @@ const imageSchema = new mongoose.Schema({
         type: String,
         default: 'placeholder.jpg',
     },
+   
 
-    // userId: {
+    // postedBy: {
     //     type: mongoose.Schema.Types.ObjectId,
-    //     // type: Schema.Types.ObjectId,
     //     ref: "UserModel"
-    // },    
+    // }
 
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UserModel"
+    postedBy: {
+        type: String
     }
 });
 
+// imageSchema.virtual("postedBy", {
+//     ref: "UserModel",
+//     foreignField: 'post',
+//     localField: '_id'
+// });
+
+// imageSchema.set('toObject', { virtuals: true });
+// imageSchema.set('toJSON', { virtuals: true });
+
 imageSchema.plugin(mongoose_delete);
 
-module.exports = mongoose.model("imagesPosts", imageSchema);
+module.exports = mongoose.model("imagesposts", imageSchema);

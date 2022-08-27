@@ -165,7 +165,9 @@
                     
                     <!------------------------------- FEEDS photo data -------------------------->
                     
+
                     <% data.forEach((element)=> { %> 
+                        <!-- <h3><%=// user._id %></h3> -->
                         <div id="feed" class="feed">
                             <div class="head">
                                 <div class="user">
@@ -173,7 +175,7 @@
                                         <img src="images/profile-13.jpg" alt="">
                                     </div>
                                     <div class="ingo">
-                                        <h3>Lana Rose</h3>
+                                        <h3><%= element.postedBy %> </h3>
                                         <small><%= element.timeCreated %> </small>
                                     </div>    
                                 </div>

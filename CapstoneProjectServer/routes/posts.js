@@ -35,6 +35,7 @@ const upload = multer({
 // BLUEPRINTS
 var UserModel = require("../models/User");
 var ImageModel = require("../models/Post");
+const Post = require("../models/Post");
 // const User = require("../models/User");
 // const UserModel = require("../models/User");
 
@@ -49,11 +50,11 @@ var ImageModel = require("../models/Post");
 // Read
 router.get('/homePost', isLoggedIn, (req, res) => {
 
-    ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
+        ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
             console.log(err);
         } else {
-            // res.render('home.ejs');
+            // console.log(user);
             res.render('userspage.ejs', {data: results});
         }
     }).sort({ timeCreated: 'desc' });
@@ -61,8 +62,7 @@ router.get('/homePost', isLoggedIn, (req, res) => {
 });
 
 // Create
-router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next) => {
-
+router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
     // const user = new UserModel({
     //    posts: [theImage]
     // });
@@ -70,7 +70,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next)
     const userId = req.user.id;
     const userName = req.user.username;
 
-    console.log("\nHome page\nUsername: " + userName
+    console.log("\nHome page\nUsername: "
               + "\nUser Id: " + userId
               + "\nEmail: " + req.user.email + "\n\n"
               + "object: " + req.user + "\n"
@@ -86,13 +86,16 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next)
 
     // theUser.save();
    
+ 
+
     const theImage = new ImageModel({
         caption: req.body.caption,
         img: req.file.filename,
-        user: req.user.id
+        // user: req.user.id
         // profile: {
         //     profileimg: req.file.filename
         // },
+        postedBy: userName
     });
     
     theImage.save(function() {
@@ -103,22 +106,90 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next)
             // mongodb: {deleted: false,}
             });
         });
+
+        // theImage.restore(function() {
+        //     // mongodb: {deleted: true,}
+        //     theImage.delete(function() {
+        //     // mongodb: {deleted: false,}
+        //     });
+        // });
     });
+
+
+    // ImageModel.findByIdAndUpdate(
+    //     theImage._id,    
+    // {$set: {
+    //     postedBy: userName
+    // }}, { overwrite: true }, function(error, result) {
+    //     if(error) {
+    //         console.log(error);
+    //     } else {
+    //         console.log("\n\nInsert successful: " + result);
+    //     }
+    // });
  
+    // UserModel.updateOne({
+    //     _id: userId
+    // }, {$set: {
+    //     post: theImage._id
+    // }}, function(error) {
+    //     if(error) {
+    //         console.log(error);
+    //     } else {
+    //         console.log("\n\nInsert successful");
+    //     }
+    // });
+
 
     console.log("\n\ntheImage result: " + theImage);
 
+    // ImageModel.findOne({_id: theImage._id})
+    // .populate("postedBy")
+    // .exec((err, posts) => {
+    //  console.log("\n\nPopulated User " + posts + "\n")
+    // });
+    // UserModel.aggregate([
+    //     {$lookup: {
+    //         from: 'imagesPosts', 
+    //         localField: '_id',
+    //         foreignField: 'user',
+    //         as: 'posts'
+    //     }}
+    // ]).exec((err, result)=> {
+    //     if(err) {
+    //         console.log("error", err);
+    //     } else {
+    //         //res.json(result);
+    //         console.log("\n\nResult: " + result + "\n\n");
+    //     }
+    // })
+
+    // ImageModel.updateOne({
+    //     _id: theImage._id
+    // }, {$set: {
+    //     postedBy: userName
+    // }}, function(error) {
+    //     if(error) {
+    //         console.log(error);
+    //     } else {
+    //         console.log("\n\nInsert successful");
+    //     }
+    // });
     // Here's the code I'm working on to populate the posts from UserModel
     // But I'm still getting undefined on console log
-    function getUserWithPosts(username) {
-        return UserModel.findOne({username: username})
-            .populate('posts').exec((err, posts) => {
-                console.log("\n\nPopulated User " + posts + "\n");
-            })
-    }
+    // function getUserWithPosts(username) {
+    //     return UserModel.findOne({username: username})
+    //         .populate('posts').exec((err, posts) => {
+    //             console.log("\n\nPopulated User " + posts + "\n");
+    //         })
+    // }
 
-    getUserWithPosts(userName);
+    // getUserWithPosts(userName);
 
+    // ImageModel.findById(theImage._id).populate('postedBy')
+    //     .exec((err, postedBy) => {
+    //         console.log(`\n\nPopulated result: ${postedBy}\n`);
+    //     })
     // this is another code I was working on to populate by using virtual
     // but I'm getting error for not having image schema register to the Image model
     // try {
@@ -129,134 +200,31 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res, next)
     //     res.status(500).send("Something went wrong, check logs");
     // }
 
-// *********************************************************************************
-//             Ignore all the comments below
+    console.log("\n\nimage id: " + theImage._id + "\n");
+    try {
+        const result = await ImageModel.findById(theImage._id).populate("postedBy").exec();
+        console.log("\n\nPopulate result: " + result + "\n\n");
 
-    // UserModel.findOne({_id: userId})
-    //          .populate({path: 'posts', model: 'ImageModel'})
-    //     .then(p=>console.log("\nResult: " + p + "\n\n"))
-    //     .catch(error=>console.log(error))
+        // UserModel.updateOne({
+        //     _id: userId
+        // }, {$set: {
+        //     result
+        // }}, function(error) {
+        //     if(error) {
+        //         console.log(error);
+        //     } else {
+        //         console.log("\n\nInsert successful");
+        //     }
+        // });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong, check logs");
+    }
 
-    // const theUser = new UserModel({
-    //     // name: req.body.name,
-    //     // username: req.u.username,
-    //     // email: req.body.email,
-    //     posts: [theImage]
-    //  });
-
-    //  theUser.save(function(error, result) {
-    //     if(error) {
-    //         console.log(error);
-    //     } else if(result) {
-    //         console.log("\n\nResult: " + result + "\n");
-    //     }
-    //  });
-    
-    // theImage.save().then(result => {
-    //     UserModel.findOne({_id: userId})
-    //     .populate("posts")
-    //     .then(p=>console.log("\nResult: " + p + "\n\n"))
-    //     .catch(error=>console.log(error))
-    // });
-  
-    // UserModel.findOne({}).populate({ path: 'created_by', model: 'User' }) 
-
-        // ImageModel.findOne({ user: user._id }).
-        // populate('user').
-        // exec(function (err, story) {
-        //     if (err) return handleError(err);
-        //     // console.log('The author is %s', story.author.name);
-        //      // prints "The author is Ian Fleming"
-        //  });
-
-         // UserModel.findById(userId).populate("posts");
-        //  ImageModel.findOne({caption: req.body.caption})
-        //  .populate('user')
-        //  .exec(function(err, result){
-        //      if(err) {
-        //          console.log(err)
-        //      } else {
-        //          console.log("The user is " + result);
-        //      }
-        //  });
-    // });
-    
-    // UserModel
-    // .findOne({_id: userId})
-    // .populate("posts")
-    // .then(user => {
-    //     res.json(user);
-    //     console.log("Result: " + user);
-    // })
-
-    // UserModel
-    // .findOne({_id: userId})
-    // .populate('posts')
-    // .then(user => {
-    //     res.json(user);
-    // });
-    
-    // console.log("\nresult: " + user);
-    // UserModel
-    // .findOne({_id: userId})
-    // .populate({path: 'posts', model: ImageModel})
-    // .exec((err, result)=> {
-    //     if(err) {
-    //         console.log(err);
-    //     } else {
-    //         console.log("\nThe user's posts is " + result.posts + "\n");
-    //     }
-    // });
-
-
-    // UserModel.find()
-    // .select("posts _id")
-    // .populate('posts', 'caption')
-    // .exec(function(err, result){
-    //     if(err) {
-    //         console.log(err)
-    //     } else {
-
-    //         console.log("The result is " + result);
-    //     }
-    // });
-
-    // try {
-    //     const result = UserModel.findById(userId).populate({path: 'posts', select: 'caption username'});
-    //     console.log("\nResult: " + result + "\n");
-    // } catch(error) {
-    //     console.log(error);
-    // }
-
-    // theImage.save(function() {
-    //     theImage.delete(function() {
-    //         // mongodb: {deleted: true,}
-    //         theImage.restore(function() {
-    //             // mongodb: {deleted: false,}
-    //         });
-    //     });
-    // });
-
-    // UserModel
-    //     .findOne({_id: userId})
-    //     .populate('posts')
-    //     .then(user => {
-    //         res.json(user);
-    //         console.log("\n\nresullt: " + user +"\n\n");
-    //     });
+    // console.log("\nPosted by: username: " + theImage.postedBy.username + "\n\n");
 
     res.redirect("/homePost");
 });
-
-// router.get('/homePost', (req, res)=> {
-//     UserModel
-//     .findOne({_id: userId})
-//     .populate('posts')
-//     .then(user => {
-//         res.json(user);
-//         console.log("\n\nresullt: " + user +"\n\n");
-//     });
-// });
 
 router.get('/new', (req, res)=> {
     res.render("newPost");
