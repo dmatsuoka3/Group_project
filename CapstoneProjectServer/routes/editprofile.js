@@ -45,18 +45,18 @@ router.get('/returnHome', (req, res)=> {
 
 // Read
 router.get('/editprofile', (req, res) => {
-    // getProfilePic(req.user.id, function(results) {
-    //     res.render('editprofile', {data: results})
-    // })
+    getProfilePic('', function(results) {
+        res.render('editprofile', {data: results})
+    })
 
-    ImageModel.findOne({user: req.user.id}, (err, results)=> {
-        if(err) {
-            console.log(err);
-        } else {
-            console.log("\n\nfindOne results: " + results + "\n\n")
-            res.render('editprofile', {profileImgData: results});
-        }
-    });
+    // ImageModel.findOne({user: req.user.id}, (err, results)=> {
+    //     if(err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log("\n\nfindOne results: " + results + "\n\n")
+    //         res.render('editprofile', {profileImgData: results});
+    //     }
+    // });
 });
 
 // Create
