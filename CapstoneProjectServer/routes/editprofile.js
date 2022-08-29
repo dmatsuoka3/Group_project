@@ -80,7 +80,8 @@ router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
 
     ImageModel.create({
         img: req.file.filename,   
-        user: userId
+        user: userId,
+        userid: ''
     }, (error, result)=> {
 
         if(error) {
