@@ -3,6 +3,18 @@ const passportLocalMongoose = require('passport-local-mongoose');
 
 const { Schema } = mongoose;
 
+var profileSchema = new mongoose.Schema({
+    img: {
+        type: String,
+        default: 'placeholder.jpg',
+    },
+
+    timeCreated: {
+        type: Date,
+        default: () => Date.now(),
+    }
+});
+
 const userSchema = new mongoose.Schema(
     {
     //    _id: {
