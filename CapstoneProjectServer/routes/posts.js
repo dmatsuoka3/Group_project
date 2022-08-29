@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const express = require("express");
-const { default: mongoose, Schema } = require("mongoose");
+const { default: mongoose, Schema, isObjectIdOrHexString } = require("mongoose");
 
 const multer = require("multer");
 
@@ -12,7 +12,7 @@ const isLoggedIn = (req, res, next) => {
     res.redirect("/login");
 };
 
-var profilePic = {}
+// var profilePic = {}
 
 // define storage for the images
 const storage = multer.diskStorage({
@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
     callback(null, './assets/uploads');
 
     // Ben's code
-    callback(null, './assets/images');
+    //callback(null, './assets/uploads_profile_images');
     },
 
     // add back the extension
@@ -41,9 +41,7 @@ const upload = multer({
 // BLUEPRINTS
 var UserModel = require("../models/User");
 var ImageModel = require("../models/Post");
-const Post = require("../models/Post");
-// const User = require("../models/User");
-// const UserModel = require("../models/User");
+var ProfileModel = require("../models/editprofile");
 
 // const User = require("../models/User");
 // const UserModel = require("../models/User");
@@ -54,7 +52,19 @@ const Post = require("../models/Post");
 // });
 
 // Read
-router.get('/homePost', isLoggedIn, (req, res) => {
+router.get('/homePost', (req, res, next)=> {
+    ProfileModel.findById(req.user.id, (err, results)=> {
+        if(err) {
+            res.send(err);
+        } else {
+            console.log("\n\neditprofile result: " + results + "\n");
+            req.doggy = results;
+            next();
+        }
+    }).sort({ timeCreated: 'desc' })
+});
+
+router.get('/homePost', isLoggedIn, async (req, res) => {
 
         ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
@@ -66,7 +76,7 @@ router.get('/homePost', isLoggedIn, (req, res) => {
                     profilePic = results
                 }) */
                  
-            res.render('userspage.ejs', {data: results});
+            res.render('userspage.ejs', {data: results, profileData: req.doggy});
         }
     }).sort({ timeCreated: 'desc' });
     
@@ -78,7 +88,13 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
     //    posts: [theImage]
     // });
 
+    function user() {
+        const userId = req.user.id;
+        return userId;
+    }
+
     const userId = req.user.id;
+
     const userName = req.user.username;
 
     console.log("\nHome page\nUsername: "
@@ -97,20 +113,44 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 
     // theUser.save();
    
- 
+    // function profilePic() {
+        // ProfileModel.findOne({user: req.user.id}, 
+        //     function(error, result) {
+        //         if(error) {
+        //             console.log(error);
+        //         } else {
+        //             console.log("\n\neditProfile object: " + result);
+        //             console.log("\nresult.img : " + result.img);
+                    
+        //         }
+        // });
+    // }
 
+    // console.log("\n\nResult k: " + k);
+
+    // ProfileModel.findOneAndUpdate(
+    //     {user: req.user.id},    
+    //     {}, 
+    //     { overwrite: true }, function(error, result) {
+    //     if(error) {
+    //         console.log(error);
+    //     } else {
+    //         console.log("\n\nInsert successful: " + result);
+    //     }
+    // });
+    
     const theImage = new ImageModel({
         caption: req.body.caption,
         img: req.file.filename,
-        // user: req.user.id
+        user: req.user.id,   // populate virtual
         // profile: {
         //     profileimg: req.file.filename
         // },
-        postedBy: userName
-        
+        postedBy: userName,
+        profileImg: ''
     });
     
-    await theImage.save(function() {
+    theImage.save(function() {
         
         theImage.delete(function() {
             // mongodb: {deleted: true,}
@@ -127,7 +167,29 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
         // });
     });
 
-
+    ProfileModel.findOne({user: userId}, 
+        function(error, result) {
+            if(error) {
+                console.log(error);
+            } else {
+                console.log("\n\neditProfile object: " + result);
+                console.log("\nresult.img : " + result.img);
+                
+                ImageModel.findByIdAndUpdate(
+                    theImage._id,    
+                {$set: {
+                    profileImg: result.img
+                }}, 
+                { overwrite: true }, 
+                function(error, result) {
+                    if(error) {
+                        console.log(error);
+                    } else {
+                        console.log("\n\nInsert successful: " + result);
+                    }
+                });
+            }
+    });
     // ImageModel.findByIdAndUpdate(
     //     theImage._id,    
     // {$set: {
@@ -199,24 +261,39 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
     // getUserWithPosts(userName);
 
     // ImageModel.findById(theImage._id).populate('postedBy')
-    //     .exec((err, postedBy) => {
+    //     .exec(function (err, postedBy) {
     //         console.log(`\n\nPopulated result: ${postedBy}\n`);
     //     })
     // this is another code I was working on to populate by using virtual
     // but I'm getting error for not having image schema register to the Image model
     // try {
-    //     const result = await UserModel.findById(userId).populate("posts");
+    //     const result = await UserModel.findById(userId).populate('posts').exec();
     //     console.log("\n\nPopulate result: " + result + "\n\n");
+
+    //     const userObjectId = mongoose.Types.ObjectId(userId);
+
+    //     UserModel.update({_id: userObjectId},
+    //         result
+    //     );
+
     // } catch (err) {
     //     console.log(err);
     //     res.status(500).send("Something went wrong, check logs");
     // }
 
     // console.log("\n\nimage id: " + theImage._id + "\n");
+
+
     // try {
-    //     const result = await ImageModel.findById(theImage._id).populate("postedBy").exec();
+    //     const result = await ImageModel.findById(theImage._id).populate("postedBy")
+    //     .exec();
     //     console.log("\n\nPopulate result: " + result + "\n\n");
 
+    //     // var ObjectId = require('mongodb').ObjectID;
+
+    //     // ImageModel.replaceOne({_id: ObjectId(theImage._id)},
+    //     //     result
+    //     // );
     // } catch (err) {
     //     console.log(err);
     //     res.status(500).send("Something went wrong, check logs");
@@ -226,6 +303,37 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 
     res.redirect("/homePost");
 });
+
+// router.get('/homePost', (res, req)=> {
+   
+//     const userId = req.user.id;
+
+//     try {
+//         // const result = await UserModel.findById(userId).populate('posts').exec();
+//         // console.log("\n\nPopulate result: " + result + "\n\n");
+
+//         // const userObjectId = mongoose.Types.ObjectId(userId);
+
+//         // UserModel.update({_id: userObjectId},
+//         //     result
+//         // );
+
+//         UserModel.findById(userId).populate('posts')
+//             .exec(function(error, result) {
+//                 if(error) {
+//                     console.log(error)
+//                 } else {
+//                     console.log("\n\nPopulated result: " + result + "\n\n")
+//                     res.json(result);
+//                 }
+//         });
+
+
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send("Something went wrong, check logs");
+//     }
+// });
 
 router.get('/new', (req, res)=> {
     res.render("newPost");

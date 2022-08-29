@@ -13,7 +13,12 @@ let imageSchema = new mongoose.Schema({
     userid: {
         type: String,
         default: ''
-    }
+    },
+    
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserModel'
+    }, 
 });
 
 imageSchema.plugin(mongoose_delete);

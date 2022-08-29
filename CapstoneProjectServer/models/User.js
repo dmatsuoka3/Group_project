@@ -95,4 +95,4 @@ userSchema.plugin(passportLocalMongoose);
 // userSchema.set('toObject', { virtuals: true });
 // userSchema.set('toJSON', { virtuals: true });
 
-module.exports = mongoose.model('users', userSchema);
+module.exports = mongoose.model('UserModel', userSchema);

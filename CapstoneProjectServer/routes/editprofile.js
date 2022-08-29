@@ -8,7 +8,7 @@ const ImageModel = require("../models/editprofile");
 const storage = multer.diskStorage({
     // destination for image files
     destination: function (request, file, callback) {
-    callback(null, './assets/images');
+    callback(null, './assets/uploads');
     },
 
     // add back the extension
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 });
 
 function getProfilePic (userid, callback) {
-    ImageModel.find({userid: userid}, (err, results)=> {
+    ImageModel.findOne({user: userid}, (err, results)=> {
         if(err) {
             console.log(err);
         } else {
@@ -26,7 +26,7 @@ function getProfilePic (userid, callback) {
             return callback(results)
             
         }
-    }).sort({ timeCreated: 'desc' });
+    });
 }
 
 
@@ -39,32 +39,58 @@ const upload = multer({
     }
 });
 
+router.get('/returnHome', (req, res)=> {
+    res.redirect("/homePost");
+});
 
 // Read
 router.get('/editprofile', (req, res) => {
-    getProfilePic('', function(results) {
-        res.render('editprofile', {data: results})
-    })
-    
+    // getProfilePic(req.user.id, function(results) {
+    //     res.render('editprofile', {data: results})
+    // })
+
+    ImageModel.findOne({user: req.user.id}, (err, results)=> {
+        if(err) {
+            console.log(err);
+        } else {
+            console.log("\n\nfindOne results: " + results + "\n\n")
+            res.render('editprofile', {profileImgData: results});
+        }
+    });
 });
 
 // Create
 router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
-    console.log(req.file);
+    // console.log(req.file);
 
-    const theImage = new ImageModel({
-        img: req.file.filename,
-        userid: ''
+    // function user() {
+        const userId = req.user.id;
+    //    return userId;
+    // }
+
+    console.log("\n\neditprofile page's userId: " + userId);
+
+    // const theImage = new ImageModel({
+    //     img: req.file.filename,
+    //     // userid: '',
+    //     user: userId
+    // });
+
+    // theImage.save();
+
+    ImageModel.create({
+        img: req.file.filename,   
+        user: userId
+    }, (error, result)=> {
+
+        if(error) {
+            res.send(error.message);
+        } else {
+            res.redirect("/returnHome");
+        }
     });
 
-    theImage.save(function() {
-        theImage.delete(function() {
-            theImage.restore(function() {
-            });
-        });
-    });
-
-    res.redirect("/editprofile");
+    // res.redirect("/editprofile");
 });
 
 

@@ -5,10 +5,10 @@ const { Schema } = mongoose;
 
 const imageSchema = new mongoose.Schema({
     
-    // user: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'UserModel'
-    // }, 
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserModel'
+    }, 
     
     caption: {
         type: String,
@@ -31,27 +31,30 @@ const imageSchema = new mongoose.Schema({
         default: 'placeholder.jpg',
     },
 
-   
-
     // postedBy: {
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: "UserModel"
-    // }
+    // },
 
     postedBy: {
         type: String
     },
-    
-    userid: {
+
+    profileImg: {
         type: String,
-        default: 0
-    }
+        default: 'placeholder.jpg'
+    },
+    
+    // userid: {
+    //     type: String,
+    //     default: 0
+    // }
 });
 
 // imageSchema.virtual("postedBy", {
 //     ref: "UserModel",
+//     localField: '_id',
 //     foreignField: 'post',
-//     localField: '_id'
 // });
 
 // imageSchema.set('toObject', { virtuals: true });
@@ -59,4 +62,4 @@ const imageSchema = new mongoose.Schema({
 
 imageSchema.plugin(mongoose_delete);
 
-module.exports = mongoose.model("imagesposts", imageSchema);
+module.exports = mongoose.model("ImageModel", imageSchema);

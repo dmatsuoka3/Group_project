@@ -21,7 +21,7 @@
                 <input class="form-group py-2 rounded" type="search" value="search">
             </div>
             <div class="d-flex flex-row center-block">
-                <a href="/postHome" class="fa-solid fa-house fa-2x p-2"></a>
+                <a href="/returnHome" class="fa-solid fa-house fa-2x p-2"></a>
                 <i href="#" class="fa-solid fa-comment-dots fa-2x p-2"></i>
                 <a href="/new" class="fas fa-plus-square fa-2x p-2"></a>
             </div>
@@ -30,13 +30,13 @@
 
     <div class="py-3"></div>
     <div class="container w-50 rounded bg-light" style="border: 1px solid black;">
-        <form action="/updateprofilepic" method="post" enctype="multipart/form-data">
+        <form action="/updateprofilepic" method="POST" enctype="multipart/form-data">
             <div>
                 <div>
                     <h1>Edit profile</h1>
-                    <img alt="Change profile photo" height="100" width="100" class="rounded-circle"
-                        src="/images/<%= data[0].img %>">
-                        <% console.log(data) %>
+                    <!-- <img alt="Change profile photo" height="100" width="100" class="rounded-circle"
+                        src="/uploads_profile_images/<%=// data.img %>"> -->
+                        <%// console.log(data) %>
                     <!-- <a href="/editphoto" class="btn btn-secondary">Edit profile photo</a> -->
                     
                     <input type="file" name="image">

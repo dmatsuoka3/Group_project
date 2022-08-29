@@ -43,7 +43,6 @@ router.get("/home", (req, res) => {
 
 router.get("/userspage", (req, res) => {
   // res.render("userspage.ejs");
-  console.log("Hello", req);
   console.log("\nUsername: " + req.user.username +
               "\nSession ID: " + req.sessionID + "\n");
   // res.redirect("/userpage");
