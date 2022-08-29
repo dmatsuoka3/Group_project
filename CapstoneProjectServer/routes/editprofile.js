@@ -2,6 +2,8 @@ const router = require("express").Router();
 const express = require("express");
 const multer = require("multer");
 const ImageModel = require("../models/editprofile");
+const UserModel = require("../models/User");
+
 
 
 // define storage for the images
@@ -78,19 +80,33 @@ router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
 
     // theImage.save();
 
-    ImageModel.create({
-        img: req.file.filename,   
-        user: userId,
-        userid: ''
-    }, (error, result)=> {
+    // ImageModel.create({
+    //     img: req.file.filename,   
+    //     user: userId,
+    //     userid: ''
+    // }, (error, result)=> {
 
-        if(error) {
-            res.send(error.message);
-        } else {
-            res.redirect("/editprofile");
+    //     if(error) {
+    //         res.send(error.message);
+    //     } else {
+    //         res.redirect("/editprofile");
+    //     }
+    // });
+
+    UserModel.findByIdAndUpdate({_id: req.user.id},
+        {profile: {
+            profileimg: req.file.filename
+        }},
+        
+        (error, result)=> {
+            if(error) {
+                console.log(req.user.id)
+            } else {
+                console.log('completed');
+                res.redirect("/editprofile");
+            }
         }
-    });
-
+    )
     // res.redirect("/editprofile");
 });
 
