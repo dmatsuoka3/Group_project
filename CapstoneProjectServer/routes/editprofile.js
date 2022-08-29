@@ -47,16 +47,25 @@ router.get('/returnHome', (req, res)=> {
 
 // Read
 router.get('/editprofile', (req, res) => {
-    getProfilePic('', function(results) {
-        res.render('editprofile', {data: results})
-    })
+    // getProfilePic('', function(results) {
+    //     res.render('editprofile', {data: results})
+    // })
 
-    // ImageModel.findOne({user: req.user.id}, (err, results)=> {
-    //     if(err) {
-    //         console.log(err);
+    ImageModel.findOne({user: req.user.id}, (err, results)=> {
+        if(err) {
+            console.log(err);
+        } else {
+            console.log("\n\nfindOne results: " + results + "\n\n")
+            res.render('editprofile', {profileImgData: results});
+        }
+    });
+
+    // UserModel.findById(req.user.id, (error, result)=> {
+    //     if(error) {
+    //         console.log(error);
     //     } else {
-    //         console.log("\n\nfindOne results: " + results + "\n\n")
-    //         res.render('editprofile', {profileImgData: results});
+    //         console.log("\n\neditprofile READ result: " + result + "\n\n");
+    //         res.render('editprofile', {data: result});
     //     }
     // });
 });
@@ -72,13 +81,13 @@ router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
 
     console.log("\n\neditprofile page's userId: " + userId);
 
-    // const theImage = new ImageModel({
-    //     img: req.file.filename,
-    //     // userid: '',
-    //     user: userId
-    // });
+    const theImage = new ImageModel({
+        img: req.file.filename,
+        // userid: '',
+        user: userId
+    });
 
-    // theImage.save();
+    theImage.save();
 
     // ImageModel.create({
     //     img: req.file.filename,   
@@ -93,41 +102,58 @@ router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
     //     }
     // });
 
-    UserModel.findByIdAndUpdate({_id: req.user.id},
-        {profile: {
-            profileimg: req.file.filename
-        }},
-        
-        (error, result)=> {
-            if(error) {
-                console.log(req.user.id)
-            } else {
-                console.log('completed');
-                res.redirect("/editprofile");
-            }
-        }
-    )
-    // res.redirect("/editprofile");
+    // UserModel.create({
+    //     img: req.file.filename,   
+    //     // user: userId,
+    // }, (error, result)=> {
+
+    //     if(error) {
+    //         res.send(error.message);
+    //     } else {
+    //         res.redirect("/editprofile");
+    //     }
+    // });
+
+
+    // UserModel.findByIdAndUpdate({_id: req.user.id},
+    //     // {profile: {
+    //     //     profileimg: req.file.filename
+    //     // }},
+    //     {
+ 
+    //     },
+    //     (error, result)=> {
+    //         if(error) {
+    //             console.log(req.user.id)
+    //         } else {
+    //             console.log('completed');
+    //             res.redirect("/editprofile");
+    //         }
+    //     }
+    // )
+    res.redirect("/editprofile");
 });
 
 
 // Update
-router.get('/update/:id', (req, res)=> {
+router.get('/editprofile/:id', (req, res)=> {
 
-    ImageModel.findById(req.params.id, (error, result)=> {
+    UserModel.findById(req.params.id, (error, result)=> {
         if(error) {
             console.log(error);
         } else {
             res.render("editprofile", {data: result});
+            // res.render("header", {data: result});
         }
     });
 });
 
-router.put('/update/:id', (req, res)=> {
-
+router.put('/updateprofilepic/:id', (req, res)=> {
     
-    ImageModel.findByIdAndUpdate({_id: req.params.id},
-        {caption: req.body.caption},
+    UserModel.findByIdAndUpdate({_id: req.params.id},
+        {$set: {
+            img: req.file.filename
+        }},
         (error, result)=> {
             if(error) {
                 res.send(error.message);
@@ -136,6 +162,18 @@ router.put('/update/:id', (req, res)=> {
             }
         }
     );
+    
+    // ImageModel.updateOne({
+    //     _id: theImage._id
+    // }, {$set: {
+    //     postedBy: userName
+    // }}, function(error) {
+    //     if(error) {
+    //         console.log(error);
+    //     } else {
+    //         console.log("\n\nInsert successful");
+    //     }
+    // });
 });
 
 // Delete

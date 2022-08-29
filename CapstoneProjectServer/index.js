@@ -12,6 +12,7 @@ const logger = require("morgan");
     app.use(logger("dev"));
     app.use(express.static("public"));
     app.use(express.static("assets"));
+    app.use(express.static("partials"));
     app.use(methodOverride("_method"));
 
     //template engine

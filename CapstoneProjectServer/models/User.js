@@ -66,6 +66,10 @@ const userSchema = new mongoose.Schema(
             default: Date.now
         },
 
+        img: {
+            type: String,
+            default: 'placeholder.jpg',
+        },
         // posts: [{
         //     type: mongoose.Schema.Types.ObjectId,
         //     ref: 'ImageModel'

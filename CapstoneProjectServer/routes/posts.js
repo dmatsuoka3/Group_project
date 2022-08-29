@@ -53,7 +53,7 @@ var ProfileModel = require("../models/editprofile");
 
 // Read
 router.get('/homePost', (req, res, next)=> {
-    ProfileModel.findById(req.user.id, (err, results)=> {
+    UserModel.findById(req.user.id, (err, results)=> {
         if(err) {
             res.send(err);
         } else {
@@ -61,7 +61,18 @@ router.get('/homePost', (req, res, next)=> {
             req.doggy = results;
             next();
         }
-    }).sort({ timeCreated: 'desc' })
+    })
+});
+
+router.get('/homePost', (req, res, next)=> {
+    UserModel.findById(req.user.id, (err, results)=> {
+        if(err) {
+            res.send(err);
+        } else {
+            req.doggytwo = results;
+            next();
+        }
+    })
 });
 
 router.get('/homePost', isLoggedIn, async (req, res) => {
@@ -76,11 +87,31 @@ router.get('/homePost', isLoggedIn, async (req, res) => {
                     profilePic = results
                 }) */
                  
-            res.render('userspage.ejs', {data: results, profileData: req.doggy});
+            res.render('userspage.ejs', {
+                profileInfoData: req.doggytwo, 
+                profileData: req.doggy, 
+                data: results
+            });
         }
     }).sort({ timeCreated: 'desc' });
     
 });
+
+// router.get('/homePost', (req, res)=> {
+//     UserModel.findById({_id: req.user.id}, (err, results)=> {
+//         if(err) {
+//             console.log(err);
+//         } else {
+
+//             // res.render('home.ejs');
+//                 /* getProfilePic('', function(results) {
+//                     profilePic = results
+//                 }) */
+                 
+//             res.render('partials/header.ejs', {data: results});
+//         }
+//     })
+// });
 
 // Create
 router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
