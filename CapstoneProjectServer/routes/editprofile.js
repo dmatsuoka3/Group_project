@@ -87,7 +87,7 @@ router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
         if(error) {
             res.send(error.message);
         } else {
-            res.redirect("/returnHome");
+            res.redirect("/editprofile");
         }
     });
 
