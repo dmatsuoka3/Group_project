@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 });
 
 function getProfilePic (userid, callback) {
-    ImageModel.findOne({user: userid}, (err, results)=> {
+    ImageModel.find({userid: userid}, (err, results)=> {
         if(err) {
             console.log(err);
         } else {
@@ -26,7 +26,7 @@ function getProfilePic (userid, callback) {
             return callback(results)
             
         }
-    });
+    }).sort({ timeCreated: 'desc' });
 }
 
 
