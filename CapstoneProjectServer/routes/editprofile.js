@@ -51,12 +51,13 @@ router.get('/editprofile', (req, res) => {
     //     res.render('editprofile', {data: results})
     // })
 
-    ImageModel.findOne({user: req.user.id}, (err, results)=> {
+    UserModel.findById(req.user.id, (err, results)=> {
         if(err) {
             console.log(err);
         } else {
             console.log("\n\nfindOne results: " + results + "\n\n")
-            res.render('editprofile', {profileImgData: results});
+            req.doggy = results;
+            // res.render('editprofile.ejs', {profileImgData: results});
         }
     });
 
@@ -81,13 +82,13 @@ router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
 
     console.log("\n\neditprofile page's userId: " + userId);
 
-    const theImage = new ImageModel({
-        img: req.file.filename,
-        // userid: '',
-        user: userId
-    });
+    // const theImage = new ImageModel({
+    //     img: req.file.filename,
+    //     // userid: '',
+    //     user: userId
+    // });
 
-    theImage.save();
+    // theImage.save();
 
     // ImageModel.create({
     //     img: req.file.filename,   
@@ -102,17 +103,18 @@ router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
     //     }
     // });
 
-    // UserModel.create({
-    //     img: req.file.filename,   
-    //     // user: userId,
-    // }, (error, result)=> {
+    UserModel.create({
+        profileImg: req.file.filename,   
+        // user: userId,
+    }, (error, result)=> {
 
-    //     if(error) {
-    //         res.send(error.message);
-    //     } else {
-    //         res.redirect("/editprofile");
-    //     }
-    // });
+        if(error) {
+            res.send(error.message);
+        } else {
+            console.log("\n\neditprofile CREATE result: " + result + "\n");
+            res.redirect("/editprofile");
+        }
+    });
 
 
     // UserModel.findByIdAndUpdate({_id: req.user.id},
@@ -142,7 +144,7 @@ router.get('/editprofile/:id', (req, res)=> {
         if(error) {
             console.log(error);
         } else {
-            res.render("editprofile", {data: result});
+            res.render("editprofile", {data: result, profileImgData: req.doggy});
             // res.render("header", {data: result});
         }
     });
@@ -152,7 +154,7 @@ router.put('/updateprofilepic/:id', (req, res)=> {
     
     UserModel.findByIdAndUpdate({_id: req.params.id},
         {$set: {
-            img: req.file.filename
+            profileImg: req.file.filename
         }},
         (error, result)=> {
             if(error) {

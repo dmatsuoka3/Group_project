@@ -4,7 +4,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const { Schema } = mongoose;
 
 var profileSchema = new mongoose.Schema({
-    img: {
+    profileImg: {
         type: String,
         default: 'placeholder.jpg',
     },
@@ -66,7 +66,7 @@ const userSchema = new mongoose.Schema(
             default: Date.now
         },
 
-        img: {
+        profileImg: {
             type: String,
             default: 'placeholder.jpg',
         },

@@ -4,7 +4,6 @@ const { default: mongoose, Schema, isObjectIdOrHexString } = require("mongoose")
 
 const multer = require("multer");
 
-
 const isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
     return next();
@@ -178,7 +177,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
         //     profileimg: req.file.filename
         // },
         postedBy: userName,
-        profileImg: ''
+        profileImg: req.file.filename
     });
     
     theImage.save(function() {
@@ -204,12 +203,12 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                 console.log(error);
             } else {
                 console.log("\n\neditProfile object: " + result);
-                console.log("\nresult.img : " + result.img);
+                console.log("\nresult.img : " + result.profileImg);
                 
                 ImageModel.findByIdAndUpdate(
                     theImage._id,    
                 {$set: {
-                    profileImg: result.img
+                    profileImg: result.profileImg
                 }}, 
                 { overwrite: true }, 
                 function(error, result) {
