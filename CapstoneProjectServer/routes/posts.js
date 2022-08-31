@@ -36,7 +36,7 @@ const upload = multer({
 });
 
 // BLUEPRINTS
-const ImageModel = require("../models/Post");
+const ImageModel = require("../models/User");
 
 // router.get('/', (req, res)=> {
 //     res.redirect('/home');

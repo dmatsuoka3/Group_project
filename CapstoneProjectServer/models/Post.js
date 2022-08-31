@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/* const mongoose = require('mongoose');
 var mongoose_delete = require('mongoose-delete');
 
 let imageSchema = new mongoose.Schema({
@@ -24,4 +24,4 @@ let imageSchema = new mongoose.Schema({
 
 imageSchema.plugin(mongoose_delete);
 
-module.exports = mongoose.model("imagesPosts", imageSchema);
+module.exports = mongoose.model("imagesPosts", imageSchema); */
