@@ -43,7 +43,7 @@ const ImageModel = require("../models/Post");
 // });
 
 // Read
-router.get('/postHome', isLoggedIn, (req, res) => {
+router.get('/feeds', isLoggedIn, (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
@@ -54,7 +54,7 @@ router.get('/postHome', isLoggedIn, (req, res) => {
                     profilePic = results
                 }) */
                 
-            res.render('userspage.ejs', {data: results, user: req.user});
+            res.render('feeds.ejs', {data: results, user: req.user});
         }
     }).sort({ timeCreated: 'desc' });
     
@@ -78,7 +78,7 @@ router.post('/posts', upload.single('image'), async (req, res) => {
         });
     });
 
-    res.redirect("/postHome");
+    res.redirect("/feeds");
 });
 
 router.get('/new', (req, res)=> {
@@ -110,7 +110,7 @@ router.put('/update/:id', (req, res)=> {
                 res.send(error.message);
             } else {
                 // res.redirect(`/update/${result._id}`);
-                res.redirect("/postHome");
+                res.redirect("/feeds");
             }
         }
     );
@@ -123,7 +123,7 @@ router.get('/home/:id', (req, res)=> {
             console.log("Something went wrong delete from database");
         } else {
             console.log("This post has been deleted", result);
-            res.redirect("/postHome");
+            res.redirect("/feeds");
         }
     });
 });

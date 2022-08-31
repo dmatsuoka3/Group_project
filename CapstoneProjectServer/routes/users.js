@@ -65,7 +65,7 @@ router.post("/signup", (req, res) => {
       return res.render("signup.ejs");
     } else {
       passport.authenticate("local")(req, res, function () {
-        res.redirect("/postHome");
+        res.redirect("/feeds");
       });
     }
   })
@@ -76,25 +76,11 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login",passport.authenticate("local", {
-      successRedirect: "/postHome",
+      successRedirect: "/feeds",
       failureRedirect: "/login",
   }),
   function (req, res) {
     console.log(req)
-    // We don't need anything in our callback function
-    /* req.session.regenerate(function (err) {
-      if (err) next(err)
-  
-      // store user information in session, typically a user id
-      req.session.user = req.body.username
-  
-      // save the session before redirection to ensure page
-      // load does not happen before session is saved
-      req.session.save(function (err) {
-        if (err) return next(err)
-        res.redirect('/')
-      })
-    }) */
   }
 );
 
