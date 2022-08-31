@@ -77,6 +77,10 @@ const userSchema = new mongoose.Schema(
             type: String,
         },
 
+        followers: [],
+
+        followings: [],
+
         created: {
             type: Date,
             required: true,
