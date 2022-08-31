@@ -92,7 +92,6 @@ router.post("/signup", (req, res) => {
     bio: req.body.bio,
     gender: req.body.gender,
     website: req.body.website,
-    profileImg: req.file
   });
   
   UserModel.register(newUser, req.body.password, function (err, user) {

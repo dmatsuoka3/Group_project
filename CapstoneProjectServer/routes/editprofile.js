@@ -2,15 +2,13 @@ const router = require("express").Router();
 const express = require("express");
 const multer = require("multer");
 const ImageModel = require("../models/editprofile");
-const UserModel = require("../models/User");
-
 
 
 // define storage for the images
 const storage = multer.diskStorage({
     // destination for image files
     destination: function (request, file, callback) {
-    callback(null, './assets/uploads');
+    callback(null, './assets/images');
     },
 
     // add back the extension
@@ -41,121 +39,52 @@ const upload = multer({
     }
 });
 
-router.get('/returnHome', (req, res)=> {
-    res.redirect("/homePost");
-});
 
 // Read
 router.get('/editprofile', (req, res) => {
-    // getProfilePic('', function(results) {
-    //     res.render('editprofile', {data: results})
-    // })
-
-    UserModel.findById(req.user.id, (err, results)=> {
-        if(err) {
-            console.log(err);
-        } else {
-            console.log("\n\nfindOne results: " + results + "\n\n")
-            req.doggy = results;
-            // res.render('editprofile.ejs', {profileImgData: results});
-        }
-    });
-
-    // UserModel.findById(req.user.id, (error, result)=> {
-    //     if(error) {
-    //         console.log(error);
-    //     } else {
-    //         console.log("\n\neditprofile READ result: " + result + "\n\n");
-    //         res.render('editprofile', {data: result});
-    //     }
-    // });
+    getProfilePic('', function(results) {
+        res.render('editprofile', {data: results})
+    })
+    
 });
 
 // Create
 router.post('/updateprofilepic', upload.single('image'), async (req, res) => {
-    // console.log(req.file);
+    console.log(req.file);
 
-    // function user() {
-        const userId = req.user.id;
-    //    return userId;
-    // }
-
-    console.log("\n\neditprofile page's userId: " + userId);
-
-    // const theImage = new ImageModel({
-    //     img: req.file.filename,
-    //     // userid: '',
-    //     user: userId
-    // });
-
-    // theImage.save();
-
-    // ImageModel.create({
-    //     img: req.file.filename,   
-    //     user: userId,
-    //     userid: ''
-    // }, (error, result)=> {
-
-    //     if(error) {
-    //         res.send(error.message);
-    //     } else {
-    //         res.redirect("/editprofile");
-    //     }
-    // });
-
-    UserModel.create({
-        profileImg: req.file.filename,   
-        // user: userId,
-    }, (error, result)=> {
-
-        if(error) {
-            res.send(error.message);
-        } else {
-            console.log("\n\neditprofile CREATE result: " + result + "\n");
-            res.redirect("/editprofile");
-        }
+    const theImage = new ImageModel({
+        img: req.file.filename,
+        userid: ''
     });
 
+    theImage.save(function() {
+        theImage.delete(function() {
+            theImage.restore(function() {
+            });
+        });
+    });
 
-    // UserModel.findByIdAndUpdate({_id: req.user.id},
-    //     // {profile: {
-    //     //     profileimg: req.file.filename
-    //     // }},
-    //     {
- 
-    //     },
-    //     (error, result)=> {
-    //         if(error) {
-    //             console.log(req.user.id)
-    //         } else {
-    //             console.log('completed');
-    //             res.redirect("/editprofile");
-    //         }
-    //     }
-    // )
     res.redirect("/editprofile");
 });
 
 
 // Update
-router.get('/editprofile/:id', (req, res)=> {
+router.get('/update/:id', (req, res)=> {
 
-    UserModel.findById(req.params.id, (error, result)=> {
+    ImageModel.findById(req.params.id, (error, result)=> {
         if(error) {
             console.log(error);
         } else {
-            res.render("editprofile", {data: result, profileImgData: req.doggy});
-            // res.render("header", {data: result});
+            res.render("editprofile", {data: result});
         }
     });
 });
 
-router.put('/updateprofilepic/:id', (req, res)=> {
+router.put('/update/:id', (req, res)=> {
+
     
-    UserModel.findByIdAndUpdate({_id: req.params.id},
-        {$set: {
-            profileImg: req.file.filename
-        }},
+    ImageModel.findByIdAndUpdate({_id: req.params.id},
+        {caption: req.body.caption},
         (error, result)=> {
             if(error) {
                 res.send(error.message);
@@ -164,18 +93,6 @@ router.put('/updateprofilepic/:id', (req, res)=> {
             }
         }
     );
-    
-    // ImageModel.updateOne({
-    //     _id: theImage._id
-    // }, {$set: {
-    //     postedBy: userName
-    // }}, function(error) {
-    //     if(error) {
-    //         console.log(error);
-    //     } else {
-    //         console.log("\n\nInsert successful");
-    //     }
-    // });
 });
 
 // Delete
