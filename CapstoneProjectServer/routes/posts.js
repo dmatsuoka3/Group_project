@@ -177,7 +177,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
         //     profileimg: req.file.filename
         // },
         postedBy: userName,
-        profileImg: req.file.filename
+        // profileImg: req.file.filename
     });
     
     theImage.save(function() {
@@ -197,29 +197,30 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
         // });
     });
 
-    ProfileModel.findOne({user: userId}, 
-        function(error, result) {
-            if(error) {
-                console.log(error);
-            } else {
-                console.log("\n\neditProfile object: " + result);
-                console.log("\nresult.img : " + result.profileImg);
+    // ProfileModel.findOne({user: userId}, 
+    //     function(error, result) {
+    //         if(error) {
+    //             console.log(error);
+    //         } else {
+    //             console.log("\n\neditProfile object: " + result);
+    //             console.log("\nresult.img : " + result.profileImg);
                 
-                ImageModel.findByIdAndUpdate(
-                    theImage._id,    
-                {$set: {
-                    profileImg: result.profileImg
-                }}, 
-                { overwrite: true }, 
-                function(error, result) {
-                    if(error) {
-                        console.log(error);
-                    } else {
-                        console.log("\n\nInsert successful: " + result);
-                    }
-                });
-            }
-    });
+    //             ImageModel.findByIdAndUpdate(
+    //                 theImage._id,    
+    //             {$set: {
+    //                 profileImg: result.profileImg
+    //             }}, 
+    //             { overwrite: true }, 
+    //             function(error, result) {
+    //                 if(error) {
+    //                     console.log(error);
+    //                 } else {
+    //                     console.log("\n\nInsert successful: " + result);
+    //                 }
+    //             });
+    //         }
+    // });
+
     // ImageModel.findByIdAndUpdate(
     //     theImage._id,    
     // {$set: {
