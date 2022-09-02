@@ -70,15 +70,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: 'placeholder.jpg',
         },
-        // posts: [{
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: 'ImageModel'
-        // }]
-
-        // post: {
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: "ImageModel"
-        // }
 
         profile: {
             type: profileSchema
