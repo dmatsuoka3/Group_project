@@ -42,14 +42,6 @@ var UserModel = require("../models/User");
 var ImageModel = require("../models/Post");
 var ProfileModel = require("../models/editprofile");
 
-// const User = require("../models/User");
-// const UserModel = require("../models/User");
-
-
-// router.get('/', (req, res)=> {
-//     res.redirect('/home');
-// });
-
 // Read
 router.get('/homePost', (req, res, next)=> {
     UserModel.findById(req.user.id, (err, results)=> {
@@ -96,27 +88,8 @@ router.get('/homePost', isLoggedIn, async (req, res) => {
     
 });
 
-// router.get('/homePost', (req, res)=> {
-//     UserModel.findById({_id: req.user.id}, (err, results)=> {
-//         if(err) {
-//             console.log(err);
-//         } else {
-
-//             // res.render('home.ejs');
-//                 /* getProfilePic('', function(results) {
-//                     profilePic = results
-//                 }) */
-                 
-//             res.render('partials/header.ejs', {data: results});
-//         }
-//     })
-// });
-
 // Create
 router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
-    // const user = new UserModel({
-    //    posts: [theImage]
-    // });
 
     function user() {
         const userId = req.user.id;
@@ -133,51 +106,12 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
               + "object: " + req.user + "\n"
               // + "\n\nUserModel: " + user + "\n"
     );
-
-    // const theUser = new UserModel({
-    //     posts: [{
-    //         caption: req.body.caption,
-    //         img: req.file.filename,
-    //     }]
-    // });
-
-    // theUser.save();
-   
-    // function profilePic() {
-        // ProfileModel.findOne({user: req.user.id}, 
-        //     function(error, result) {
-        //         if(error) {
-        //             console.log(error);
-        //         } else {
-        //             console.log("\n\neditProfile object: " + result);
-        //             console.log("\nresult.img : " + result.img);
-                    
-        //         }
-        // });
-    // }
-
-    // console.log("\n\nResult k: " + k);
-
-    // ProfileModel.findOneAndUpdate(
-    //     {user: req.user.id},    
-    //     {}, 
-    //     { overwrite: true }, function(error, result) {
-    //     if(error) {
-    //         console.log(error);
-    //     } else {
-    //         console.log("\n\nInsert successful: " + result);
-    //     }
-    // });
     
     const theImage = new ImageModel({
         caption: req.body.caption,
         img: req.file.filename,
-        user: req.user.id,   // populate virtual
-        // profile: {
-        //     profileimg: req.file.filename
-        // },
+        user: req.user.id,   
         postedBy: userName,
-        // profileImg: req.file.filename
     });
     
     theImage.save(function() {
@@ -189,12 +123,6 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
             });
         });
 
-        // theImage.restore(function() {
-        //     // mongodb: {deleted: true,}
-        //     theImage.delete(function() {
-        //     // mongodb: {deleted: false,}
-        //     });
-        // });
     });
 
     console.log("\n\ntheImage result: " + theImage);
@@ -221,9 +149,7 @@ router.get('/update/:id', (req, res)=> {
 
 router.put('/update/:id', (req, res)=> {
 
-    // let updateId = req.params.id;
-    // let updateCaption = req.body.caption;
-    
+   
     ImageModel.findByIdAndUpdate({_id: req.params.id},
         {caption: req.body.caption},
         (error, result)=> {
@@ -251,6 +177,7 @@ router.get('/home/:id', (req, res)=> {
             console.log(error);
         } else {
             console.log("\n\nDelete's ImageModel result: " + resultPost + "\n");
+
             const theImageUser = resultPost.user;
             
             console.log("\n\ntheImageUser: " + theImageUser);
@@ -264,6 +191,7 @@ router.get('/home/:id', (req, res)=> {
                     const theUserId = userResult._id;
 
                     if(theUserId.equals(theImageUser)) {
+
                         ImageModel.deleteById(req.params.id, (error, result)=> {
                             if(error) {
                                 console.log("Something went wrong delete from database");
@@ -273,8 +201,10 @@ router.get('/home/:id', (req, res)=> {
                                 res.redirect("/homePost");
                             }
                         });
+
                     } else {
-                        console.log("\n\nYou don't have permision to delete this user's post.\n\n");
+                        console.log("\n\nYou don't have permission to delete this user's post.\n\n");
+
                         res.redirect("/homePost");
                     }
                 }
