@@ -3,29 +3,42 @@ const passportLocalMongoose = require('passport-local-mongoose');
 
 const { Schema } = mongoose;
 
-var profileSchema = new mongoose.Schema({
-    profileImg: {
+const profileSchema = new mongoose.Schema({
+    profileimg: {
         type: String,
-        default: 'placeholder.jpg',
+        default: 'https://cdn.landesa.org/wp-content/uploads/default-user-image.png',
     },
-
     timeCreated: {
         type: Date,
         default: () => Date.now(),
     }
 });
 
+
+
+const imageSchema = new mongoose.Schema({
+    caption: {
+        type: String,
+    },
+    timeCreated: {
+        type: Date,
+        default: () => Date.now(),
+    },
+    snippet: {
+        type: String,
+    },
+    img: {
+        type: String,
+        default: 'placeholder.jpg',
+    },
+    userid: {
+        type: String,
+        default: 0
+    }
+});
+
 const userSchema = new mongoose.Schema(
     {
-    //    _id: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'ImageModel'
-    // },
-
-    // post: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'ImageModel'
-    // },
         name: {
             type: String,
             required: true
