@@ -197,174 +197,10 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
         // });
     });
 
-    // ProfileModel.findOne({user: userId}, 
-    //     function(error, result) {
-    //         if(error) {
-    //             console.log(error);
-    //         } else {
-    //             console.log("\n\neditProfile object: " + result);
-    //             console.log("\nresult.img : " + result.profileImg);
-                
-    //             ImageModel.findByIdAndUpdate(
-    //                 theImage._id,    
-    //             {$set: {
-    //                 profileImg: result.profileImg
-    //             }}, 
-    //             { overwrite: true }, 
-    //             function(error, result) {
-    //                 if(error) {
-    //                     console.log(error);
-    //                 } else {
-    //                     console.log("\n\nInsert successful: " + result);
-    //                 }
-    //             });
-    //         }
-    // });
-
-    // ImageModel.findByIdAndUpdate(
-    //     theImage._id,    
-    // {$set: {
-    //     postedBy: userName
-    // }}, { overwrite: true }, function(error, result) {
-    //     if(error) {
-    //         console.log(error);
-    //     } else {
-    //         console.log("\n\nInsert successful: " + result);
-    //     }
-    // });
- 
-    // UserModel.updateOne({
-    //     _id: userId
-    // }, {$set: {
-    //     post: theImage._id
-    // }}, function(error) {
-    //     if(error) {
-    //         console.log(error);
-    //     } else {
-    //         console.log("\n\nInsert successful");
-    //     }
-    // });
-
-
     console.log("\n\ntheImage result: " + theImage);
-
-    // ImageModel.findOne({_id: theImage._id})
-    // .populate("postedBy")
-    // .exec((err, posts) => {
-    //  console.log("\n\nPopulated User " + posts + "\n")
-    // });
-    // UserModel.aggregate([
-    //     {$lookup: {
-    //         from: 'imagesPosts', 
-    //         localField: '_id',
-    //         foreignField: 'user',
-    //         as: 'posts'
-    //     }}
-    // ]).exec((err, result)=> {
-    //     if(err) {
-    //         console.log("error", err);
-    //     } else {
-    //         //res.json(result);
-    //         console.log("\n\nResult: " + result + "\n\n");
-    //     }
-    // })
-
-    // ImageModel.updateOne({
-    //     _id: theImage._id
-    // }, {$set: {
-    //     postedBy: userName
-    // }}, function(error) {
-    //     if(error) {
-    //         console.log(error);
-    //     } else {
-    //         console.log("\n\nInsert successful");
-    //     }
-    // });
-    // Here's the code I'm working on to populate the posts from UserModel
-    // But I'm still getting undefined on console log
-    // function getUserWithPosts(username) {
-    //     return UserModel.findOne({username: username})
-    //         .populate('posts').exec((err, posts) => {
-    //             console.log("\n\nPopulated User " + posts + "\n");
-    //         })
-    // }
-
-    // getUserWithPosts(userName);
-
-    // ImageModel.findById(theImage._id).populate('postedBy')
-    //     .exec(function (err, postedBy) {
-    //         console.log(`\n\nPopulated result: ${postedBy}\n`);
-    //     })
-    // this is another code I was working on to populate by using virtual
-    // but I'm getting error for not having image schema register to the Image model
-    // try {
-    //     const result = await UserModel.findById(userId).populate('posts').exec();
-    //     console.log("\n\nPopulate result: " + result + "\n\n");
-
-    //     const userObjectId = mongoose.Types.ObjectId(userId);
-
-    //     UserModel.update({_id: userObjectId},
-    //         result
-    //     );
-
-    // } catch (err) {
-    //     console.log(err);
-    //     res.status(500).send("Something went wrong, check logs");
-    // }
-
-    // console.log("\n\nimage id: " + theImage._id + "\n");
-
-
-    // try {
-    //     const result = await ImageModel.findById(theImage._id).populate("postedBy")
-    //     .exec();
-    //     console.log("\n\nPopulate result: " + result + "\n\n");
-
-    //     // var ObjectId = require('mongodb').ObjectID;
-
-    //     // ImageModel.replaceOne({_id: ObjectId(theImage._id)},
-    //     //     result
-    //     // );
-    // } catch (err) {
-    //     console.log(err);
-    //     res.status(500).send("Something went wrong, check logs");
-    // }
-
-    // console.log("\nPosted by: username: " + theImage.postedBy.username + "\n\n");
 
     res.redirect("/homePost");
 });
-
-// router.get('/homePost', (res, req)=> {
-   
-//     const userId = req.user.id;
-
-//     try {
-//         // const result = await UserModel.findById(userId).populate('posts').exec();
-//         // console.log("\n\nPopulate result: " + result + "\n\n");
-
-//         // const userObjectId = mongoose.Types.ObjectId(userId);
-
-//         // UserModel.update({_id: userObjectId},
-//         //     result
-//         // );
-
-//         UserModel.findById(userId).populate('posts')
-//             .exec(function(error, result) {
-//                 if(error) {
-//                     console.log(error)
-//                 } else {
-//                     console.log("\n\nPopulated result: " + result + "\n\n")
-//                     res.json(result);
-//                 }
-//         });
-
-
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send("Something went wrong, check logs");
-//     }
-// });
 
 router.get('/new', (req, res)=> {
     res.render("newPost");
@@ -403,14 +239,75 @@ router.put('/update/:id', (req, res)=> {
 
 // Delete
 router.get('/home/:id', (req, res)=> {
-    ImageModel.deleteById(req.params.id, (error, result)=> {
+    
+    const userId = req.user.id;
+    const imageId = req.params.id;
+
+    console.log("\n\nUser's id: " + userId);
+    console.log("\n\nPost's id: " + imageId);
+
+    ImageModel.findById(imageId, (error, resultPost)=> {
         if(error) {
-            console.log("Something went wrong delete from database");
+            console.log(error);
         } else {
-            console.log("This post has been deleted", result);
-            res.redirect("/homePost");
+            console.log("\n\nDelete's ImageModel result: " + resultPost + "\n");
+            const theImageUser = resultPost.user;
+            
+            console.log("\n\ntheImageUser: " + theImageUser);
+
+            UserModel.findById(userId, (error, userResult)=> {
+                if(error) {
+                    console.log(error);
+                } else {
+                    console.log("\n\nUserModel's result: " + userResult);
+                    
+                    const theUserId = userResult._id;
+
+                    if(theUserId.equals(theImageUser)) {
+                        ImageModel.deleteById(req.params.id, (error, result)=> {
+                            if(error) {
+                                console.log("Something went wrong delete from database");
+                            } else {
+                                console.log("\n\nThis post has been deleted by " + req.user.name + ".\n" + 
+                                                result);
+                                res.redirect("/homePost");
+                            }
+                        });
+                    } else {
+                        console.log("\n\nYou don't have permision to delete this user's post.\n\n");
+                        res.redirect("/homePost");
+                    }
+                }
+            });
+
+            // if(userId.equals(theImageUser)) {
+            //     ImageModel.deleteById(req.params.id, (error, result)=> {
+            //         if(error) {
+            //             console.log("Something went wrong delete from database");
+            //         } else {
+            //             console.log("\n\nThis post has been deleted by " + req.user.name + ".\n" + 
+            //                             result);
+            //             res.redirect("/homePost");
+            //         }
+            //     });
+            // } else {
+            //     console.log("\n\nYou don't have permision to delete this user's post.\n\n");
+            //     res.redirect("/homePost");
+            // }
+        
         }
     });
+
+    // const theImageUser = theImage.user;
+
+    // ImageModel.deleteById(req.params.id, (error, result)=> {
+    //     if(error) {
+    //         console.log("Something went wrong delete from database");
+    //     } else {
+    //         console.log("This post has been deleted", result);
+    //         res.redirect("/homePost");
+    //     }
+    // });
 });
 
 module.exports = router;
