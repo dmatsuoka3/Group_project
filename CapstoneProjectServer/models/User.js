@@ -78,15 +78,11 @@ const userSchema = new mongoose.Schema(
             required: true,
             default: Date.now
         },
+        
+        profile: profileSchema,
 
-        profileImg: {
-            type: String,
-            default: 'placeholder.jpg',
-        },
-
-        profile: {
-            type: profileSchema
-        }
+        userPost: imageSchema
+        
     },
 
     //{
