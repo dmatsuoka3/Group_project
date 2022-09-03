@@ -79,10 +79,6 @@ router.get("/signup", (req, res) => {
 
 router.post("/signup", (req, res) => {
 
-  // const theImage = new ImageModel({
-  //       _id: mongoose.Types.ObjectId(),
-  // });
-
   const newUser = new UserModel({ 
     username: req.body.username, 
     email: req.body.email,
@@ -92,6 +88,17 @@ router.post("/signup", (req, res) => {
     bio: req.body.bio,
     gender: req.body.gender,
     website: req.body.website,
+
+    profile: {
+      profileimg: ''
+    },
+
+    userPost: { 
+      caption: "",
+      img: "",
+      timeCreated: ""
+    }
+    
   });
   
   UserModel.register(newUser, req.body.password, function (err, user) {

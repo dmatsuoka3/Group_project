@@ -204,7 +204,6 @@ router.get('/home/:id', (req, res)=> {
 
                     } else {
                         console.log("\n\nYou don't have permission to delete this user's post.\n\n");
-
                         res.redirect("/homePost");
                     }
                 }

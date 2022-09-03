@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
-const { Schema } = mongoose;
-
 const profileSchema = new mongoose.Schema({
     profileimg: {
         type: String,
@@ -85,34 +83,9 @@ const userSchema = new mongoose.Schema(
         
     },
 
-    //{
-    //     timestamps: true,
-    // // defined userSchema.virtual
-    //     toJSON: {
-    //         virtuals: true
-    //     }
-    // },
-
-    //     toObject: { 
-    //         virtuals: true 
-    //     }
-    // },
-
 );
     
 
 userSchema.plugin(passportLocalMongoose);
-// userSchema.plugin(passportLocalMongoose, {
-//     findByUsername: (model, queryParameters) => model.findOne(queryParameters).populate('role', ['code']),
-// });
 
-// userSchema.virtual("posts", {
-//     ref: "ImageModel",
-//     foreignField: 'user',
-//     localField: '_id'
-// });
-
-// userSchema.set('toObject', { virtuals: true });
-// userSchema.set('toJSON', { virtuals: true });
-
-module.exports = mongoose.model('UserModel', userSchema);
+module.exports = mongoose.model('users', userSchema);
