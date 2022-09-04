@@ -10,6 +10,7 @@ const LocalStrategy = require("passport-local");
 
 // BLUEPRINTS
 const UserModel = require("../models/User");
+const Post = require("../models/Post")
 
 router.use(
   require("express-session")({
@@ -55,13 +56,11 @@ router.post("/signup", (req, res) => {
     bio: req.body.bio,
     gender: req.body.gender,
     website: req.body.website,
-    profile: {
-      profileimg: ''
-    },
-    userPost: { 
-      caption: "",
-      img: ""
-    }
+    profilePicture: req.body.profilePicture,
+    followers: req.body.followers,
+    followings: req.body.followings,
+    likes: req.body.likes,
+
   });
   UserModel.register(newUser, req.body.password, function (err, user) {
     if (err) {
@@ -69,7 +68,8 @@ router.post("/signup", (req, res) => {
       return res.render("signup.ejs");
     } else {
       passport.authenticate("local")(req, res, function () {
-        res.redirect("/postHome");
+         res.redirect("/");
+      
       });
     }
   })
