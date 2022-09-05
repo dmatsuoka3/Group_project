@@ -3,10 +3,11 @@ var mongoose_delete = require('mongoose-delete');
 
 let imageSchema = new mongoose.Schema({
 
-    userid: {
+    userId: {
         type: String,
         default: 0
     },
+    
     caption: {
         type: String,
     },
