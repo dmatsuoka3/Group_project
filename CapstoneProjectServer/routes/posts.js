@@ -97,11 +97,11 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
               // + "\n\nUserModel: " + user + "\n"
     );
     
-  if(!req.files) {
-    // res.status(err.statusCode || 500);
-    res.send("File was not found.");
-    return;
-  }
+//   if(!req.files) {
+//     // res.status(err.statusCode || 500);
+//     res.send("File was not found.");
+//     return;
+//   }
 
     const theImage = new ImageModel({
         caption: req.body.caption,

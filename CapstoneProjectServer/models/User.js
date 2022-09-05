@@ -12,8 +12,6 @@ const profileSchema = new mongoose.Schema({
     }
 });
 
-
-
 const imageSchema = new mongoose.Schema({
     caption: {
         type: String,
