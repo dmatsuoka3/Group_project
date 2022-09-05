@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
   // destination for image files
   destination: function (request, file, callback) {
   callback(null, './assets/profilePicture');
-  },
+},
 
   // add back the extension
   filename: function (request, file, callback) {
