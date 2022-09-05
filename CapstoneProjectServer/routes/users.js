@@ -111,7 +111,7 @@ router.get("/logout", (req, res, next) => {
 // Read
 router.get('/editprofile', isLoggedIn, (req, res) => {
   console.log(req.user.username)
-  res.render('editP.ejs', { user: req.user })
+  res.render('editProfile.ejs', { user: req.user })
 });
 
 // Create
