@@ -73,11 +73,6 @@ router.get('/homePost', isLoggedIn, async (req, res) => {
             console.log(err);
         } else {
 
-            // res.render('home.ejs');
-                /* getProfilePic('', function(results) {
-                    profilePic = results
-                }) */
-                 
             res.render('userspage.ejs', {
                 profileInfoData: req.doggytwo, 
                 profileData: req.doggy, 
@@ -210,21 +205,6 @@ router.get('/home/:id', (req, res)=> {
                     }
                 }
             });
-
-            // if(userId.equals(theImageUser)) {
-            //     ImageModel.deleteById(req.params.id, (error, result)=> {
-            //         if(error) {
-            //             console.log("Something went wrong delete from database");
-            //         } else {
-            //             console.log("\n\nThis post has been deleted by " + req.user.name + ".\n" + 
-            //                             result);
-            //             res.redirect("/homePost");
-            //         }
-            //     });
-            // } else {
-            //     console.log("\n\nYou don't have permision to delete this user's post.\n\n");
-            //     res.redirect("/homePost");
-            // }
         
         }
     });
