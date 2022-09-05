@@ -5,7 +5,6 @@ const LocalStrategy = require("passport-local");
 const multer = require("multer");
 const UserModel = require("../models/User");
 
-
 const storage = multer.diskStorage({
   // destination for image files
   destination: function (request, file, callback) {
@@ -26,14 +25,13 @@ let upload = multer({
 }).single("image");
 
 
-
-router.use(
-  require("express-session")({
+router.use(require("express-session")({
     secret: "Blah blah blah",
     resave: false,
     saveUninitialized: false,
   })
 );
+
 router.use(passport.initialize());
 router.use(passport.session());
 passport.use(new LocalStrategy(UserModel.authenticate()));
@@ -125,7 +123,7 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
       phone: req.body.phone,
       bio: req.body.bio,
       gender: req.body.gender,
-      website: req.body.website,
+      website: req.body.website, 
       profilePicture: req.file.filename,
     },
     (error, result) => {
