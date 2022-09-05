@@ -43,7 +43,7 @@ var ImageModel = require("../models/Post");
 var ProfileModel = require("../models/editprofile");
 
 // Read
-router.get('/homePost', (req, res, next)=> {
+router.get('/feeds', (req, res, next)=> {
     UserModel.findById(req.user.id, (err, results)=> {
         if(err) {
             res.send(err);
@@ -55,7 +55,7 @@ router.get('/homePost', (req, res, next)=> {
     })
 });
 
-router.get('/homePost', (req, res, next)=> {
+router.get('/feeds', (req, res, next)=> {
     UserModel.findById(req.user.id, (err, results)=> {
         if(err) {
             res.send(err);
@@ -66,14 +66,14 @@ router.get('/homePost', (req, res, next)=> {
     })
 });
 
-router.get('/homePost', isLoggedIn, async (req, res) => {
+router.get('/feeds', isLoggedIn, async (req, res) => {
 
         ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
             console.log(err);
         } else {
 
-            res.render('userspage.ejs', {
+            res.render('feeds.ejs', {
                 // profileInfoData: req.doggytwo, 
                 profileData: req.doggy, 
                 data: results
@@ -87,7 +87,6 @@ router.get('/homePost', isLoggedIn, async (req, res) => {
 router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 
     const userId = req.user.id;
-
     const userName = req.user.username;
 
     console.log("\nHome page\nUsername: " + userName
@@ -123,7 +122,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 
     console.log("\n\ntheImage result: " + theImage);
 
-    res.redirect("/homePost");
+    res.redirect("/feeds");
 });
 
 router.get('/new', (req, res)=> {
@@ -152,7 +151,7 @@ router.put('/update/:id', (req, res)=> {
                 res.send(error.message);
             } else {
                 // res.redirect(`/update/${result._id}`);
-                res.redirect("/homePost");
+                res.redirect("/feeds");
             }
         }
    );
@@ -199,7 +198,7 @@ router.get('/home/:id', (req, res)=> {
 
                     } else {
                         console.log("\n\nYou don't have permission to delete this user's post.\n\n");
-                        res.redirect("/homePost");
+                        res.redirect("/feeds");
                     }
                 }
             });

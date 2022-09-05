@@ -69,7 +69,7 @@ router.get("/userspage", (req, res) => {
   console.log("\nUsername: " + req.user.username +
               "\nSession ID: " + req.sessionID + "\n");
   // res.redirect("/userpage");
-  res.redirect("/homePost");
+  res.redirect("/feeds");
 });
 
 

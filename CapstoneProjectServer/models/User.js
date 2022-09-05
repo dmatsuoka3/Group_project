@@ -12,27 +12,6 @@ const profileSchema = new mongoose.Schema({
     }
 });
 
-const imageSchema = new mongoose.Schema({
-    caption: {
-        type: String,
-    },
-    timeCreated: {
-        type: Date,
-        default: () => Date.now(),
-    },
-    snippet: {
-        type: String,
-    },
-    img: {
-        type: String,
-        default: 'placeholder.jpg',
-    },
-    userid: {
-        type: String,
-        default: 0
-    }
-});
-
 const userSchema = new mongoose.Schema(
     {
         name: {
@@ -76,9 +55,6 @@ const userSchema = new mongoose.Schema(
         },
         
         profile: profileSchema,
-
-        userPost: imageSchema
-        
     },
 
 );
