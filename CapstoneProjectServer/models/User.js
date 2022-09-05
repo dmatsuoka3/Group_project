@@ -6,20 +6,32 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true,
-            /* min: 3,
-            max: 20,
-            unique: true */
+         
+        },
+        name: {
+            type: String,
+            required: true,
         },
         email: {
             type: String,
             required: true,
-            /* max: 50,
-            unique: true */
+          
         }, 
+        phone: {
+            type: String,
+        },
+        gender: {
+            type: String,
+        },
+        bio: {
+            type: String,
+        },
+        website: {
+            type: String,
+        },
         password: {
             type: String,
-           /*  required: true, */
-            /* min: 6 */
+        
         },
         profilePicture: {
             type: String,

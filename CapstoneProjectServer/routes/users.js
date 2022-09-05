@@ -1,22 +1,37 @@
 const router = require("express").Router();
-const express = require("express");
-const app = express();
-
-
-
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
-
-// BLUEPRINTS
+const multer = require("multer");
 const UserModel = require("../models/User");
-const Post = require("../models/Post")
+
+
+const storage = multer.diskStorage({
+  // destination for image files
+  destination: function (request, file, callback) {
+  callback(null, './assets/profilePicture');
+  },
+
+  // add back the extension
+  filename: function (request, file, callback) {
+  callback(null, Date.now() + file.originalname);
+  },
+});
+
+let upload = multer({
+  storage: storage,
+  limits: {
+    fieldSize: 1024 * 1024 * 3
+  }
+}).single("image");
+
+
 
 router.use(
   require("express-session")({
-    secret: "Blah blah blah", 
-    resave: false, 
-    saveUninitialized: false, 
+    secret: "Blah blah blah",
+    resave: false,
+    saveUninitialized: false,
   })
 );
 router.use(passport.initialize());
@@ -45,22 +60,19 @@ router.get("/signup", (req, res) => {
   res.render("signup.ejs");
 });
 
-router.post("/signup", (req, res) => {
+router.post("/signup", upload, (req, res) => {
   console.log(req)
-  const newUser = new UserModel({ 
-    username: req.body.username, 
+  const newUser = new UserModel({
+    username: req.body.username,
     email: req.body.email,
     name: req.body.name,
-    email: req.body.email,
-    phone: req.body.phone,
-    bio: req.body.bio,
-    gender: req.body.gender,
-    website: req.body.website,
-    profilePicture: req.body.profilePicture,
     followers: req.body.followers,
     followings: req.body.followings,
     likes: req.body.likes,
-
+    phone: req.body.phone,
+    bio: req.body.bio,
+    gender: req.body.gender,
+    website: req.body.website
   });
   UserModel.register(newUser, req.body.password, function (err, user) {
     if (err) {
@@ -68,8 +80,8 @@ router.post("/signup", (req, res) => {
       return res.render("signup.ejs");
     } else {
       passport.authenticate("local")(req, res, function () {
-         res.redirect("/");
-      
+        res.render("feeds.ejs", {user: user});
+
       });
     }
   })
@@ -79,10 +91,10 @@ router.get("/login", (req, res) => {
   res.render("login.ejs");
 });
 
-router.post("/login",passport.authenticate("local", {
-      successRedirect: "/postHome",
-      failureRedirect: "/login",
-  }),
+router.post("/login", passport.authenticate("local", {
+  successRedirect: "/feeds",
+  failureRedirect: "/login",
+}),
   function (req, res) {
     console.log(req)
 
@@ -98,7 +110,47 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
+// Read
+router.get('/editprofile', isLoggedIn, (req, res) => {
+  console.log(req.user.username)
+  res.render('editP.ejs', { user: req.user })
+});
 
+// Create
+
+
+router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
+  UserModel.findByIdAndUpdate({ _id: req.user._id },
+    {
+      phone: req.body.phone,
+      bio: req.body.bio,
+      gender: req.body.gender,
+      website: req.body.website,
+      profilePicture: req.file.filename,
+    },
+    (error, result) => {
+      if (error) {
+        console.log(req.user.id)
+      } else {
+        console.log('completed')
+      }
+    }
+  );
+  res.redirect("/feeds");
+});
+
+
+// Delete
+router.get('/deleteprofile', (req, res) => {
+  UserModel.deleteOne({ _id: req.user._id }, (error, result) => {
+    if (error) {
+      console.log("Something went wrong delete from database");
+    } else {
+      console.log("This image has been deleted", result);
+      res.redirect("/login");
+    }
+  });
+});
 
 
 

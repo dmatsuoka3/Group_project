@@ -9,7 +9,7 @@
             <div class="left">
                 <a href="#" class="profile">
                     <div class="profile-photo">
-                        <img src="/images/<%= user.profile.profileimg %>" alt="">
+                        <img src="/images/<%= user.profilePicture%>" alt="">
                     </div>
                     <div class="handle">
                         <h4><%= user.name %></h4>
@@ -155,7 +155,7 @@
                 <!----------------------------------END OF STORIES---------------------------------------------->
                 <form action="/new" class="create-post">
                     <div class="profile-photo">
-                        <img src="/images/<%= user.profile.profileimg %>" alt="">
+                        <img src="/images/<%= user.profilePicture% %>" alt="">
                     </div>
                     <%
                     const [fname, lname] = user.name.split(' ') %>

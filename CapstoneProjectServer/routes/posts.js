@@ -36,14 +36,14 @@ const upload = multer({
 });
 
 // BLUEPRINTS
-const ImageModel = require("../models/User");
+const ImageModel = require("../models/Post");
 
 // router.get('/', (req, res)=> {
 //     res.redirect('/home');
 // });
 
 // Read
-router.get('/postHome', isLoggedIn, (req, res) => {
+router.get('/feeds', isLoggedIn, (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
@@ -54,7 +54,7 @@ router.get('/postHome', isLoggedIn, (req, res) => {
                     profilePic = results
                 }) */
                 
-            res.render('userspage.ejs', {data: results, user: req.user});
+            res.render('feeds.ejs', {data: results, user: req.user});
         }
     }).sort({ timeCreated: 'desc' });
     
