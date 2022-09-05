@@ -37,6 +37,7 @@ const upload = multer({
 
 // BLUEPRINTS
 const ImageModel = require("../models/Post");
+const UserModel = require("../models/User");
 
 // router.get('/', (req, res)=> {
 //     res.redirect('/home');
@@ -64,21 +65,35 @@ router.get('/feeds', isLoggedIn, (req, res) => {
 router.post('/posts', upload.single('image'), async (req, res) => {
     console.log(req.file);
 
+    const userId = req.user.id;
+    const userName = req.user.username;
+    
+  // if(!req.files) {
+  //   res.send("File was not found.");
+  //   return;
+  // }
+
     const theImage = new ImageModel({
         caption: req.body.caption,
         img: req.file.filename,
+        user: userId,   
+        postedBy: userName,
     });
-
+    
     theImage.save(function() {
+        
         theImage.delete(function() {
             // mongodb: {deleted: true,}
             theImage.restore(function() {
-                // mongodb: {deleted: false,}
+            // mongodb: {deleted: false,}
             });
         });
+
     });
 
-    res.redirect("/postHome");
+    console.log("\n\ntheImage result: " + theImage);
+
+    res.redirect("/feeds");
 });
 
 router.get('/new', (req, res)=> {
@@ -110,7 +125,7 @@ router.put('/update/:id', (req, res)=> {
                 res.send(error.message);
             } else {
                 // res.redirect(`/update/${result._id}`);
-                res.redirect("/postHome");
+                res.redirect("/feeds");
             }
         }
     );
@@ -123,7 +138,7 @@ router.get('/home/:id', (req, res)=> {
             console.log("Something went wrong delete from database");
         } else {
             console.log("This post has been deleted", result);
-            res.redirect("/postHome");
+            res.redirect("/feeds");
         }
     });
 });
