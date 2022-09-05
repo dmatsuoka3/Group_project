@@ -70,8 +70,8 @@ router.get('/feeds', isLoggedIn, (req, res) => {
         if(err) {
             console.log(err);
         } else {
-                
-            res.render('feeds.ejs', {data: results, user: req.singleUser, allUsers: req.users});
+            res.render('feeds.ejs', {data: results, user: req.singleUser, allUsers: req.allUsers});
+            // console.log("\n\nallUsers result: " + allUsers);
         }
     }).sort({ timeCreated: 'desc' });
     

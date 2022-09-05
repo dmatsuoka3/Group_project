@@ -282,36 +282,9 @@
                         </div>
                     </div>
                     <!----- MESSAGE ----->
-                    <div class="message">
-                        <div class="profile-photo">
-                            <img src="./images/profile-5.jpg">
-                        </div>
-                        <div class="message-body">
-                            <h5>Daniella Jackson</h5>
-                            <p class="text-bold">2 new messages</p>
-                        </div>
-                    </div>
+                   
                     <!----- MESSAGE ----->
-                    <div class="message">
-                        <div class="profile-photo">
-                            <img src="./images/profile-6.jpg">
-                        </div>
-                        <div class="message-body">
-                            <h5>Juliet Makarey</h5>
-                            <p class="text-muted">lol u right</p>
-                        </div>
-                    </div>
-                    <!----- MESSAGE ----->
-                    <div class="message">
-                        <div class="profile-photo">
-                            <img src="./images/profile-7.jpg">
-                            <div class="active"></div>
-                        </div>
-                        <div class="message-body">
-                            <h5>Chantel Msiza</h5>
-                            <p class="text-bold">Birthday Tomorrow!</p>
-                        </div>
-                    </div>
+                    
                 </div>
                 <!------------ END OF MESSAGES -------------->
 
@@ -320,6 +293,25 @@
                 <div class="friend-requests">
                     <h4>Requests</h4>
                     <!----- REQUEST 1----->
+                    <% allUsers.forEach(element => { %>
+                        <div class="request">
+                            <div class="info">
+                                <div class="profile-photo">
+                                    <img src="./images/profile-8.jpg">
+                                </div>
+                                <div>
+                                    <h5><%= element.name %> </h5>
+                                    <p class="text-muted">8 mutual friends</p>
+                                </div>
+                            </div>
+                            <div class="action">
+                                <button class="btn btn-primary">Following</button>
+                                <!-- <button class="btn">Decline</button> -->
+                            </div>
+                        </div>
+                    <% }) %> 
+
+
                     <div class="request">
                         <div class="info">
                             <div class="profile-photo">
@@ -336,37 +328,7 @@
                         </div>
                     </div>
                     <!----- REQUEST 2----->
-                    <div class="request">
-                        <div class="info">
-                            <div class="profile-photo">
-                                <img src="./images/profile-9.jpg">
-                            </div>
-                            <div>
-                                <h5>Jackline Mensah</h5>
-                                <p class="text-muted">2 mutual friends</p>
-                            </div>
-                        </div>
-                        <div class="action">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn">Decline</button>
-                        </div>
-                    </div>
-                    <!----- REQUEST 3----->
-                    <div class="request">
-                        <div class="info">
-                            <div class="profile-photo">
-                                <img src="./images/profile-10.jpg">
-                            </div>
-                            <div>
-                                <h5>Jennifer Lawrence</h5>
-                                <p class="text-muted">19 mutual friends</p>
-                            </div>
-                        </div>
-                        <div class="action">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn">Decline</button>
-                        </div>
-                    </div>
+                   
                 </div>
             </div>
         </div>
