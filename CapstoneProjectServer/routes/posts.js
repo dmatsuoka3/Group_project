@@ -91,11 +91,6 @@ router.get('/homePost', isLoggedIn, async (req, res) => {
 // Create
 router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 
-    function user() {
-        const userId = req.user.id;
-        return userId;
-    }
-
     const userId = req.user.id;
 
     const userName = req.user.username;
@@ -107,6 +102,14 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
               // + "\n\nUserModel: " + user + "\n"
     );
     
+  if(!req.files) {
+    res.status(err.statusCode || 500);
+    // res.send("File was not found.");
+    // return;
+  }
+
+  
+
     const theImage = new ImageModel({
         caption: req.body.caption,
         img: req.file.filename,
@@ -149,8 +152,7 @@ router.get('/update/:id', (req, res)=> {
 
 router.put('/update/:id', (req, res)=> {
 
-   
-    ImageModel.findByIdAndUpdate({_id: req.params.id},
+  ImageModel.findByIdAndUpdate({_id: req.params.id},
         {caption: req.body.caption},
         (error, result)=> {
             if(error) {
@@ -160,7 +162,7 @@ router.put('/update/:id', (req, res)=> {
                 res.redirect("/homePost");
             }
         }
-    );
+   );
 });
 
 // Delete
