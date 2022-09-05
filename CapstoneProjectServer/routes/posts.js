@@ -18,7 +18,7 @@ const isLoggedIn = (req, res, next) => {
 const storage = multer.diskStorage({
     // destination for files
     destination: function (request, file, callback) {
-    callback(null, './assets/images');
+    callback(null, './assets/userPostImages');
     },
 
     // add back the extension
@@ -39,18 +39,27 @@ const upload = multer({
 const ImageModel = require("../models/Post");
 const UserModel = require("../models/User");
 
-// router.get('/', (req, res)=> {
-//     res.redirect('/home');
-// });
-
 // Read
-router.get('/feeds', (req, res)=> {
+router.get('/feeds', (req, res, next)=> {
 
     UserModel.findById(req.user.id, (error, result)=> {
         if(error) {
             console.log(error);
         } else {
-            req.doggy = result;
+            req.singleUser = result;
+            next();
+        }
+    });
+});
+
+router.get('/feeds', (req, res, next)=> {
+
+    UserModel.find({}, (error, users)=> {
+        if(error) {
+            console.log(error);
+        } else {
+            req.allUsers = users;
+            next();
         }
     });
 });
@@ -61,12 +70,8 @@ router.get('/feeds', isLoggedIn, (req, res) => {
         if(err) {
             console.log(err);
         } else {
-            // res.render('home.ejs');
-                /* getProfilePic('', function(results) {
-                    profilePic = results
-                }) */
                 
-            res.render('feeds.ejs', {data: results, user: req.doggy});
+            res.render('feeds.ejs', {data: results, user: req.singleUser, allUsers: req.users});
         }
     }).sort({ timeCreated: 'desc' });
     
@@ -78,31 +83,54 @@ router.post('/posts', upload.single('image'), async (req, res) => {
 
     const userId = req.user.id;
     const userName = req.user.username;
-    
-  // if(!req.files) {
-  //   res.send("File was not found.");
-  //   return;
-  // }
 
-    const theImage = new ImageModel({
-        caption: req.body.caption,
-        img: req.file.filename,
-        user: userId,   
-        postedBy: userName,
-    });
-    
-    theImage.save(function() {
-        
-        theImage.delete(function() {
-            // mongodb: {deleted: true,}
-            theImage.restore(function() {
-            // mongodb: {deleted: false,}
+    UserModel.findById(req.user.id, (error, result)=> {
+        if(error) {
+            console.log(error);
+        } else {
+            const profPic = result.profilePicture;
+
+            const theImage = new ImageModel({
+                caption: req.body.caption,
+                img: req.file.filename,
+                user: userId,   
+                postedBy: userName,
+                profileImg: profPic
             });
-        });
-
+            
+            theImage.save(function() {
+                
+                theImage.delete(function() {
+                    // mongodb: {deleted: true,}
+                    theImage.restore(function() {
+                    // mongodb: {deleted: false,}
+                    });
+                });
+        
+            });
+        }
     });
 
-    console.log("\n\ntheImage result: " + theImage);
+    // const theImage = new ImageModel({
+    //     caption: req.body.caption,
+    //     img: req.file.filename,
+    //     user: userId,   
+    //     postedBy: userName,
+    //     profileImg: ''
+    // });
+    
+    // theImage.save(function() {
+        
+    //     theImage.delete(function() {
+    //         // mongodb: {deleted: true,}
+    //         theImage.restore(function() {
+    //         // mongodb: {deleted: false,}
+    //         });
+    //     });
+
+    // });
+
+    // console.log("\n\ntheImage result: " + theImage);
 
     res.redirect("/feeds");
 });

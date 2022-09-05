@@ -78,8 +78,7 @@ router.post("/signup", upload, (req, res) => {
       return res.render("signup.ejs");
     } else {
       passport.authenticate("local")(req, res, function () {
-        res.redirect("/feeds.ejs");
-
+        res.redirect("/feeds");
       });
     }
   })

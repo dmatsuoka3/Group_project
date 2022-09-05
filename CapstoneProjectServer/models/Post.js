@@ -26,6 +26,11 @@ let imageSchema = new mongoose.Schema({
         type: String
     },
 
+    profileImg: {
+        type: String,
+        default: 'placeholder.jpg',
+    },
+
     timeCreated: {
         type: Date,
         default: () => Date.now(),
