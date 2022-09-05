@@ -74,7 +74,7 @@ router.get('/homePost', isLoggedIn, async (req, res) => {
         } else {
 
             res.render('userspage.ejs', {
-                profileInfoData: req.doggytwo, 
+                // profileInfoData: req.doggytwo, 
                 profileData: req.doggy, 
                 data: results
             });
@@ -90,7 +90,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 
     const userName = req.user.username;
 
-    console.log("\nHome page\nUsername: "
+    console.log("\nHome page\nUsername: " + userName
               + "\nUser Id: " + userId
               + "\nEmail: " + req.user.email + "\n\n"
               + "object: " + req.user + "\n"
@@ -98,12 +98,10 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
     );
     
   if(!req.files) {
-    res.status(err.statusCode || 500);
-    // res.send("File was not found.");
-    // return;
+    // res.status(err.statusCode || 500);
+    res.send("File was not found.");
+    return;
   }
-
-  
 
     const theImage = new ImageModel({
         caption: req.body.caption,
