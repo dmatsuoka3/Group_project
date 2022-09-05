@@ -44,6 +44,17 @@ const UserModel = require("../models/User");
 // });
 
 // Read
+router.get('/feeds', (req, res)=> {
+
+    UserModel.findById(req.user.id, (error, result)=> {
+        if(error) {
+            console.log(error);
+        } else {
+            req.doggy = result;
+        }
+    });
+});
+
 router.get('/feeds', isLoggedIn, (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
@@ -55,7 +66,7 @@ router.get('/feeds', isLoggedIn, (req, res) => {
                     profilePic = results
                 }) */
                 
-            res.render('feeds.ejs', {data: results, user: req.user});
+            res.render('feeds.ejs', {data: results, user: req.doggy});
         }
     }).sort({ timeCreated: 'desc' });
     
