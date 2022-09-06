@@ -14,38 +14,54 @@ const profileSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: true
-           
-        },
         username: {
             type: String,
-            required: true
-           
+            required: true,
+         
+        },
+        name: {
+            type: String,
+            required: true,
         },
         email: {
             type: String,
-            required: true
-            
-        },
+            required: true,
+          
+        }, 
         phone: {
             type: String,
-           
+        },
+        gender: {
+            type: String,
+        },
+        bio: {
+            type: String,
+        },
+        website: {
+            type: String,
         },
         password: {
             type: String,
-            min: 6,
-            max: 30
+        
         },
-    
-        bio: {
+        profilePicture: {
             type: String,
-            min: 3,
-            max: 50
+            default: ""
         },
-        gender: {
-            type: String
+      
+        followers: {
+            type: Array,
+            default: []
+        },
+
+        followings: {
+            type: Array,
+            default: []
+        },
+
+        likes: {
+            type: Array,
+            default: []
         },
     
         created: {
@@ -58,8 +74,8 @@ const userSchema = new mongoose.Schema(
     },
 
 );
-    
+        
 
 userSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('UserModel', userSchema);
+module.exports = mongoose.model('users', userSchema);

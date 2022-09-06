@@ -1,7 +1,7 @@
 const router = require("express").Router();
+const { request } = require("express");
 const express = require("express");
-const { default: mongoose, Schema, isObjectIdOrHexString } = require("mongoose");
-
+const session = require('express-session')
 const multer = require("multer");
 
 const isLoggedIn = (req, res, next) => {
@@ -17,10 +17,7 @@ const isLoggedIn = (req, res, next) => {
 const storage = multer.diskStorage({
     // destination for files
     destination: function (request, file, callback) {
-    callback(null, './assets/uploads');
-
-    // Ben's code
-    //callback(null, './assets/uploads_profile_images');
+    callback(null, './assets/userPostImages');
     },
 
     // add back the extension
@@ -38,32 +35,32 @@ const upload = multer({
 });
 
 // BLUEPRINTS
-var UserModel = require("../models/User");
-var ImageModel = require("../models/Post");
-var ProfileModel = require("../models/editprofile");
+const ImageModel = require("../models/Post");
+const UserModel = require("../models/User");
 
 // Read
 router.get('/feeds', (req, res, next)=> {
-    UserModel.findById(req.user.id, (err, results)=> {
-        if(err) {
-            res.send(err);
+
+    UserModel.findById(req.user.id, (error, result)=> {
+        if(error) {
+            console.log(error);
         } else {
-            console.log("\n\neditprofile result: " + results + "\n");
-            req.doggy = results;
+            req.singleUser = result;
             next();
         }
-    })
+    });
 });
 
 router.get('/feeds', (req, res, next)=> {
-    UserModel.findById(req.user.id, (err, results)=> {
-        if(err) {
-            res.send(err);
+
+    UserModel.find({}, (error, users)=> {
+        if(error) {
+            console.log(error);
         } else {
-            req.doggytwo = results;
+            req.allUsers = users;
             next();
         }
-    })
+    });
 });
 
 router.get('/feeds', isLoggedIn, async (req, res) => {
@@ -72,12 +69,10 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         if(err) {
             console.log(err);
         } else {
-
             res.render('feeds.ejs', {
-                // profileInfoData: req.doggytwo, 
-                profileData: req.doggy, 
-                data: results
-            });
+                data: results, 
+                user: req.singleUser,
+                allUsers: req.allUsers});
         }
     }).sort({ timeCreated: 'desc' });
     
@@ -102,25 +97,32 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 //     return;
 //   }
 
-    const theImage = new ImageModel({
-        caption: req.body.caption,
-        img: req.file.filename,
-        user: req.user.id,   
-        postedBy: userName,
-    });
-    
-    theImage.save(function() {
-        
-        theImage.delete(function() {
-            // mongodb: {deleted: true,}
-            theImage.restore(function() {
-            // mongodb: {deleted: false,}
+    UserModel.findById(req.user.id, (error, result)=> {
+        if(error) {
+            console.log(error);
+        } else {
+            const profPic = result.profilePicture;
+
+            const theImage = new ImageModel({
+                caption: req.body.caption,
+                img: req.file.filename,
+                user: userId,   
+                postedBy: userName,
+                profileImg: profPic
             });
-        });
-
+            
+            theImage.save(function() {
+                
+                theImage.delete(function() {
+                    // mongodb: {deleted: true,}
+                    theImage.restore(function() {
+                    // mongodb: {deleted: false,}
+                    });
+                });
+        
+            });
+        }
     });
-
-    console.log("\n\ntheImage result: " + theImage);
 
     res.redirect("/feeds");
 });
