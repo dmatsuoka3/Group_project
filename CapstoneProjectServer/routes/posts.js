@@ -18,7 +18,7 @@ const isLoggedIn = (req, res, next) => {
 const storage = multer.diskStorage({
     // destination for files
     destination: function (request, file, callback) {
-    callback(null, './assets/images');
+    callback(null, './assets/userPostImages');
     },
 
     // add back the extension
@@ -37,24 +37,41 @@ const upload = multer({
 
 // BLUEPRINTS
 const ImageModel = require("../models/Post");
-
-// router.get('/', (req, res)=> {
-//     res.redirect('/home');
-// });
+const UserModel = require("../models/User");
 
 // Read
+router.get('/feeds', (req, res, next)=> {
+
+    UserModel.findById(req.user.id, (error, result)=> {
+        if(error) {
+            console.log(error);
+        } else {
+            req.singleUser = result;
+            next();
+        }
+    });
+});
+
+router.get('/feeds', (req, res, next)=> {
+
+    UserModel.find({}, (error, users)=> {
+        if(error) {
+            console.log(error);
+        } else {
+            req.allUsers = users;
+            next();
+        }
+    });
+});
+
 router.get('/feeds', isLoggedIn, (req, res) => {
 
     ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
         if(err) {
             console.log(err);
         } else {
-            // res.render('home.ejs');
-                /* getProfilePic('', function(results) {
-                    profilePic = results
-                }) */
-                
-            res.render('feeds.ejs', {data: results, user: req.user});
+            res.render('feeds.ejs', {data: results, user: req.singleUser, allUsers: req.allUsers});
+            // console.log("\n\nallUsers result: " + allUsers);
         }
     }).sort({ timeCreated: 'desc' });
     
@@ -64,19 +81,56 @@ router.get('/feeds', isLoggedIn, (req, res) => {
 router.post('/posts', upload.single('image'), async (req, res) => {
     console.log(req.file);
 
-    const theImage = new ImageModel({
-        caption: req.body.caption,
-        img: req.file.filename,
+    const userId = req.user.id;
+    const userName = req.user.username;
+
+    UserModel.findById(req.user.id, (error, result)=> {
+        if(error) {
+            console.log(error);
+        } else {
+            const profPic = result.profilePicture;
+
+            const theImage = new ImageModel({
+                caption: req.body.caption,
+                img: req.file.filename,
+                user: userId,   
+                postedBy: userName,
+                profileImg: profPic
+            });
+            
+            theImage.save(function() {
+                
+                theImage.delete(function() {
+                    // mongodb: {deleted: true,}
+                    theImage.restore(function() {
+                    // mongodb: {deleted: false,}
+                    });
+                });
+        
+            });
+        }
     });
 
-    theImage.save(function() {
-        theImage.delete(function() {
-            // mongodb: {deleted: true,}
-            theImage.restore(function() {
-                // mongodb: {deleted: false,}
-            });
-        });
-    });
+    // const theImage = new ImageModel({
+    //     caption: req.body.caption,
+    //     img: req.file.filename,
+    //     user: userId,   
+    //     postedBy: userName,
+    //     profileImg: ''
+    // });
+    
+    // theImage.save(function() {
+        
+    //     theImage.delete(function() {
+    //         // mongodb: {deleted: true,}
+    //         theImage.restore(function() {
+    //         // mongodb: {deleted: false,}
+    //         });
+    //     });
+
+    // });
+
+    // console.log("\n\ntheImage result: " + theImage);
 
     res.redirect("/feeds");
 });

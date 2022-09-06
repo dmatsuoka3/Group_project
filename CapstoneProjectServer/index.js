@@ -29,11 +29,11 @@ connectDB();
 //IMPORT ALL THE ROUTE HERE
 const userRoute = require("./routes/users")
 const postRoute = require("./routes/posts");
-const imageRoute = require("./routes/editprofile");
+/* const imageRoute = require("./routes/editprofile"); */
 
 //ROUTE HANDLER
 app.use("", userRoute);
 app.use("", postRoute);
-app.use("", imageRoute);
+/* app.use("", imageRoute); */
 
 app.listen(port, () => console.log(`Bravo Team app is listening on http://localhost:${port}`))

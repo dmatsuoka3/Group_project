@@ -1,23 +1,37 @@
 const router = require("express").Router();
-const express = require("express");
-const app = express();
-
-
-
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
-
-// BLUEPRINTS
+const multer = require("multer");
 const UserModel = require("../models/User");
 
-router.use(
-  require("express-session")({
-    secret: "Blah blah blah", 
-    resave: false, 
-    saveUninitialized: false, 
+const storage = multer.diskStorage({
+  // destination for image files
+  destination: function (request, file, callback) {
+  callback(null, './assets/profilePicture');
+},
+
+  // add back the extension
+  filename: function (request, file, callback) {
+  callback(null, Date.now() + file.originalname);
+  },
+});
+
+let upload = multer({
+  storage: storage,
+  limits: {
+    fieldSize: 1024 * 1024 * 3
+  }
+}).single("image");
+
+
+router.use(require("express-session")({
+    secret: "Blah blah blah",
+    resave: false,
+    saveUninitialized: false,
   })
 );
+
 router.use(passport.initialize());
 router.use(passport.session());
 passport.use(new LocalStrategy(UserModel.authenticate()));
@@ -44,20 +58,19 @@ router.get("/signup", (req, res) => {
   res.render("signup.ejs");
 });
 
-router.post("/signup", (req, res) => {
+router.post("/signup", upload, (req, res) => {
   console.log(req)
-  const newUser = new UserModel({ 
-    username: req.body.username, 
+  const newUser = new UserModel({
+    username: req.body.username,
     email: req.body.email,
     name: req.body.name,
-    email: req.body.email,
+    followers: req.body.followers,
+    followings: req.body.followings,
+    likes: req.body.likes,
     phone: req.body.phone,
     bio: req.body.bio,
     gender: req.body.gender,
-    website: req.body.website,
-    profile: {
-      profileimg: ''
-    }
+    website: req.body.website
   });
   UserModel.register(newUser, req.body.password, function (err, user) {
     if (err) {
@@ -75,12 +88,22 @@ router.get("/login", (req, res) => {
   res.render("login.ejs");
 });
 
+<<<<<<< HEAD
 router.post("/login",passport.authenticate("local", {
       successRedirect: "/feeds",
       failureRedirect: "/login",
   }),
   function (req, res) {
     console.log(req)
+=======
+router.post("/login", passport.authenticate("local", {
+  successRedirect: "/feeds",
+  failureRedirect: "/login",
+}),
+  function (req, res) {
+    console.log(req)
+
+>>>>>>> bangNewBranch
   }
 );
 
@@ -93,7 +116,47 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
+// Read
+router.get('/editprofile', isLoggedIn, (req, res) => {
+  console.log(req.user.username)
+  res.render('editProfile.ejs', { user: req.user })
+});
 
+// Create
+
+
+router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
+  UserModel.findByIdAndUpdate({ _id: req.user._id },
+    {
+      phone: req.body.phone,
+      bio: req.body.bio,
+      gender: req.body.gender,
+      website: req.body.website, 
+      profilePicture: req.file.filename,
+    },
+    (error, result) => {
+      if (error) {
+        console.log(req.user.id)
+      } else {
+        console.log('completed')
+      }
+    }
+  );
+  res.redirect("/feeds");
+});
+
+
+// Delete
+router.get('/deleteprofile', (req, res) => {
+  UserModel.deleteOne({ _id: req.user._id }, (error, result) => {
+    if (error) {
+      console.log("Something went wrong delete from database");
+    } else {
+      console.log("This image has been deleted", result);
+      res.redirect("/login");
+    }
+  });
+});
 
 
 
