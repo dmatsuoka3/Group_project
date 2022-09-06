@@ -88,14 +88,6 @@ router.get("/login", (req, res) => {
   res.render("login.ejs");
 });
 
-<<<<<<< HEAD
-router.post("/login",passport.authenticate("local", {
-      successRedirect: "/feeds",
-      failureRedirect: "/login",
-  }),
-  function (req, res) {
-    console.log(req)
-=======
 router.post("/login", passport.authenticate("local", {
   successRedirect: "/feeds",
   failureRedirect: "/login",
@@ -103,7 +95,6 @@ router.post("/login", passport.authenticate("local", {
   function (req, res) {
     console.log(req)
 
->>>>>>> bangNewBranch
   }
 );
 
@@ -123,8 +114,6 @@ router.get('/editprofile', isLoggedIn, (req, res) => {
 });
 
 // Create
-
-
 router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
   UserModel.findByIdAndUpdate({ _id: req.user._id },
     {
@@ -145,6 +134,17 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
   res.redirect("/feeds");
 });
 
+// Delete
+router.get('/deleteprofile', (req, res) => {
+  UserModel.deleteOne({ _id: req.user._id }, (error, result) => {
+    if (error) {
+      console.log("Something went wrong delete from database");
+    } else {
+      console.log("This image has been deleted", result);
+      res.redirect("/login");
+    }
+  });
+});
 
 // Delete
 router.get('/deleteprofile', (req, res) => {

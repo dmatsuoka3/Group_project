@@ -71,7 +71,6 @@ router.get('/feeds', isLoggedIn, (req, res) => {
             console.log(err);
         } else {
             res.render('feeds.ejs', {data: results, user: req.singleUser, allUsers: req.allUsers});
-            // console.log("\n\nallUsers result: " + allUsers);
         }
     }).sort({ timeCreated: 'desc' });
     
@@ -111,26 +110,7 @@ router.post('/posts', upload.single('image'), async (req, res) => {
         }
     });
 
-    // const theImage = new ImageModel({
-    //     caption: req.body.caption,
-    //     img: req.file.filename,
-    //     user: userId,   
-    //     postedBy: userName,
-    //     profileImg: ''
-    // });
-    
-    // theImage.save(function() {
-        
-    //     theImage.delete(function() {
-    //         // mongodb: {deleted: true,}
-    //         theImage.restore(function() {
-    //         // mongodb: {deleted: false,}
-    //         });
-    //     });
 
-    // });
-
-    // console.log("\n\ntheImage result: " + theImage);
 
     res.redirect("/feeds");
 });
