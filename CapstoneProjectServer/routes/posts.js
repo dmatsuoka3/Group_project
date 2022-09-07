@@ -152,7 +152,7 @@ router.put('/update/:id', (req, res)=> {
             if(error) {
                 res.send(error.message);
             } else {
-                // res.redirect(`/update/${result._id}`);
+
                 res.redirect("/feeds");
             }
         }

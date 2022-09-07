@@ -49,15 +49,29 @@ const userSchema = new mongoose.Schema(
             default: ""
         },
       
-        followers: {
-            type: Array,
-            default: []
-        },
+        followers:  [
+            { 
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'UserModel' 
+            },
+        ],
 
-        followings: {
-            type: Array,
-            default: []
-        },
+        followings: [
+            { 
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'UserModel' 
+            },
+        ],
+
+        // followers: {
+        //     type: Array,
+        //     default: []
+        // },
+
+        // followings: {
+        //     type: Array,
+        //     default: []
+        // },
 
         likes: {
             type: Array,
