@@ -53,7 +53,10 @@ router.get('/feeds', (req, res, next)=> {
 
 router.get('/feeds', (req, res, next)=> {
 
-    UserModel.find({}, (error, users)=> {
+    var ObjectId = require('mongodb').ObjectId;
+
+    // find all users except one user (main user)
+    UserModel.find({_id: {$ne: ObjectId(req.user.id)}}, (error, users)=> {
         if(error) {
             console.log(error);
         } else {
@@ -72,7 +75,8 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
             res.render('feeds.ejs', {
                 data: results, 
                 user: req.singleUser,
-                allUsers: req.allUsers});
+                allUsers: req.allUsers
+            });
         }
     }).sort({ timeCreated: 'desc' });
     
@@ -207,17 +211,6 @@ router.get('/home/:id', (req, res)=> {
         
         }
     });
-
-    // const theImageUser = theImage.user;
-
-    // ImageModel.deleteById(req.params.id, (error, result)=> {
-    //     if(error) {
-    //         console.log("Something went wrong delete from database");
-    //     } else {
-    //         console.log("This post has been deleted", result);
-    //         res.redirect("/homePost");
-    //     }
-    // });
 });
 
 module.exports = router;
