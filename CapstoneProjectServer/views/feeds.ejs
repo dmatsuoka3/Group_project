@@ -297,11 +297,11 @@
                         <div class="request">
                             <div class="info">
                                 <div class="profile-photo">
-                                    <img src="./images/profile-8.jpg">
+                                    <img src="./profilePicture/<%= element.profilePicture %> ">
                                 </div>
                                 <div>
                                     <h5><%= element.name %> </h5>
-                                    <p class="text-muted">8 mutual friends</p>
+                                    <p class="text-muted"><%= element.followers %> </p>
                                 </div>
                             </div>
                             <form action="/follow/<%= element._id %>?_method=PUT" method="POST">
@@ -311,26 +311,7 @@
                                 </div>
                             </form>
                         </div>
-                    <% }) %> 
-
-
-                    <div class="request">
-                        <div class="info">
-                            <div class="profile-photo">
-                                <img src="./images/profile-8.jpg">
-                            </div>
-                            <div>
-                                <h5>Hajia Bintu</h5>
-                                <p class="text-muted">8 mutual friends</p>
-                            </div>
-                        </div>
-                        <div class="action">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn">Decline</button>
-                        </div>
-                    </div>
-                    <!----- REQUEST 2----->
-                   
+                    <% }) %>  
                 </div>
             </div>
         </div>

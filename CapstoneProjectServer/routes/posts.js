@@ -128,6 +128,8 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
         }
     });
 
+
+
     res.redirect("/feeds");
 });
 
