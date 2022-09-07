@@ -2,26 +2,8 @@ const router = require("express").Router();
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
-const UserModel = require("../models/User");
-// const ImageModel = require("../models/Post");
-const { default: mongoose } = require("mongoose");
-
 const multer = require("multer");
-
-// define storage for the images
-// const storage = multer.diskStorage({
-//     // destination for files
-//     destination: function (request, file, callback) {
-//     callback(null, './assets/uploads');
-//     },
-
-//     // add back the extension
-//     filename: function (request, file, callback) {
-//     callback(null, Date.now() + file.originalname);
-//     },
-// });
-
-
+const UserModel = require("../models/User");
 
 const storage = multer.diskStorage({
   // destination for image files
@@ -71,14 +53,6 @@ router.get("/home", (req, res) => {
   res.render("login.ejs");
 });
 
-// router.get("/userspage", (req, res) => {
-//   // res.render("userspage.ejs");
-//   console.log("\nUsername: " + req.user.username +
-//               "\nSession ID: " + req.sessionID + "\n");
-//   // res.redirect("/userpage");
-//   res.redirect("/feeds");
-// });
-
 
 router.get("/signup", (req, res) => {
   res.render("signup.ejs");
@@ -96,20 +70,8 @@ router.post("/signup", upload, (req, res) => {
     phone: req.body.phone,
     bio: req.body.bio,
     gender: req.body.gender,
-    website: req.body.website,
-
-    profile: {
-      profileimg: ''
-    },
-
-    userPost: { 
-      caption: "",
-      img: "",
-      timeCreated: ""
-    }
-    
+    website: req.body.website
   });
-  
   UserModel.register(newUser, req.body.password, function (err, user) {
     if (err) {
       console.log(err);
@@ -130,8 +92,6 @@ router.post("/login",passport.authenticate("local", {
       successRedirect: "/feeds",
       failureRedirect: "/login",
   }),
-
-  
   function (req, res) {
     console.log(req)
   }
@@ -185,8 +145,5 @@ router.get('/deleteprofile', (req, res) => {
     }
   });
 });
-
-
-
 
 module.exports = router;

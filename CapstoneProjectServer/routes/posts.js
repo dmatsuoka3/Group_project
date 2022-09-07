@@ -194,7 +194,7 @@ router.get('/home/:id', (req, res)=> {
                             } else {
                                 console.log("\n\nThis post has been deleted by " + req.user.name + ".\n" + 
                                                 result);
-                                res.redirect("/homePost");
+                                res.redirect("/feeds");
                             }
                         });
 
