@@ -63,16 +63,6 @@ const userSchema = new mongoose.Schema(
             },
         ],
 
-        // followers: {
-        //     type: Array,
-        //     default: []
-        // },
-
-        // followings: {
-        //     type: Array,
-        //     default: []
-        // },
-
         likes: {
             type: Array,
             default: []
