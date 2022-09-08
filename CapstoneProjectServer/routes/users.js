@@ -108,6 +108,10 @@ router.get("/logout", (req, res, next) => {
 });
 
 // Read
+router.get("/error", (req, res) => {
+  res.render("error.ejs");
+});
+
 router.get("/user/:id?", async (req, res) => {
   const userId = (req.params.id);
   // query database for username, return results to show their profile bio and their images
@@ -162,19 +166,19 @@ router.get("/user/:id?", async (req, res) => {
 
     res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
   } else {
-    // insert error page for user does not exists
-    res.redirect("/feeds")
+    // insert error page for user that does not exist
+    res.redirect("/error")
   }
 });
 
+
 router.get('/editprofile', isLoggedIn, (req, res) => {
-  console.log(req.user.username)
+  //console.log(req.user.username)
   res.render('editProfile.ejs', { user: req.user })
 });
 
 // Create
 router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
-  //console.log('wtf', upload)
   let profilepic = ''
   if(!req.file) {
     profilepic = req.user.profilePicture
@@ -189,9 +193,9 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
     },
     (error, result) => {
       if (error) {
-        console.log(req.user.id)
+        //console.log(req.user.id)
       } else {
-        console.log('completed')
+        //console.log('completed')
       }
     }
   );
@@ -203,9 +207,9 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
 router.get('/deleteprofile', (req, res) => {
   UserModel.deleteOne({ _id: req.user._id }, (error, result) => {
     if (error) {
-      console.log("Something went wrong delete from database");
+      //console.log("Something went wrong delete from database");
     } else {
-      console.log("This image has been deleted", result);
+      //console.log("This image has been deleted", result);
       res.redirect("/login");
     }
   });
