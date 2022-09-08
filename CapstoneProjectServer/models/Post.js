@@ -11,12 +11,12 @@ let imageSchema = new mongoose.Schema({
     caption: {
         type: String,
     },
-  
+
     img: {
         type: String,
         default: 'placeholder.jpg',
     },
-  
+
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserModel"

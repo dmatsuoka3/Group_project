@@ -31,8 +31,7 @@
             </div>
             <div class="create">
                 <a href="/logout" class="btn btn-primary">Log out</a>
-                <div class="profile-photo"><a href="/editprofile"><img src="/profilePicture/<%= user.profilePicture %>" alt="profile-photo"></a>
-                </div>
+                <div class="profile-photo"><a href="/user/<%= user.username %>"><img src="/profilePicture/<%= user.profilePicture %>" alt="profile-photo"></a>
                 <!-- menu button to show sidebar -->
                 <button id="menu-btn"><i class="uil uil-bars"></i></button>
             </div>

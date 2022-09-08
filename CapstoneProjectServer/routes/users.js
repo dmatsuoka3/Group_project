@@ -4,6 +4,7 @@ const LocalStrategy = require("passport-local");
 
 const multer = require("multer");
 const UserModel = require("../models/User");
+const ImageModel = require("../models/Post");
 
 const storage = multer.diskStorage({
   // destination for image files
@@ -107,6 +108,65 @@ router.get("/logout", (req, res, next) => {
 });
 
 // Read
+router.get("/user/:id?", async (req, res) => {
+  const userId = (req.params.id);
+  // query database for username, return results to show their profile bio and their images
+  let isLoggedIn = 0;
+
+  if (req.isAuthenticated()) {
+    isLoggedIn = 1;
+  }
+  let userinfo = await UserModel.find({username: userId}).exec();
+
+  if (userinfo.length > 0) {
+    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo[0]._id}).exec();
+
+
+  /*   
+    (err, results)=> {
+
+    if(err) {
+        console.log(err);
+    } else {
+      if(results.length > 0) {
+          // If we get some results from the database that matches the requested user
+
+      } else {
+        // Else, nothing returned from the database
+        results[0] = {
+        name:'User does not exist', 
+        user:'not here', 
+        bio:'buhbai',
+        profilePicture: ''
+      }
+    }
+      //res.render("profile.ejs", {data: results, user: {isLoggedIn: isLoggedIn}});
+    }
+    
+  };
+
+  ImageModel.find({deleted: {$nin: true}, userId: userId}, (err, results)=> {
+    if(err) {
+        console.log(err);
+    } else {
+        userPhotos = results
+    }
+  }).sort({ timeCreated: 'desc' });
+
+  if(userPhotos.length < 1) {
+    console.log('no photos by user')
+    userPhotos = [{img:''}]
+  }
+  console.log(userData);
+   */
+
+    res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
+  } else {
+    // insert error page for user does not exists
+    res.redirect("/feeds")
+  }
+});
+
 router.get('/editprofile', isLoggedIn, (req, res) => {
   console.log(req.user.username)
   res.render('editProfile.ejs', { user: req.user })
@@ -114,13 +174,18 @@ router.get('/editprofile', isLoggedIn, (req, res) => {
 
 // Create
 router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
+  //console.log('wtf', upload)
+  let profilepic = ''
+  if(!req.file) {
+    profilepic = req.user.profilePicture
+  }
   UserModel.findByIdAndUpdate({ _id: req.user._id },
     {
       phone: req.body.phone,
       bio: req.body.bio,
       gender: req.body.gender,
       website: req.body.website, 
-      profilePicture: req.file.filename,
+      profilePicture: (profilepic.length > 0 ? profilepic : req.file.filename),
     },
     (error, result) => {
       if (error) {
@@ -130,7 +195,7 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
       }
     }
   );
-  res.redirect("/feeds");
+  res.redirect("/editprofile");
 });
 
 

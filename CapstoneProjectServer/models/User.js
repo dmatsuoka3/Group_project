@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true,
-         
+        
         },
         name: {
             type: String,
@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
         email: {
             type: String,
             required: true,
-          
+        
         }, 
         phone: {
             type: String,
@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: ""
         },
-      
+    
         followers: {
             type: Array,
             default: []
