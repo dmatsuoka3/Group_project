@@ -40,7 +40,7 @@ const ImageModel = require("../models/Post");
 const UserModel = require("../models/User");
 
 // Read
-router.get('/feeds', (req, res, next)=> {
+router.get('/feeds', isLoggedIn, (req, res, next)=> {
 
     UserModel.findById(req.user.id, (error, result)=> {
         if(error) {
@@ -52,7 +52,7 @@ router.get('/feeds', (req, res, next)=> {
     });
 });
 
-router.get('/feeds', (req, res, next)=> {
+router.get('/feeds', isLoggedIn, (req, res, next)=> {
 
     UserModel.find({}, (error, users)=> {
         if(error) {

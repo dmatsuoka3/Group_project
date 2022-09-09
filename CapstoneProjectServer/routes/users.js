@@ -147,10 +147,13 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
   }
   UserModel.findByIdAndUpdate({ _id: req.user._id },
     {
+      name: req.body.name,
+      username: req.body.username,
       phone: req.body.phone,
       bio: req.body.bio,
       gender: req.body.gender,
       website: req.body.website, 
+      
       //If no file is uploaded, re-use their current profile pic
       profilePicture: (profilepic.length > 0 ? profilepic : req.file.filename),
     },
