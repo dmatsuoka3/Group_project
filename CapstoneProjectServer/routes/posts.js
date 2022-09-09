@@ -39,7 +39,7 @@ const ImageModel = require("../models/Post");
 const UserModel = require("../models/User");
 
 // Read
-router.get('/feeds', (req, res, next)=> {
+router.get('/feeds', isLoggedIn, (req, res, next)=> {
 
     UserModel.findById(req.user.id, (error, result)=> {
         if(error) {
@@ -51,7 +51,7 @@ router.get('/feeds', (req, res, next)=> {
     });
 });
 
-router.get('/feeds', (req, res, next)=> {
+router.get('/feeds', isLoggedIn, (req, res, next)=> {
 
     var ObjectId = require('mongodb').ObjectId;
 
@@ -66,19 +66,23 @@ router.get('/feeds', (req, res, next)=> {
     });
 });
 
-router.get('/feeds', isLoggedIn, async (req, res) => {
 
-        ImageModel.find({deleted: {$nin: true}}, (err, results)=> {
-        if(err) {
-            console.log(err);
-        } else {
-            res.render('feeds.ejs', {
-                data: results, 
-                user: req.singleUser,
-                allUsers: req.allUsers
-            });
-        }
-    }).sort({ timeCreated: 'desc' });
+//Made the route asyncrounous, so the results from the DB query can be used outside of its CB
+router.get('/feeds', isLoggedIn, async (req, res) => {
+    //Create a DB query, to get the results into a variable
+    var postfeed = await ImageModel.find({deleted: {$nin: true}}).sort({ timeCreated: 'desc' }).exec();
+
+    //Loop through the posts variable(this is all the posts)
+    for(var posts in postfeed) {
+        //Query DB search for the user info based on the posts user ID
+        var postuser = await UserModel.findById(postfeed[posts].user).exec();
+        //postfeed[posts] = {userdata : postuser}
+        //Merge the postuser data into the postdata object (per post)
+        postfeed[posts] = {post: postfeed[posts], user: postuser}
+    }
+
+    //console.log(postfeed)
+    res.render('feeds.ejs', {data: postfeed, user: req.singleUser, allUsers: req.allUsers})
     
 });
 
