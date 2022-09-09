@@ -116,53 +116,15 @@ router.get("/user/:id?", async (req, res) => {
   const userId = (req.params.id);
   // query database for username, return results to show their profile bio and their images
   let isLoggedIn = 0;
-
+  //Check if users is logged in
   if (req.isAuthenticated()) {
     isLoggedIn = 1;
   }
+  //Search DB by user name 
   let userinfo = await UserModel.find({username: userId}).exec();
-
+  //If users exists, then proceed to query the DB for their posts
   if (userinfo.length > 0) {
     let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo[0]._id}).exec();
-
-
-  /*   
-    (err, results)=> {
-
-    if(err) {
-        console.log(err);
-    } else {
-      if(results.length > 0) {
-          // If we get some results from the database that matches the requested user
-
-      } else {
-        // Else, nothing returned from the database
-        results[0] = {
-        name:'User does not exist', 
-        user:'not here', 
-        bio:'buhbai',
-        profilePicture: ''
-      }
-    }
-      //res.render("profile.ejs", {data: results, user: {isLoggedIn: isLoggedIn}});
-    }
-    
-  };
-
-  ImageModel.find({deleted: {$nin: true}, userId: userId}, (err, results)=> {
-    if(err) {
-        console.log(err);
-    } else {
-        userPhotos = results
-    }
-  }).sort({ timeCreated: 'desc' });
-
-  if(userPhotos.length < 1) {
-    console.log('no photos by user')
-    userPhotos = [{img:''}]
-  }
-  console.log(userData);
-   */
 
     res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
   } else {
@@ -189,6 +151,7 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
       bio: req.body.bio,
       gender: req.body.gender,
       website: req.body.website, 
+      //If no file is uploaded, re-use their current profile pic
       profilePicture: (profilepic.length > 0 ? profilepic : req.file.filename),
     },
     (error, result) => {
