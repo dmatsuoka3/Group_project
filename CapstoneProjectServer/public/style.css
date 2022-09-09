@@ -841,3 +841,10 @@ MEDIA QUERIES FOR SMALL TABLETS AND MOBILE PHONES
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+/* icon heart like */
+.icon-heart {
+  cursor: pointer;
+  font-size: 24px;
+  background-color: #ffffff;
+}

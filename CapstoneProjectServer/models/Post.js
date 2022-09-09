@@ -32,7 +32,19 @@ const imageSchema = new mongoose.Schema({
         type: String,
         default: 'placeholder.jpg'
     },
+
+    likedByIds: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'UserModel' 
+        },
+    ],
     
+    likedByNames: [
+        {
+            type: String
+        },
+    ],
 });
 
 

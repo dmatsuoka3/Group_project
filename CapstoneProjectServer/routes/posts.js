@@ -112,7 +112,9 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                 img: req.file.filename,
                 user: userId,   
                 postedBy: userName,
-                profileImg: profPic
+                profileImg: profPic,
+                likedByIds: req.body.likedByIds,
+                likedByNames: req.body.likedByNames
             });
             
             theImage.save(function() {
@@ -211,6 +213,65 @@ router.get('/home/:id', (req, res)=> {
                 }
             });
         
+        }
+    });
+});
+
+// like
+router.put('/like/:id', (req, res)=> {
+
+    // First post's object for User's id
+    ImageModel.findById(req.params.id, (error, postObject)=> {
+        if(error) {
+            console.log(error);
+        } else {
+            const postLikedBy = postObject.likedByIds;
+
+            // Second post's object for User's name
+            ImageModel.findById(req.params.id, (error, postObjectTwo)=> {
+                if(error) {
+                    console.log(error);
+                } else {
+                    const postLikedByName = postObjectTwo.likedByNames;
+
+                    // Getting main user's object for userLikes
+                    UserModel.findById(req.user.id, (error, userObject)=> {
+                        if(error) {
+                            console.log(error);
+                        } else {
+                            const userLikes = userObject.likes;
+                            
+                            if(!postLikedBy.includes(req.user.id)) {
+                                
+                                postLikedBy.push(req.user.id);
+                                postObject.save();
+        
+                                postLikedByName.push(req.user.name);
+                                postObjectTwo.save();
+        
+                                userLikes.push(req.params.id);
+                                userObject.save();
+        
+                                res.redirect("/feeds");
+                            } else {
+        
+                                postLikedBy.pull(req.user.id);
+                                postObject.save();
+        
+                                postLikedByName.pull(req.user.name);
+                                postObjectTwo.save();
+        
+                                userLikes.pull(req.params.id);
+                                userObject.save();
+        
+                                res.redirect("/feeds");
+                            }
+                        }
+                    });
+
+                }
+            });    
+           
         }
     });
 });

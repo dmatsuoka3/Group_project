@@ -63,10 +63,12 @@ const userSchema = new mongoose.Schema(
             },
         ],
 
-        likes: {
-            type: Array,
-            default: []
-        },
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'ImageModel' 
+            },
+        ],
     
         created: {
             type: Date,
