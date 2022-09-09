@@ -78,7 +78,7 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         postfeed[posts] = {post: postfeed[posts], user: postuser}
     }
 
-    //console.log(postfeed)
+    //console.lo.g(postfeed)
     res.render('feeds.ejs', {data: postfeed, user: req.singleUser, allUsers: req.allUsers})
     
 });
