@@ -1,14 +1,23 @@
 const mongoose = require('mongoose');
 var mongoose_delete = require('mongoose-delete');
 
-let imageSchema = new mongoose.Schema({
-
-    userId: {
-        type: String,
-        default: 0
-    },
+const imageSchema = new mongoose.Schema({
+    
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserModel'
+    }, 
     
     caption: {
+        type: String,
+    },
+
+
+    timeCreated: {
+        type: Date,
+        default: () => Date.now(),
+    },
+    snippet: {
         type: String,
     },
 
@@ -17,10 +26,13 @@ let imageSchema = new mongoose.Schema({
         default: 'placeholder.jpg',
     },
 
+
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserModel"
     },
+
+
 
     postedBy: {
         type: String
@@ -28,15 +40,12 @@ let imageSchema = new mongoose.Schema({
 
     profileImg: {
         type: String,
-        default: 'placeholder.jpg',
+        default: 'placeholder.jpg'
     },
-
-    timeCreated: {
-        type: Date,
-        default: () => Date.now(),
-    },
+    
 });
+
 
 imageSchema.plugin(mongoose_delete);
 
-module.exports = mongoose.model("imagesPosts", imageSchema);
+module.exports = mongoose.model("imagesposts", imageSchema);

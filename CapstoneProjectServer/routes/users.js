@@ -89,12 +89,13 @@ router.get("/login", (req, res) => {
   res.render("login.ejs");
 });
 
-router.post("/login",passport.authenticate("local", {
-      successRedirect: "/feeds",
-      failureRedirect: "/login",
-  }),
+router.post("/login", passport.authenticate("local", {
+  successRedirect: "/feeds",
+  failureRedirect: "/login",
+}),
   function (req, res) {
     console.log(req)
+
   }
 );
 
@@ -168,6 +169,17 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
   res.redirect("/editprofile");
 });
 
+// Delete
+router.get('/deleteprofile', (req, res) => {
+  UserModel.deleteOne({ _id: req.user._id }, (error, result) => {
+    if (error) {
+      console.log("Something went wrong delete from database");
+    } else {
+      console.log("This image has been deleted", result);
+      res.redirect("/login");
+    }
+  });
+});
 
 // Delete
 router.get('/deleteprofile', (req, res) => {
@@ -181,7 +193,73 @@ router.get('/deleteprofile', (req, res) => {
   });
 });
 
+//follow a user
+router.put("/follow/:id", async (req, res) => {
 
+  // if main user is not equal to other user
+  if (req.user.id !== req.params.id) {
 
+    console.log("\n\nMain user's id: " + req.user.id);
+    console.log("\n\nOther user's id: " + req.params.id + "\n\n");
+
+    try {
+
+      // get other user's object as 'otherUser'
+      UserModel.findById(req.params.id, (error, otherUser)=> {
+        if(error) {
+          console.log(error);
+        } else {
+
+          // get followers from other user
+          const otherUserFollowers = otherUser.followers;
+
+          // get main user's object as 'mainUser'
+          UserModel.findById(req.user.id, (error, mainUser)=> {
+            if(error) {
+              console.log(error);
+            } else {
+
+              // if other user's followers is not includes main user's id
+              if(!otherUserFollowers.includes(req.user.id)) {
+
+                // then push main user's id to other user's followers
+                otherUser.followers.push(req.user.id);
+                otherUser.save();
+
+                // and push other user's id to main user's followers
+                mainUser.followings.push(req.params.id);
+                mainUser.save();
+
+                res.redirect("/feeds");
+
+              // or else
+              } else {
+
+                // pull main user's id from other user's followers
+                otherUser.followers.pull(req.user.id);
+                otherUser.save();
+
+                // pull other user's id from main user's followings
+                mainUser.followings.pull(req.params.id);
+                mainUser.save();
+
+                res.redirect("/feeds");
+              }
+
+            }
+
+          });
+
+        }
+
+      });
+
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  } else {
+    res.status(403).json("you CANNOT follow yourself");
+  }
+});
 
 module.exports = router;

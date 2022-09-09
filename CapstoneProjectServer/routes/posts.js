@@ -11,8 +11,7 @@ const isLoggedIn = (req, res, next) => {
     res.redirect("/login");
 };
 
-/* var profilePic = {} */
-
+// var profilePic = {}
 
 // define storage for the images
 const storage = multer.diskStorage({
@@ -54,7 +53,10 @@ router.get('/feeds', isLoggedIn, (req, res, next)=> {
 
 router.get('/feeds', isLoggedIn, (req, res, next)=> {
 
-    UserModel.find({}, (error, users)=> {
+    var ObjectId = require('mongodb').ObjectId;
+
+    // find all users except one user (main user)
+    UserModel.find({_id: {$ne: ObjectId(req.user.id)}}, (error, users)=> {
         if(error) {
             console.log(error);
         } else {
@@ -63,6 +65,7 @@ router.get('/feeds', isLoggedIn, (req, res, next)=> {
         }
     });
 });
+
 
 //Made the route asyncrounous, so the results from the DB query can be used outside of its CB
 router.get('/feeds', isLoggedIn, async (req, res) => {
@@ -84,11 +87,23 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
 });
 
 // Create
-router.post('/posts', upload.single('image'), async (req, res) => {
-    console.log(req.file);
+router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 
     const userId = req.user.id;
     const userName = req.user.username;
+
+    console.log("\nHome page\nUsername: " + userName
+              + "\nUser Id: " + userId
+              + "\nEmail: " + req.user.email + "\n\n"
+              + "object: " + req.user + "\n"
+              // + "\n\nUserModel: " + user + "\n"
+    );
+    
+//   if(!req.files) {
+//     // res.status(err.statusCode || 500);
+//     res.send("File was not found.");
+//     return;
+//   }
 
     UserModel.findById(req.user.id, (error, result)=> {
         if(error) {
@@ -117,6 +132,8 @@ router.post('/posts', upload.single('image'), async (req, res) => {
         }
     });
 
+
+
     res.redirect("/feeds");
 });
 
@@ -139,30 +156,65 @@ router.get('/update/:id', (req, res)=> {
 
 router.put('/update/:id', (req, res)=> {
 
-    // let updateId = req.params.id;
-    // let updateCaption = req.body.caption;
-    
-    ImageModel.findByIdAndUpdate({_id: req.params.id},
+  ImageModel.findByIdAndUpdate({_id: req.params.id},
         {caption: req.body.caption},
         (error, result)=> {
             if(error) {
                 res.send(error.message);
             } else {
-                // res.redirect(`/update/${result._id}`);
+
                 res.redirect("/feeds");
             }
         }
-    );
+   );
 });
 
 // Delete
 router.get('/home/:id', (req, res)=> {
-    ImageModel.deleteById(req.params.id, (error, result)=> {
+    
+    const userId = req.user.id;
+    const imageId = req.params.id;
+
+    console.log("\n\nUser's id: " + userId);
+    console.log("\n\nPost's id: " + imageId);
+
+    ImageModel.findById(imageId, (error, resultPost)=> {
         if(error) {
-            console.log("Something went wrong delete from database");
+            console.log(error);
         } else {
-            console.log("This post has been deleted", result);
-            res.redirect("/feeds");
+            console.log("\n\nDelete's ImageModel result: " + resultPost + "\n");
+
+            const theImageUser = resultPost.user;
+            
+            console.log("\n\ntheImageUser: " + theImageUser);
+
+            UserModel.findById(userId, (error, userResult)=> {
+                if(error) {
+                    console.log(error);
+                } else {
+                    console.log("\n\nUserModel's result: " + userResult);
+                    
+                    const theUserId = userResult._id;
+
+                    if(theUserId.equals(theImageUser)) {
+
+                        ImageModel.deleteById(req.params.id, (error, result)=> {
+                            if(error) {
+                                console.log("Something went wrong delete from database");
+                            } else {
+                                console.log("\n\nThis post has been deleted by " + req.user.name + ".\n" + 
+                                                result);
+                                res.redirect("/feeds");
+                            }
+                        });
+
+                    } else {
+                        console.log("\n\nYou don't have permission to delete this user's post.\n\n");
+                        res.redirect("/feeds");
+                    }
+                }
+            });
+        
         }
     });
 });
