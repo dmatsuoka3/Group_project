@@ -35,7 +35,7 @@
                 <div>
                     <h1>Edit profile</h1>
                     <img alt="Change profile photo" height="100" width="100" class="rounded-circle"
-                        src="/uploads/<%= user.profilePicture %>">
+                        src="/profilePicture/<%= user.profilePicture %>">
                     <% console.log(`This is the user: ${user}`) %>
                         <div class="form-group">
                             <input type="file" name="image" class="form-control-file">
@@ -133,7 +133,7 @@
                         account</button>
                 </div>
             </div>
-   
+
         </form>
     </div>
 </body>

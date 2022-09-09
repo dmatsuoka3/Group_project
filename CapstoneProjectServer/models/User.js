@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true,
-         
+        
         },
         name: {
             type: String,
@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
         email: {
             type: String,
             required: true,
-          
+        
         }, 
         phone: {
             type: String,
@@ -48,20 +48,16 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: ""
         },
-      
-        followers:  [
-            { 
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'UserModel' 
-            },
-        ],
 
-        followings: [
-            { 
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'UserModel' 
-            },
-        ],
+    
+        followers: {
+            type: Array,
+            default: []
+        },
+        followings: {
+            type: Array,
+            default: []
+        },
 
         likes: {
             type: Array,
