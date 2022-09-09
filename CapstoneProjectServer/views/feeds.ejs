@@ -198,28 +198,39 @@
                             <div class="photo">
                                 <img src="/userPostImages/<%= element.img %>" alt="...">
                             </div>
-                            <%// }); %>
+
                             <div class="action-buttons">
                                 <div class="interaction-buttons">
-                                    <span><i class="uil uil-heart"></i></span>
-                                    <span><i class="uil uil-comment-dots"></i></span>
-                                    <span><i class="uil uil-share-alt"></i></span>
+
+                                    <form action="/like/<%= element._id %>?_method=PUT" method="POST">
+                                        <!-- <span><i class="uil uil-heart"></i></span> -->
+                                        <button class="icon-heart"><i class="uil uil-heart"></i></span>
+                                    </form>
+
+                                    <!-- <span><i class="uil uil-comment-dots"></i></span>
+                                    <span><i class="uil uil-share-alt"></i></span> -->
                                 </div>
                                 <div class="bookmark">
                                     <span><i class="uil uil-bookmark-full"></i></span>
                                 </div>
                             </div>
+
                             <div class="liked-by">
-                                <span><img src="images/profile-10.jpg" alt=""></span>
+                                <!-- <span><img src="images/profile-10.jpg" alt=""></span>
                                 <span><img src="images/profile-4.jpg" alt=""></span>
-                                <span><img src="images/profile-15.jpg" alt=""></span>
-                                <p>Liked by <b>Ernest Achiever</b> and <b>2,323 others</b></p>
+                                <span><img src="images/profile-15.jpg" alt=""></span> -->
+
+                                <p>Liked by <b><%= element.likedByNames[element.likedByNames.length-1] %></b> 
+                                    and <b><%= element.likedByIds.length %> </b></p>
+                                <!-- <p>Liked by <b>Ernest Achiever</b> and <b>2,323 others</b></p> -->
                             </div>
+
+
                             <div class="caption">
                                 <%= element.caption %>
                                 <!-- <p><b>Lana Rose</b> Lorem ipsum dolor sit quisquam eisu.<span class="harsh-tag">#lifestyle</span></p> -->
                             </div>
-                            <div class="comments text-muted">View all 277 comment</div>
+                            <!-- <div class="comments text-muted">View all 277 comment</div> -->
                         </div>
     
                     <% }); %>

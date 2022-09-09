@@ -63,10 +63,12 @@ const userSchema = new mongoose.Schema(
             },
         ],
 
-        likes: {
-            type: Array,
-            default: []
-        },
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'ImageModel' 
+            },
+        ],
     
         created: {
             type: Date,
@@ -82,4 +84,4 @@ const userSchema = new mongoose.Schema(
 
 userSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('users', userSchema);
+module.exports = mongoose.model('user', userSchema);
