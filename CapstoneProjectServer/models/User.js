@@ -51,12 +51,12 @@ const userSchema = new mongoose.Schema(
 
     
         followers: {
-            type: Array,
-            default: []
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "UserModel"
         },
         followings: {
-            type: Array,
-            default: []
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "UserModel"
         },
 
         likes: [
@@ -80,4 +80,4 @@ const userSchema = new mongoose.Schema(
 
 userSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('users', userSchema);
+module.exports = mongoose.model('UserModel', userSchema);
