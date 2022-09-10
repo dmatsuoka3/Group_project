@@ -172,11 +172,11 @@
                             <div class="head">
                                 <div class="user">
                                     <div class="profile-photo">
-                                        <img src="/profilePicture/<%= element.profileImg %> " alt="">
+                                        <img src="/profilePicture/<%= element.user.profilePicture %> " alt="">
                                     </div>
                                     <div class="ingo">
-                                        <h3><%= element.postedBy %> </h3>
-                                        <small><%= element.timeCreated %> </small>
+                                        <h3><%= element.post.postedBy %> </h3>
+                                        <small><%= element.post.timeCreated %> </small>
                                     </div>    
                                 </div>
     
@@ -186,8 +186,8 @@
                                             <i class="uil uil-ellipsis-h"></i>
                                         </span>
                                         <div id="dropdown-container" class="dropdown-content">
-                                            <a href="/update/<%= element._id %>"><div>Update</div></a>
-                                            <a href="/home/<%= element._id %>"><div>Delete</div></a>
+                                            <a href="/update/<%= element.post._id %>"><div>Update</div></a>
+                                            <a href="/home/<%= element.post._id %>"><div>Delete</div></a>
                                             <!-- <div id="delete" onclick="removeTag()">Delete</div> -->
                                         </div>
                                     </div>
@@ -196,13 +196,13 @@
                             </div>
     
                             <div class="photo">
-                                <img src="/userPostImages/<%= element.img %>" alt="...">
+                                <img src="/userPostImages/<%= element.post.img %>" alt="...">
                             </div>
 
                             <div class="action-buttons">
                                 <div class="interaction-buttons">
 
-                                    <form action="/like/<%= element._id %>?_method=PUT" method="POST">
+                                    <form action="/like/<%= element.post._id %>?_method=PUT" method="POST">
                                         <!-- <span><i class="uil uil-heart"></i></span> -->
                                         <button class="icon-heart"><i class="uil uil-heart"></i></span>
                                     </form>
@@ -220,19 +220,18 @@
                                 <span><img src="images/profile-4.jpg" alt=""></span>
                                 <span><img src="images/profile-15.jpg" alt=""></span> -->
 
-                                <p>Liked by <b><%= element.likedByNames[element.likedByNames.length-1] %></b> 
-                                    and <b><%= element.likedByIds.length %> </b></p>
+                                <p>Liked by <b><%= element.post.likedByNames[element.post.likedByNames.length-1] %></b> 
+                                    and <b><%= element.post.likedByIds.length %> </b></p>
                                 <!-- <p>Liked by <b>Ernest Achiever</b> and <b>2,323 others</b></p> -->
                             </div>
 
 
                             <div class="caption">
-                                <%= element.caption %>
+                                <%= element.post.caption %>
                                 <!-- <p><b>Lana Rose</b> Lorem ipsum dolor sit quisquam eisu.<span class="harsh-tag">#lifestyle</span></p> -->
                             </div>
                             <!-- <div class="comments text-muted">View all 277 comment</div> -->
                         </div>
-    
                     <% }); %>
                     <!---------------- END OF FEED ----------------->
 
@@ -293,7 +292,7 @@
                         </div>
                     </div>
                     <!----- MESSAGE ----->
-                   
+                
                     <!----- MESSAGE ----->
                     
                 </div>

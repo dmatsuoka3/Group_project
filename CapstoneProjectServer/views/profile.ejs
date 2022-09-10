@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<header>
+
+	<div class="container">
+		<div class="profile">
+			<div class="profile-image">
+				<img src="/profilePicture/<%= data[0].profilePicture %>" alt="user profile img" width="150">
+			</div>
+
+			<div class="profile-user-settings">
+				<h1 class="profile-user-name"><%= data[0].username %></h1>
+				<%  
+				if(user.isLoggedIn)  { %>
+				<button class="btn profile-edit-btn" type="button" onclick="window.location.href='/editprofile'">Edit Profile</button>
+				<% } %>
+				<button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button>
+			</div>
+
+			<div class="profile-stats">
+				<ul>
+					<li><span class="profile-stat-count">164</span> posts</li>
+					<li><span class="profile-stat-count">188</span> followers</li>
+					<li><span class="profile-stat-count">206</span> following</li>
+				</ul>
+			</div>
+
+			<div class="profile-bio">
+				<p><span class="profile-real-name"><%= data[0].name %></span></p>
+				<p><%= data[0].bio %></p>
+			</div>
+		</div>
+	</div>
+</header>
+
+<main>
+	<div class="container">
+		<div class="gallery">
+			<% photos.forEach((element)=> { %> 
+			<div class="gallery-item" tabindex="0">
+				<img src="/userPostImages/<%=element.img %>" class="gallery-image" alt="">
+			</div>
+			<% }); %>
+			
+		</div>
+		<div class="loader"></div>
+	</div>
+</main>
+</body>
+</html>
