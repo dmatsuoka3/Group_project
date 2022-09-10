@@ -48,16 +48,20 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: ""
         },
+      
+        followers:  [
+            { 
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'UserModel' 
+            },
+        ],
 
-    
-        followers: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "UserModel"
-        },
-        followings: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "UserModel"
-        },
+        followings: [
+            { 
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'UserModel' 
+            },
+        ],
 
         likes: [
             {

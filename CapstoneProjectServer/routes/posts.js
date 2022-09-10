@@ -66,7 +66,6 @@ router.get('/feeds', isLoggedIn, (req, res, next)=> {
     });
 });
 
-
 //Made the route asyncrounous, so the results from the DB query can be used outside of its CB
 router.get('/feeds', isLoggedIn, async (req, res) => {
     //Create a DB query, to get the results into a variable
@@ -81,7 +80,7 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         postfeed[posts] = {post: postfeed[posts], user: postuser}
     }
 
-    //console.log(postfeed)
+    //console.lo.g(postfeed)
     res.render('feeds.ejs', {data: postfeed, user: req.singleUser, allUsers: req.allUsers})
     
 });

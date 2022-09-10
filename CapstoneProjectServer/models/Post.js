@@ -12,11 +12,11 @@ const imageSchema = new mongoose.Schema({
         type: String,
     },
 
-
     timeCreated: {
         type: Date,
         default: () => Date.now(),
     },
+    
     snippet: {
         type: String,
     },
@@ -25,14 +25,6 @@ const imageSchema = new mongoose.Schema({
         type: String,
         default: 'placeholder.jpg',
     },
-
-
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UserModel"
-    },
-
-
 
     postedBy: {
         type: String
