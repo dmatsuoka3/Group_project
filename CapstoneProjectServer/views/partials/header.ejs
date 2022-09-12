@@ -25,10 +25,13 @@
             <h2 class="logo">
                 PhotoSnap
             </h2>
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="search" name="" id="" placeholder="Search for creators, inspirations, and projects">
-            </div>
+            <form>
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" value="" name="" id="search-user" class="domTextElement" placeholder="Search for username"> 
+                    <button id="search-user" onclick="getValueInput()"> Search</button> 
+                </div>
+            </form>
             <div class="create">
                 <a href="/logout" class="btn btn-primary">Log out</a>
                 <div class="profile-photo"><a href="/user/<%= user.username %>"><img src="/profilePicture/<%= user.profilePicture %>" alt="profile-photo"></a>

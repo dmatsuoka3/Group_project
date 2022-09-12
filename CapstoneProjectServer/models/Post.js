@@ -50,4 +50,4 @@ const imageSchema = new mongoose.Schema({
 
 imageSchema.plugin(mongoose_delete);
 
-module.exports = mongoose.model("ImageModel", imageSchema);
+module.exports = mongoose.model("imagemodels", imageSchema);

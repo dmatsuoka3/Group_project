@@ -239,7 +239,16 @@ closeBtn.addEventListener('click', () => {
     document.querySelector('.left').style.display = 'none';
 })
 
+// Press enter to search user on input box
+// $("#search-user").keyup(function(event) {
+//     if (event.keyCode === 13) {
+//         $("#search-user").click();
+//     }
+// });
 
-
+const getValueInput = () =>{
+    let inputValue = document.getElementsByClassName("domTextElement")[1].value; 
+    document.getElementById("search-user").innerHTML = inputValue; 
+  }
 
 // THE END

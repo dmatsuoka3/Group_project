@@ -99,12 +99,11 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
               // + "\n\nUserModel: " + user + "\n"
     );
     
-  if(!req.files) {
+  if(!req.file) {
     // res.send("File was not found.");
     console.log("File was not found.");
-
+    
     res.redirect('/new');
-    return;
   }
 
     UserModel.findById(req.user.id, (error, result)=> {
@@ -279,5 +278,7 @@ router.put('/like/:id', (req, res)=> {
         }
     });
 });
+
+
 
 module.exports = router;
