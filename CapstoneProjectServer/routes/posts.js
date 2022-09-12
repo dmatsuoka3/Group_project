@@ -11,8 +11,6 @@ const isLoggedIn = (req, res, next) => {
     res.redirect("/login");
 };
 
-// var profilePic = {}
-
 // define storage for the images
 const storage = multer.diskStorage({
     // destination for files
@@ -80,8 +78,11 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         postfeed[posts] = {post: postfeed[posts], user: postuser}
     }
 
-    //console.lo.g(postfeed)
-    res.render('feeds.ejs', {data: postfeed, user: req.singleUser, allUsers: req.allUsers})
+    res.render('feeds.ejs', {
+        data: postfeed, 
+        user: req.singleUser, 
+        allUsers: req.allUsers
+    })
     
 });
 
@@ -98,11 +99,13 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
               // + "\n\nUserModel: " + user + "\n"
     );
     
-//   if(!req.files) {
-//     // res.status(err.statusCode || 500);
-//     res.send("File was not found.");
-//     return;
-//   }
+  if(!req.files) {
+    // res.send("File was not found.");
+    console.log("File was not found.");
+
+    res.redirect('/new');
+    return;
+  }
 
     UserModel.findById(req.user.id, (error, result)=> {
         if(error) {
