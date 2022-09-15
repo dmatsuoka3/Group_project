@@ -69,13 +69,6 @@ const userSchema = new mongoose.Schema(
                 ref: 'ImageModel' 
             },
         ],
-    
-        posts: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'ImageModel' 
-            },
-        ],
 
         created: {
             type: Date,
