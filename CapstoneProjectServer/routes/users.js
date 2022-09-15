@@ -68,6 +68,7 @@ router.post("/signup", upload, (req, res) => {
     followers: req.body.followers,
     followings: req.body.followings,
     likes: req.body.likes,
+    posts: req.body.posts,
     phone: req.body.phone,
     bio: req.body.bio,
     gender: req.body.gender,

@@ -113,6 +113,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
             console.log(error);
         } else {
             const profPic = result.profilePicture;
+            const postByUser = result.posts;
 
             const theImage = new ImageModel({
                 caption: req.body.caption,
@@ -123,7 +124,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                 likedByIds: req.body.likedByIds,
                 likedByNames: req.body.likedByNames
             });
-            
+
             theImage.save(function() {
                 
                 theImage.delete(function() {
@@ -132,8 +133,10 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                     // mongodb: {deleted: false,}
                     });
                 });
-        
             });
+
+            postByUser.push(theImage._id);
+            postByUser.save();
         }
     });
 
