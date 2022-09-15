@@ -124,15 +124,20 @@ router.get("/user/:id?", async (req, res) => {
   //Search DB by user name 
   let userinfo = await UserModel.find({username: userId}).exec();
 
+  let userinfoObject = await UserModel.findOne({username: userId}).exec();
+
   let mainUserInfo = await UserModel.findById(req.user.id).exec();
 
   //If users exists, then proceed to query the DB for their posts
   if (userinfo.length > 0) {
-    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo[0]._id}).exec();
+    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo[0]._id}).sort({ timeCreated: 'desc' }).exec();
 
     var mainUserFollowings = mainUserInfo.followings;
 
-    if(mainUserFollowings.includes(req.params.id) || userId == req.user.id) {
+    // res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
+
+    console.log("\n\nuserId: " + userinfoObject.id + "\n");
+    if(mainUserFollowings.includes(req.params.id) || userinfoObject.id == req.user.id) {
       res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
     } else {
       res.render("unkownProfile.ejs", {data: userinfo, user: {isLoggedIn: isLoggedIn}});
@@ -144,57 +149,31 @@ router.get("/user/:id?", async (req, res) => {
   }
 });
 
-router.get('/searchUser/:username?', async (req, res)=> {
+// search user by using username
+router.get('/searchUser', async (req, res)=> {
 
-  console.log("\n\nreq.params.username: " + req.params.username + "\n");
-  let userinfo = await UserModel.find({username: req.params.username}).exec();
+  let searchingUserinfo = await UserModel.findOne({username: req.query.username}).exec();
+ 
+  // if search bar is empty or random 'username' that is not in the database
+  if(!req.query.username || !searchingUserinfo) {
+    res.redirect("/feeds");
+  } else {
+    // get the user info by searching username from database
+    let userinfo = await UserModel.findOne({username: req.query.username}).exec();
+    // get the info for user login from database
+    let mainUserInfo = await UserModel.findById(req.user.id).exec();
 
-
-  let mainUserInfo = await UserModel.findById(req.user.id).exec();
-
-  //If users exists, then proceed to query the DB for their posts
-  if (userinfo.length > 0) {
-    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo[0]._id}).exec();
+    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo._id}).exec();
 
     var mainUserFollowings = mainUserInfo.followings;
-
-    if(mainUserFollowings.includes(req.params.id) || userinfo._id == req.user.id) {
-      res.render("profile.ejs", {data: userinfo, photos: userphoto});
+  
+    if(mainUserFollowings.includes(userinfo.id) || req.user.id == userinfo.id) {
+      res.render("profileSearchUser.ejs", {data: userinfo, photos: userphoto});
     } else {
       res.render("unkownProfile.ejs", {data: userinfo});
-    } 
+    }  
 
-  } else {
-    // insert error page for user that does not exist
-    res.redirect("/error")
   }
-
-  // UserModel.find({username: req.params.username}, (error, userinfo)=> {
-  //   if(error) {
-  //     console.log(error);
-  //   } else {
-  //     console.log("\n\nuserinfo: " + userinfo + "\n");
-
-  //     //If users exists, then proceed to query the DB for their posts
-  //     if (userinfo.length > 0) {
-  //       let userphoto = ImageModel.find({deleted: {$nin: true}, user: userinfo[0]._id}).exec();
-  
-  //       let mainUserInfo = UserModel.findById(req.user.id).exec();
-  //       var mainUserFollowings = mainUserInfo.followings;
-  
-  //       if(mainUserFollowings.includes(userinfo._id)) {
-  //         res.render("profile.ejs", {data: userinfo, photos: userphoto});
-  //       } else {
-  //         res.render("unkownProfile.ejs", {data: userinfo});
-  //       }  
-  //     } else {
-  //       // insert error page for user that does not exist
-  //     res.redirect("/feeds")
-  //   }
-  // }
-  
-  // });
-  
 });
 
 router.get('/editprofile', isLoggedIn, (req, res) => {

@@ -25,11 +25,11 @@
             <h2 class="logo">
                 PhotoSnap
             </h2>
-            <form>
+            <form class="search" action="/searchUser" method="GET">
                 <div class="search-bar">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="search" value="" name="" id="search-user" class="domTextElement" placeholder="Search for username"> 
-                    <button id="search-user" onclick="getValueInput()"> Search</button> 
+                    <input type="search" class="search" name=username id="search-user" class="domTextElement" placeholder="Search for username"> 
+                    <button style="cursor: pointer;">Search</button> 
                 </div>
             </form>
             <div class="create">

@@ -246,9 +246,9 @@ closeBtn.addEventListener('click', () => {
 //     }
 // });
 
-const getValueInput = () =>{
-    let inputValue = document.getElementsByClassName("domTextElement")[1].value; 
-    document.getElementById("search-user").innerHTML = inputValue; 
-  }
+// const getValueInput = () =>{
+//     let inputValue = document.getElementsByClassName("domTextElement")[1].value; 
+//     document.getElementById("search-user").innerHTML = inputValue; 
+//   }
 
 // THE END

@@ -78,6 +78,8 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         postfeed[posts] = {post: postfeed[posts], user: postuser}
     }
 
+    ImageModel.find()
+
     res.render('feeds.ejs', {
         data: postfeed, 
         user: req.singleUser, 
@@ -145,14 +147,48 @@ router.get('/new', (req, res)=> {
 // Update
 router.get('/update/:id', (req, res)=> {
 
-    ImageModel.findById(req.params.id, (error, result)=> {
+    const userId = req.user.id;
+    const imageId = req.params.id;
+
+    console.log("\n\nUser's id: " + userId);
+    console.log("\n\nPost's id: " + imageId);
+
+    // get the image post info
+    ImageModel.findById(imageId, (error, resultPost)=> {
         if(error) {
             console.log(error);
         } else {
-            // console.log("Result: " + result);
-            res.render("updatePost", {data: result});
+
+            // get the user id from image post
+            const theImageUser = resultPost.user;
+            
+            console.log("\n\ntheImageUser: " + theImageUser);
+
+            // get the info from user
+            UserModel.findById(userId, (error, userResult)=> {
+                if(error) {
+                    console.log(error);
+                } else {
+                    console.log("\n\nUserModel's result: " + userResult);
+                    
+                    // get user's id
+                    const theUserId = userResult._id;
+
+                    // if image post's user is equal to user's id
+                    if(theUserId.equals(theImageUser)) {
+
+                        res.render("updatePost", {data: resultPost});
+
+                    } else {
+                        console.log("\n\nYou don't have permission to update this user's post.\n\n");
+                        res.redirect("/feeds");
+                    }
+                }
+            });
+        
         }
     });
+
 });
 
 router.put('/update/:id', (req, res)=> {

@@ -12,6 +12,7 @@ const imageSchema = new mongoose.Schema({
         type: String,
     },
 
+
     timeCreated: {
         type: Date,
         default: () => Date.now(),
@@ -19,10 +20,19 @@ const imageSchema = new mongoose.Schema({
     snippet: {
         type: String,
     },
+
     img: {
         type: String,
         default: 'placeholder.jpg',
     },
+
+
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserModel"
+    },
+
+
 
     postedBy: {
         type: String
@@ -50,4 +60,4 @@ const imageSchema = new mongoose.Schema({
 
 imageSchema.plugin(mongoose_delete);
 
-module.exports = mongoose.model("imagemodels", imageSchema);
+module.exports = mongoose.model("ImageModel", imageSchema);
