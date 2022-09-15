@@ -37,6 +37,7 @@ const upload = multer({
 // BLUEPRINTS
 const ImageModel = require("../models/Post");
 const UserModel = require("../models/User");
+const followModel = require("../models/Following");
 
 // Read
 router.get('/feeds', isLoggedIn, (req, res, next)=> {
@@ -51,23 +52,23 @@ router.get('/feeds', isLoggedIn, (req, res, next)=> {
     });
 });
 
-router.get('/feeds', isLoggedIn, (req, res, next)=> {
-
-    var ObjectId = require('mongodb').ObjectId;
-
-    // find all users except one user (main user)
-    UserModel.find({_id: {$ne: ObjectId(req.user.id)}}, (error, users)=> {
-        if(error) {
-            console.log(error);
-        } else {
-            req.allUsers = users;
-            next();
-        }
-    });
-});
 
 //Made the route asyncrounous, so the results from the DB query can be used outside of its CB
 router.get('/feeds', isLoggedIn, async (req, res) => {
+
+    // find all users except one user (main user)
+    var users = await UserModel.find({_id: {$ne: req.user.id}}).exec();
+
+    for(var followusers in users) {
+        var followingthem = 0;
+        var isfollowing = await followModel.countDocuments({userId: req.user.id, following: users[followusers].id}).exec();
+        
+        users[followusers] = {following: isfollowing, user: users[followusers]}
+    }
+
+    //console.log('dump', users);
+    req.allUsers = users;
+
     //Create a DB query, to get the results into a variable
     var postfeed = await ImageModel.find({deleted: {$nin: true}}).sort({ timeCreated: 'desc' }).exec();
 
@@ -80,7 +81,7 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         postfeed[posts] = {post: postfeed[posts], user: postuser}
     }
 
-    //console.lo.g(postfeed)
+    //console.log(postfeed)
     res.render('feeds.ejs', {data: postfeed, user: req.singleUser, allUsers: req.allUsers})
     
 });
@@ -157,7 +158,7 @@ router.get('/update/:id', (req, res)=> {
 
 router.put('/update/:id', (req, res)=> {
 
-  ImageModel.findByIdAndUpdate({_id: req.params.id},
+ImageModel.findByIdAndUpdate({_id: req.params.id},
         {caption: req.body.caption},
         (error, result)=> {
             if(error) {
@@ -167,7 +168,7 @@ router.put('/update/:id', (req, res)=> {
                 res.redirect("/feeds");
             }
         }
-   );
+);
 });
 
 // Delete
@@ -274,7 +275,7 @@ router.put('/like/:id', (req, res)=> {
 
                 }
             });    
-           
+        
         }
     });
 });
