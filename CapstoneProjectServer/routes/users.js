@@ -118,8 +118,10 @@ router.get("/user/:id?", async (req, res) => {
   const userId = (req.params.id);
   // query database for username, return results to show their profile bio and their images
   let isLoggedIn = 0;
+  const myusername = (req.isAuthenticated() ? req.user.username : '');
+
   //Check if user is logged in
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() & userId == myusername) {
     isLoggedIn = 1;
   }
   //Search DB by user name 

@@ -69,8 +69,17 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
     //console.log('dump', users);
     req.allUsers = users;
 
+    //query list of users following
+    var followeduser = await followModel.find({userId: req.user.id}).exec();
+
+    var fusers = []
+
+    for(var fu in followeduser){
+        fusers.push(followeduser[fu].following)
+    }
+    console.log('hola', fusers)
     //Create a DB query, to get the results into a variable
-    var postfeed = await ImageModel.find({deleted: {$nin: true}}).sort({ timeCreated: 'desc' }).exec();
+    var postfeed = await ImageModel.find({deleted: false, user: {$in: fusers}}).sort({ timeCreated: 'desc' }).exec();
 
     //Loop through the posts variable(this is all the posts)
     for(var posts in postfeed) {
