@@ -156,11 +156,9 @@ router.get("/user/:id?", async (req, res) => {
   var followingCount = await followModel.countDocuments({userId: userinfo[0]._id}).exec();
   var followerCount = await followModel.countDocuments({following: userinfo[0]._id}).exec();
 
-  var userFollow = await followModel.findOne({userId: userinfo._id}).exec();
-  var userFollowing = userFollow.followings;
   //   res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}, count: {photos: userphoto.length, followers: followerCount, followings: followingCount}});
   
-  if(userFollowing.includes(req.params.id) || userinfoObject.id == req.user.id) {
+  if(mainUserFollowings.includes(req.params.id)  || userinfoObject.id == req.user.id) {
     res.render("profile.ejs", {
       data: userinfo, 
       photos: userphoto, 
@@ -286,6 +284,48 @@ router.put("/follow/:id", async (req, res) => {
   // if main user is not equal to other user
   if (req.user.id !== req.params.id) {
 
+    try {
+
+      // get other user's object as 'otherUser'
+      UserModel.findById(req.params.id, (error, otherUser)=> {
+        if(error) {
+          console.log(error);
+        } else {
+
+          // get followers from other user
+          const otherUserFollowers = otherUser.followers;
+
+          // get main user's object as 'mainUser'
+          UserModel.findById(req.user.id, (error, mainUser)=> {
+            if(error) {
+              console.log(error);
+            } else {
+
+              // if other user's followers is not includes main user's id
+              if(!otherUserFollowers.includes(req.user.id)) {
+
+                // then push main user's id to other user's followers
+                otherUser.followers.push(req.user.id);
+                otherUser.save();
+
+                // and push other user's id to main user's followers
+                mainUser.followings.push(req.params.id);
+                mainUser.save();
+
+                res.redirect("/feeds");
+              } 
+            }
+
+          });
+
+        }
+
+      });
+
+    } catch (error) {
+      res.status(500).json(error);
+    }
+
     const following = new followModel({
       userId: req.user.id, 
       following: req.params.id
@@ -309,6 +349,50 @@ router.put("/unfollow/:id", (req, res) => {
 
   // if main user is not equal to other user
   if (req.user.id !== req.params.id) {
+
+    try {
+
+      // get other user's object as 'otherUser'
+      UserModel.findById(req.params.id, (error, otherUser)=> {
+        if(error) {
+          console.log(error);
+        } else {
+
+          // get followers from other user
+          const otherUserFollowers = otherUser.followers;
+
+          // get main user's object as 'mainUser'
+          UserModel.findById(req.user.id, (error, mainUser)=> {
+            if(error) {
+              console.log(error);
+            } else {
+
+              // if other user's followers includes main user's id
+              if(otherUserFollowers.includes(req.user.id))  {
+
+                // pull main user's id from other user's followers
+                otherUser.followers.pull(req.user.id);
+                otherUser.save();
+
+                // pull other user's id from main user's followings
+                mainUser.followings.pull(req.params.id);
+                mainUser.save();
+
+                res.redirect("/feeds");
+              }
+
+            }
+
+          });
+
+        }
+
+      });
+
+    } catch (error) {
+      res.status(500).json(error);
+    }
+
     // look up by combination and delete it
     followModel.deleteOne({userId: req.user.id, following: req.params.id}, (error, result)=> {
         console.log('unfollowed', result)
