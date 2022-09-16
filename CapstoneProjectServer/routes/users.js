@@ -68,7 +68,6 @@ router.post("/signup", upload, (req, res) => {
     followers: req.body.followers,
     followings: req.body.followings,
     likes: req.body.likes,
-    posts: req.body.posts,
     phone: req.body.phone,
     bio: req.body.bio,
     gender: req.body.gender,
@@ -169,9 +168,9 @@ router.get('/searchUser', async (req, res)=> {
     var mainUserFollowings = mainUserInfo.followings;
   
     if(mainUserFollowings.includes(userinfo.id) || req.user.id == userinfo.id) {
-      res.render("profileSearchUser.ejs", {data: userinfo, photos: userphoto});
+      res.render("profileSearchUser.ejs", {data: userinfo, photos: userphoto, count: {photos: userphoto.length}});
     } else {
-      res.render("unkownProfile.ejs", {data: userinfo});
+      res.render("unkownProfile.ejs", {data: userinfo, count: {photos: userphoto.length}});
     }  
 
   }
