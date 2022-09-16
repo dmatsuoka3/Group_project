@@ -11,8 +11,6 @@ const isLoggedIn = (req, res, next) => {
     res.redirect("/login");
 };
 
-// var profilePic = {}
-
 // define storage for the images
 const storage = multer.diskStorage({
     // destination for files
@@ -80,8 +78,13 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         postfeed[posts] = {post: postfeed[posts], user: postuser}
     }
 
-    //console.lo.g(postfeed)
-    res.render('feeds.ejs', {data: postfeed, user: req.singleUser, allUsers: req.allUsers})
+    ImageModel.find()
+
+    res.render('feeds.ejs', {
+        data: postfeed, 
+        user: req.singleUser, 
+        allUsers: req.allUsers
+    })
     
 });
 
@@ -98,17 +101,19 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
               // + "\n\nUserModel: " + user + "\n"
     );
     
-//   if(!req.files) {
-//     // res.status(err.statusCode || 500);
-//     res.send("File was not found.");
-//     return;
-//   }
+  if(!req.file) {
+    // res.send("File was not found.");
+    console.log("File was not found.");
+    
+    res.redirect('/new');
+  }
 
     UserModel.findById(req.user.id, (error, result)=> {
         if(error) {
             console.log(error);
         } else {
             const profPic = result.profilePicture;
+            const postByUser = result.posts;
 
             const theImage = new ImageModel({
                 caption: req.body.caption,
@@ -119,7 +124,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                 likedByIds: req.body.likedByIds,
                 likedByNames: req.body.likedByNames
             });
-            
+
             theImage.save(function() {
                 
                 theImage.delete(function() {
@@ -128,8 +133,10 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                     // mongodb: {deleted: false,}
                     });
                 });
-        
             });
+
+            postByUser.push(theImage._id);
+            postByUser.save();
         }
     });
 
@@ -145,14 +152,48 @@ router.get('/new', (req, res)=> {
 // Update
 router.get('/update/:id', (req, res)=> {
 
-    ImageModel.findById(req.params.id, (error, result)=> {
+    const userId = req.user.id;
+    const imageId = req.params.id;
+
+    console.log("\n\nUser's id: " + userId);
+    console.log("\n\nPost's id: " + imageId);
+
+    // get the image post info
+    ImageModel.findById(imageId, (error, resultPost)=> {
         if(error) {
             console.log(error);
         } else {
-            // console.log("Result: " + result);
-            res.render("updatePost", {data: result});
+
+            // get the user id from image post
+            const theImageUser = resultPost.user;
+            
+            console.log("\n\ntheImageUser: " + theImageUser);
+
+            // get the info from user
+            UserModel.findById(userId, (error, userResult)=> {
+                if(error) {
+                    console.log(error);
+                } else {
+                    console.log("\n\nUserModel's result: " + userResult);
+                    
+                    // get user's id
+                    const theUserId = userResult._id;
+
+                    // if image post's user is equal to user's id
+                    if(theUserId.equals(theImageUser)) {
+
+                        res.render("updatePost", {data: resultPost});
+
+                    } else {
+                        console.log("\n\nYou don't have permission to update this user's post.\n\n");
+                        res.redirect("/feeds");
+                    }
+                }
+            });
+        
         }
     });
+
 });
 
 router.put('/update/:id', (req, res)=> {
@@ -278,5 +319,7 @@ router.put('/like/:id', (req, res)=> {
         }
     });
 });
+
+
 
 module.exports = router;

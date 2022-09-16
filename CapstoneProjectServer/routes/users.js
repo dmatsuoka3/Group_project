@@ -123,17 +123,72 @@ router.get("/user/:id?", async (req, res) => {
   }
   //Search DB by user name 
   let userinfo = await UserModel.find({username: userId}).exec();
+  let userinfoId = await UserModel.findOne({username: req.params.id}).exec();
+
+  let userinfoObject = await UserModel.findOne({username: userId}).exec();
+
+  let mainUserInfo = await UserModel.findById(req.user.id).exec();
+
   //If users exists, then proceed to query the DB for their posts
   if (userinfo.length > 0) {
-    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo[0]._id}).exec();
+    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo[0]._id}).sort({ timeCreated: 'desc' }).exec();
 
-    res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
+    var mainUserFollowings = mainUserInfo.followings;
+
+    // res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
+
+    console.log("\n\nuserId: " + userinfoObject.id + "\n");
+    if(mainUserFollowings.includes(req.params.id) || userinfoObject.id == req.user.id) {
+      res.render("profile.ejs", {
+        data: userinfo,
+        dataUser: userinfoId,
+        photos: userphoto, 
+        user: {isLoggedIn: isLoggedIn}, 
+        count: {photos: userphoto.length}
+      });
+    } else {
+      res.render("unkownProfile.ejs", {data: userinfo, user: {isLoggedIn: isLoggedIn}, count: {photos: userphoto.length}});
+    } 
+
   } else {
     // insert error page for user that does not exist
     res.redirect("/error")
   }
 });
 
+// search user by using username
+router.get('/searchUser', async (req, res)=> {
+
+  let searchingUserinfo = await UserModel.findOne({username: req.query.username}).exec();
+ 
+  // if search bar is empty or random 'username' that is not in the database
+  if(!req.query.username || !searchingUserinfo) {
+    res.redirect("/feeds");   // then it'll refresh to 'feeds' page
+  } else {
+    // get the user info by searching username or name from database
+    let userinfo = await UserModel.findOne({username: req.query.username}).exec();
+
+    // get the info for user login from database
+    let mainUserInfo = await UserModel.findById(req.user.id).exec();
+
+    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo._id}).exec();
+
+    // get followings from main user (login user)
+    var mainUserFollowings = mainUserInfo.followings;
+  
+    // if user with 'username' is following to main user or if user's id is the same as main user's id
+    if(mainUserFollowings.includes(userinfo.id) || req.user.id == userinfo.id) {
+      res.render("profileSearchUser.ejs", {
+        data: userinfo, 
+        photos: userphoto,
+        count: {photos: userphoto.length}
+      });
+    } else {
+      res.render("unkownProfile.ejs", {data: userinfo, count: {photos: userphoto.length}});
+    }  
+
+  }
+});
 
 router.get('/editprofile', isLoggedIn, (req, res) => {
   //console.log(req.user.username)
@@ -193,7 +248,7 @@ router.get('/deleteprofile', (req, res) => {
   });
 });
 
-//follow a user
+// follow user
 router.put("/follow/:id", async (req, res) => {
 
   // if main user is not equal to other user
@@ -261,5 +316,7 @@ router.put("/follow/:id", async (req, res) => {
     res.status(403).json("you CANNOT follow yourself");
   }
 });
+
+
 
 module.exports = router;

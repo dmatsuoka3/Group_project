@@ -180,7 +180,6 @@
                                     </div>    
                                 </div>
     
-                                <!-- <div class="dropdown-container" tabindex="1" style="cursor: pointer;"> -->
                                     <div id="dropdown" class="dropdown">
                                         <span class="edit">
                                             <i class="uil uil-ellipsis-h"></i>
@@ -188,7 +187,6 @@
                                         <div id="dropdown-container" class="dropdown-content">
                                             <a href="/update/<%= element.post._id %>"><div>Update</div></a>
                                             <a href="/home/<%= element.post._id %>"><div>Delete</div></a>
-                                            <!-- <div id="delete" onclick="removeTag()">Delete</div> -->
                                         </div>
                                     </div>
                                 <!-- </div> -->
@@ -220,9 +218,10 @@
                                 <span><img src="images/profile-4.jpg" alt=""></span>
                                 <span><img src="images/profile-15.jpg" alt=""></span> -->
 
-                                <p>Liked by <b><%= element.post.likedByNames[element.post.likedByNames.length-1] %></b> 
+                                <p>Liked by <b>
+                                    <%= element.post.likedByNames[element.post.likedByNames.length-1] %>
+                                </b> 
                                     and <b><%= element.post.likedByIds.length %> </b></p>
-                                <!-- <p>Liked by <b>Ernest Achiever</b> and <b>2,323 others</b></p> -->
                             </div>
 
 

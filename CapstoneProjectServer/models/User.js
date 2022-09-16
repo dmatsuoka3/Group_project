@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema(
                 ref: 'ImageModel' 
             },
         ],
-    
+
         created: {
             type: Date,
             required: true,
