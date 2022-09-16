@@ -5,6 +5,7 @@ const LocalStrategy = require("passport-local");
 const multer = require("multer");
 const UserModel = require("../models/User");
 const ImageModel = require("../models/Post");
+const followModel = require("../models/Following");
 
 const storage = multer.diskStorage({
   // destination for image files
@@ -117,8 +118,10 @@ router.get("/user/:id?", async (req, res) => {
   const userId = (req.params.id);
   // query database for username, return results to show their profile bio and their images
   let isLoggedIn = 0;
-  //Check if users is logged in
-  if (req.isAuthenticated()) {
+  const myusername = (req.isAuthenticated() ? req.user.username : '');
+
+  //Check if user is logged in
+  if (req.isAuthenticated() & userId == myusername) {
     isLoggedIn = 1;
   }
   //Search DB by user name 
@@ -137,19 +140,48 @@ router.get("/user/:id?", async (req, res) => {
 
     // res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
 
-    console.log("\n\nuserId: " + userinfoObject.id + "\n");
-    if(mainUserFollowings.includes(req.params.id) || userinfoObject.id == req.user.id) {
-      res.render("profile.ejs", {
-        data: userinfo,
-        dataUser: userinfoId,
-        photos: userphoto, 
-        user: {isLoggedIn: isLoggedIn}, 
-        count: {photos: userphoto.length}
-      });
-    } else {
-      res.render("unkownProfile.ejs", {data: userinfo, user: {isLoggedIn: isLoggedIn}, count: {photos: userphoto.length}});
-    } 
+    // console.log("\n\nuserId: " + userinfoObject.id + "\n");
+    // if(mainUserFollowings.includes(req.params.id) || userinfoObject.id == req.user.id) {
+    //   res.render("profile.ejs", {
+    //     data: userinfo,
+    //     dataUser: userinfoId,
+    //     photos: userphoto, 
+    //     user: {isLoggedIn: isLoggedIn}, 
+    //     count: {photos: userphoto.length}
+    //   });
+    // } else {
+    //   res.render("unkownProfile.ejs", {data: userinfo, user: {isLoggedIn: isLoggedIn}, count: {photos: userphoto.length}});
+    // } 
 
+  var followingCount = await followModel.countDocuments({userId: userinfo[0]._id}).exec();
+  var followerCount = await followModel.countDocuments({following: userinfo[0]._id}).exec();
+
+  var userFollow = await followModel.findOne({userId: userinfo._id}).exec();
+  var userFollowing = userFollow.followings;
+  //   res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}, count: {photos: userphoto.length, followers: followerCount, followings: followingCount}});
+  
+  if(userFollowing.includes(req.params.id) || userinfoObject.id == req.user.id) {
+    res.render("profile.ejs", {
+      data: userinfo, 
+      photos: userphoto, 
+      user: {isLoggedIn: isLoggedIn}, 
+      count: {
+        photos: userphoto.length, 
+        followers: followerCount, 
+        followings: followingCount
+      }
+    });
+  } else {
+    res.render("unkownProfile.ejs", {
+      data: userinfo, 
+      user: {isLoggedIn: isLoggedIn}, 
+      count: {
+        photos: userphoto.length,
+        followers: followerCount, 
+        followings: followingCount
+      }});
+  } 
+  
   } else {
     // insert error page for user that does not exist
     res.redirect("/error")
@@ -237,7 +269,7 @@ router.get('/deleteprofile', (req, res) => {
 });
 
 // Delete
-router.get('/deleteprofile', (req, res) => {
+/* router.get('/deleteprofile', (req, res) => {
   UserModel.deleteOne({ _id: req.user._id }, (error, result) => {
     if (error) {
       //console.log("Something went wrong delete from database");
@@ -246,7 +278,7 @@ router.get('/deleteprofile', (req, res) => {
       res.redirect("/login");
     }
   });
-});
+}); */
 
 // follow user
 router.put("/follow/:id", async (req, res) => {
@@ -254,64 +286,35 @@ router.put("/follow/:id", async (req, res) => {
   // if main user is not equal to other user
   if (req.user.id !== req.params.id) {
 
+    const following = new followModel({
+      userId: req.user.id, 
+      following: req.params.id
+    });
+
+    following.save(function() {
+      console.log("following")
+    });
+
     console.log("\n\nMain user's id: " + req.user.id);
     console.log("\n\nOther user's id: " + req.params.id + "\n\n");
+    res.redirect('/feeds')
+  } else {
+    res.status(403).json("you CANNOT follow yourself");
+  }
+});
 
-    try {
 
-      // get other user's object as 'otherUser'
-      UserModel.findById(req.params.id, (error, otherUser)=> {
-        if(error) {
-          console.log(error);
-        } else {
+//unfollow a user
+router.put("/unfollow/:id", (req, res) => {
 
-          // get followers from other user
-          const otherUserFollowers = otherUser.followers;
+  // if main user is not equal to other user
+  if (req.user.id !== req.params.id) {
+    // look up by combination and delete it
+    followModel.deleteOne({userId: req.user.id, following: req.params.id}, (error, result)=> {
+        console.log('unfollowed', result)
+    });
 
-          // get main user's object as 'mainUser'
-          UserModel.findById(req.user.id, (error, mainUser)=> {
-            if(error) {
-              console.log(error);
-            } else {
-
-              // if other user's followers is not includes main user's id
-              if(!otherUserFollowers.includes(req.user.id)) {
-
-                // then push main user's id to other user's followers
-                otherUser.followers.push(req.user.id);
-                otherUser.save();
-
-                // and push other user's id to main user's followers
-                mainUser.followings.push(req.params.id);
-                mainUser.save();
-
-                res.redirect("/feeds");
-
-              // or else
-              } else {
-
-                // pull main user's id from other user's followers
-                otherUser.followers.pull(req.user.id);
-                otherUser.save();
-
-                // pull other user's id from main user's followings
-                mainUser.followings.pull(req.params.id);
-                mainUser.save();
-
-                res.redirect("/feeds");
-              }
-
-            }
-
-          });
-
-        }
-
-      });
-
-    } catch (error) {
-      res.status(500).json(error);
-    }
+    res.redirect('/feeds')
   } else {
     res.status(403).json("you CANNOT follow yourself");
   }
