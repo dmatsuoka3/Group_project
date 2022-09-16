@@ -312,6 +312,15 @@ router.put("/follow/:id", async (req, res) => {
                 mainUser.followings.push(req.params.id);
                 mainUser.save();
 
+                const following = new followModel({
+                  userId: req.user.id, 
+                  following: req.params.id
+                });
+            
+                following.save(function() {
+                  console.log("following")
+                });
+
                 res.redirect("/feeds");
               } 
             }
@@ -326,18 +335,7 @@ router.put("/follow/:id", async (req, res) => {
       res.status(500).json(error);
     }
 
-    const following = new followModel({
-      userId: req.user.id, 
-      following: req.params.id
-    });
 
-    following.save(function() {
-      console.log("following")
-    });
-
-    console.log("\n\nMain user's id: " + req.user.id);
-    console.log("\n\nOther user's id: " + req.params.id + "\n\n");
-    res.redirect('/feeds')
   } else {
     res.status(403).json("you CANNOT follow yourself");
   }
@@ -378,6 +376,10 @@ router.put("/unfollow/:id", (req, res) => {
                 mainUser.followings.pull(req.params.id);
                 mainUser.save();
 
+                followModel.deleteOne({userId: req.user.id, following: req.params.id}, (error, result)=> {
+                  console.log('unfollowed', result)
+                });
+
                 res.redirect("/feeds");
               }
 
@@ -393,12 +395,7 @@ router.put("/unfollow/:id", (req, res) => {
       res.status(500).json(error);
     }
 
-    // look up by combination and delete it
-    followModel.deleteOne({userId: req.user.id, following: req.params.id}, (error, result)=> {
-        console.log('unfollowed', result)
-    });
-
-    res.redirect('/feeds')
+  
   } else {
     res.status(403).json("you CANNOT follow yourself");
   }

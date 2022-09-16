@@ -57,6 +57,8 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
     // find all users except one user (main user)
     var users = await UserModel.find({_id: {$ne: req.user.id}}).exec();
 
+    var allUsersInfo = await UserModel.find().exec();
+
     for(var followusers in users) {
         var followingthem = 0;
         var isfollowing = await followModel.countDocuments({userId: req.user.id, following: users[followusers].id}).exec();
@@ -64,7 +66,6 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         users[followusers] = {following: isfollowing, user: users[followusers]}
     }
 
-    //console.log('dump', users);
     req.allUsers = users;
 
     //query list of users following
