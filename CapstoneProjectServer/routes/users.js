@@ -123,6 +123,7 @@ router.get("/user/:id?", async (req, res) => {
   }
   //Search DB by user name 
   let userinfo = await UserModel.find({username: userId}).exec();
+  let userinfoId = await UserModel.findOne({username: req.params.id}).exec();
 
   let userinfoObject = await UserModel.findOne({username: userId}).exec();
 
@@ -138,9 +139,15 @@ router.get("/user/:id?", async (req, res) => {
 
     console.log("\n\nuserId: " + userinfoObject.id + "\n");
     if(mainUserFollowings.includes(req.params.id) || userinfoObject.id == req.user.id) {
-      res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
+      res.render("profile.ejs", {
+        data: userinfo,
+        dataUser: userinfoId,
+        photos: userphoto, 
+        user: {isLoggedIn: isLoggedIn}, 
+        count: {photos: userphoto.length}
+      });
     } else {
-      res.render("unkownProfile.ejs", {data: userinfo, user: {isLoggedIn: isLoggedIn}});
+      res.render("unkownProfile.ejs", {data: userinfo, user: {isLoggedIn: isLoggedIn}, count: {photos: userphoto.length}});
     } 
 
   } else {
@@ -156,19 +163,26 @@ router.get('/searchUser', async (req, res)=> {
  
   // if search bar is empty or random 'username' that is not in the database
   if(!req.query.username || !searchingUserinfo) {
-    res.redirect("/feeds");
+    res.redirect("/feeds");   // then it'll refresh to 'feeds' page
   } else {
-    // get the user info by searching username from database
+    // get the user info by searching username or name from database
     let userinfo = await UserModel.findOne({username: req.query.username}).exec();
+
     // get the info for user login from database
     let mainUserInfo = await UserModel.findById(req.user.id).exec();
 
     let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo._id}).exec();
 
+    // get followings from main user (login user)
     var mainUserFollowings = mainUserInfo.followings;
   
+    // if user with 'username' is following to main user or if user's id is the same as main user's id
     if(mainUserFollowings.includes(userinfo.id) || req.user.id == userinfo.id) {
-      res.render("profileSearchUser.ejs", {data: userinfo, photos: userphoto, count: {photos: userphoto.length}});
+      res.render("profileSearchUser.ejs", {
+        data: userinfo, 
+        photos: userphoto,
+        count: {photos: userphoto.length}
+      });
     } else {
       res.render("unkownProfile.ejs", {data: userinfo, count: {photos: userphoto.length}});
     }  
