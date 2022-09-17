@@ -50,18 +50,36 @@ router.get('/feeds', isLoggedIn, (req, res, next)=> {
     });
 });
 
+// router.get('/feeds', (req, res, next)=> {
+
+//     var ObjectId = require('mongodb').ObjectId;
+
+//     // find all users except one user (main user)
+//     UserModel.find({_id: {$ne: ObjectId(req.user.id)}}, (error, users)=> {
+//         if(error) {
+//             console.log(error);
+//         } else {
+//             req.allUsersExceptOne = users;
+//             next();
+//         }
+//     });
+// });
 
 //Made the route asyncrounous, so the results from the DB query can be used outside of its CB
 router.get('/feeds', isLoggedIn, async (req, res) => {
 
-    // find all users except one user (main user)
-    var users = await UserModel.find({_id: {$ne: req.user.id}}).exec();
+  //  UserModel.find({_id: {$ne: ObjectId(req.user.id)}}, (error, users)=> {
 
-    var allUsersInfo = await UserModel.find().exec();
+    // find all users except login user 
+    var users = await UserModel.find({}).exec();
 
     for(var followusers in users) {
         var followingthem = 0;
-        var isfollowing = await followModel.countDocuments({userId: req.user.id, following: users[followusers].id}).exec();
+
+        var isfollowing = await followModel.countDocuments({
+            userId: req.user.id, 
+            following: users[followusers].id
+        }).exec();
         
         users[followusers] = {following: isfollowing, user: users[followusers]}
     }
@@ -76,7 +94,9 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
     for(var fu in followeduser){
         fusers.push(followeduser[fu].following)
     }
+
     console.log('hola', fusers)
+
     //Create a DB query, to get the results into a variable
     var postfeed = await ImageModel.find({deleted: false, user: {$in: fusers}}).sort({ timeCreated: 'desc' }).exec();
 
@@ -94,6 +114,7 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
     res.render('feeds.ejs', {
         data: postfeed, 
         user: req.singleUser, 
+        // userExceptOne: req.allUsersExceptOne, 
         allUsers: req.allUsers
     })
     
