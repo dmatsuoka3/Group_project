@@ -68,10 +68,8 @@ router.get('/feeds', isLoggedIn, (req, res, next)=> {
 //Made the route asyncrounous, so the results from the DB query can be used outside of its CB
 router.get('/feeds', isLoggedIn, async (req, res) => {
 
-  //  UserModel.find({_id: {$ne: ObjectId(req.user.id)}}, (error, users)=> {
-
-    // find all users except login user 
-    var users = await UserModel.find({}).exec();
+    // find all users except login user
+    var users = await UserModel.find({_id: {$ne: req.user.id}}).exec();
 
     for(var followusers in users) {
         var followingthem = 0;
