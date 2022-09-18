@@ -7,7 +7,11 @@ const imageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UserModel'
     }, 
-    
+
+    userString: {
+        type: String
+    },
+
     caption: {
         type: String,
     },
@@ -26,13 +30,6 @@ const imageSchema = new mongoose.Schema({
         type: String,
         default: 'placeholder.jpg',
     },
-
-
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UserModel"
-    },
-
 
 
     postedBy: {

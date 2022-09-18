@@ -138,47 +138,32 @@ router.get("/user/:id?", async (req, res) => {
 
     var mainUserFollowings = mainUserInfo.followings;
 
-    // res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}});
-
-    // console.log("\n\nuserId: " + userinfoObject.id + "\n");
-    // if(mainUserFollowings.includes(req.params.id) || userinfoObject.id == req.user.id) {
-    //   res.render("profile.ejs", {
-    //     data: userinfo,
-    //     dataUser: userinfoId,
-    //     photos: userphoto, 
-    //     user: {isLoggedIn: isLoggedIn}, 
-    //     count: {photos: userphoto.length}
-    //   });
-    // } else {
-    //   res.render("unkownProfile.ejs", {data: userinfo, user: {isLoggedIn: isLoggedIn}, count: {photos: userphoto.length}});
-    // } 
-
-  var followingCount = await followModel.countDocuments({userId: userinfo[0]._id}).exec();
-  var followerCount = await followModel.countDocuments({following: userinfo[0]._id}).exec();
-
-  //   res.render("profile.ejs", {data: userinfo, photos: userphoto, user: {isLoggedIn: isLoggedIn}, count: {photos: userphoto.length, followers: followerCount, followings: followingCount}});
+    var followingCount = await followModel.countDocuments({userId: userinfo[0]._id}).exec();
+    var followerCount = await followModel.countDocuments({following: userinfo[0]._id}).exec();
   
-  if(mainUserFollowings.includes(req.params.id)  || userinfoObject.id == req.user.id) {
-    res.render("profile.ejs", {
-      data: userinfo, 
-      photos: userphoto, 
-      user: {isLoggedIn: isLoggedIn}, 
-      count: {
-        photos: userphoto.length, 
-        followers: followerCount, 
-        followings: followingCount
-      }
-    });
-  } else {
-    res.render("unkownProfile.ejs", {
-      data: userinfo, 
-      user: {isLoggedIn: isLoggedIn}, 
-      count: {
-        photos: userphoto.length,
-        followers: followerCount, 
-        followings: followingCount
-      }});
-  } 
+  
+    // if user with 'username' is following to main user or if user's id is the same as main user's id
+    if(mainUserFollowings.includes(req.params.id)  || userinfoObject.id == req.user.id) {
+      res.render("profile.ejs", {
+        data: userinfo, 
+        photos: userphoto, 
+        user: {isLoggedIn: isLoggedIn}, 
+        count: {
+          photos: userphoto.length, 
+          followers: followerCount, 
+          followings: followingCount
+        }
+      });
+    } else {
+      res.render("unkownProfile.ejs", {
+        data: userinfo, 
+        user: {isLoggedIn: isLoggedIn}, 
+        count: {
+          photos: userphoto.length,
+          followers: followerCount, 
+          followings: followingCount
+        }});
+    } 
   
   } else {
     // insert error page for user that does not exist

@@ -71,6 +71,9 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
     // find all users except login user
     var users = await UserModel.find({_id: {$ne: req.user.id}}).exec();
 
+    // get an object from login user
+    var mainUserObject = await UserModel.findById(req.user.id).exec();
+ 
     for(var followusers in users) {
         var followingthem = 0;
 
@@ -87,17 +90,23 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
     //query list of users following
     var followeduser = await followModel.find({userId: req.user.id}).exec();
 
+    // make an array for followers
     var fusers = []
 
+    // get each follower from user into 'fusers' array
     for(var fu in followeduser){
         fusers.push(followeduser[fu].following)
+        // console.log("\n\nfolloweduser[fu].following: " + followeduser[fu].following + "\n");
     }
+
+    // get also login user id into 'fusers' array
+    fusers.push(mainUserObject._id);
 
     console.log('hola', fusers)
 
-    //Create a DB query, to get the results into a variable
+    // get posts data from following users and login user
     var postfeed = await ImageModel.find({deleted: false, user: {$in: fusers}}).sort({ timeCreated: 'desc' }).exec();
-
+    
     //Loop through the posts variable(this is all the posts)
     for(var posts in postfeed) {
         //Query DB search for the user info based on the posts user ID
@@ -115,6 +124,7 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
         // userExceptOne: req.allUsersExceptOne, 
         allUsers: req.allUsers
     })
+
     
 });
 
@@ -148,6 +158,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                 caption: req.body.caption,
                 img: req.file.filename,
                 user: userId,   
+                userString: userId,
                 postedBy: userName,
                 profileImg: profPic,
                 likedByIds: req.body.likedByIds,
@@ -208,7 +219,8 @@ router.get('/update/:id', (req, res)=> {
                     if(theUserId.equals(theImageUser)) {
 
                         res.render("updatePost", {data: resultPost});
-
+                    
+                    // or else
                     } else {
                         console.log("\n\nYou don't have permission to update this user's post.\n\n");
                         res.redirect("/feeds");
@@ -245,16 +257,19 @@ router.get('/home/:id', (req, res)=> {
     console.log("\n\nUser's id: " + userId);
     console.log("\n\nPost's id: " + imageId);
 
+    // get an object from post
     ImageModel.findById(imageId, (error, resultPost)=> {
         if(error) {
             console.log(error);
         } else {
             console.log("\n\nDelete's ImageModel result: " + resultPost + "\n");
 
+            // get user from Post object
             const theImageUser = resultPost.user;
             
             console.log("\n\ntheImageUser: " + theImageUser);
 
+            // get an object from login user
             UserModel.findById(userId, (error, userResult)=> {
                 if(error) {
                     console.log(error);
@@ -262,9 +277,11 @@ router.get('/home/:id', (req, res)=> {
                     console.log("\n\nUserModel's result: " + userResult);
                     
                     const theUserId = userResult._id;
-
+                    
+                    // if this image is posted by login user
                     if(theUserId.equals(theImageUser)) {
 
+                        // then login user can delete their own post
                         ImageModel.deleteById(req.params.id, (error, result)=> {
                             if(error) {
                                 console.log("Something went wrong delete from database");
@@ -275,6 +292,7 @@ router.get('/home/:id', (req, res)=> {
                             }
                         });
 
+                    // or else
                     } else {
                         console.log("\n\nYou don't have permission to delete this user's post.\n\n");
                         res.redirect("/feeds");
