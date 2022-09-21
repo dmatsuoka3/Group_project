@@ -56,9 +56,17 @@ body {
 }
 
 .profile-photo {
-  width: 2.7rem;
-  aspect-ratio: 1/1;
-  border-radius: 50%;
+  /* width: 2.7rem; */
+  width: 60px;
+  /* aspect-ratio: 1/1; */
+  border-radius: 40%;
+  overflow: hidden;
+}
+
+.no-profile-photo {
+  font-size: 24px;
+  width: 80px;
+  border-radius: 40%;
   overflow: hidden;
 }
 
@@ -350,7 +358,7 @@ main .container .left .profile {
 
 /* ----------------- CREATE POST ------------- */
 .middle .create-post {
-  width: 100%;
+  width: 25%;
   display: flex;
   align-items: center;
   justify-content: space-between;

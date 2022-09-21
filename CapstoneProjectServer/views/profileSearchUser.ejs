@@ -18,9 +18,18 @@
 
 	<div class="container">
 		<div class="profile">
-			<div class="profile-image">
-				<img src="/profilePicture/<%= data.profilePicture %>" alt="user profile img" width="150">
-			</div>
+		
+			<% if(!data.profilePicture ) { %>
+				<div class="profile-image" style="font-size: 60px">
+					<i class="fa-regular fa-user"></i></a>
+				</div>
+			<% } else { %> 
+				<div class="profile-image">
+					<img src="/profilePicture/<%= data.profilePicture %>" alt="user profile img" width="150">
+				</div>
+			<!-- menu button to show sidebar -->
+			<% } %>
+
 
 			<div class="profile-user-settings">
 				<h1 class="profile-user-name"><%= data.username %></h1>
@@ -54,7 +63,6 @@
 			<% }); %>
 			
 		</div>
-		<div class="loader"></div>
 	</div>
 </main>
 </body>

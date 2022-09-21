@@ -152,7 +152,7 @@ router.get("/user/:id?", async (req, res) => {
           photos: userphoto.length, 
           followers: followerCount, 
           followings: followingCount
-        }
+        },
       });
     } else {
       res.render("unkownProfile.ejs", {
@@ -174,6 +174,7 @@ router.get("/user/:id?", async (req, res) => {
 // search user by using username
 router.get('/searchUser', async (req, res)=> {
 
+  // get a req.query from the search bar to create an user object by username
   let searchingUserinfo = await UserModel.findOne({username: req.query.username}).exec();
  
   // if search bar is empty or random 'username' that is not in the database
@@ -186,6 +187,7 @@ router.get('/searchUser', async (req, res)=> {
     // get the info for user login from database
     let mainUserInfo = await UserModel.findById(req.user.id).exec();
 
+    // get posts from login user
     let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo._id}).exec();
 
     // get followings from main user (login user)
@@ -198,13 +200,14 @@ router.get('/searchUser', async (req, res)=> {
         photos: userphoto,
         count: {photos: userphoto.length}
       });
+    // or else...
     } else {
       res.render("unkownProfile.ejs", {data: userinfo, count: {photos: userphoto.length}});
     }  
-
   }
 });
 
+// edit profile
 router.get('/editprofile', isLoggedIn, (req, res) => {
   //console.log(req.user.username)
   res.render('editProfile.ejs', { user: req.user })
@@ -213,9 +216,13 @@ router.get('/editprofile', isLoggedIn, (req, res) => {
 // Create
 router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
   let profilepic = ''
+  
+  // if uploader can't find a file, then the previous profile picture will stays 
   if(!req.file) {
     profilepic = req.user.profilePicture
   }
+
+  // update the login user info
   UserModel.findByIdAndUpdate({ _id: req.user._id },
     {
       name: req.body.name,
@@ -251,18 +258,6 @@ router.get('/deleteprofile', (req, res) => {
   });
 });
 
-// Delete
-/* router.get('/deleteprofile', (req, res) => {
-  UserModel.deleteOne({ _id: req.user._id }, (error, result) => {
-    if (error) {
-      //console.log("Something went wrong delete from database");
-    } else {
-      //console.log("This image has been deleted", result);
-      res.redirect("/login");
-    }
-  });
-}); */
-
 // follow user
 router.put("/follow/:id", async (req, res) => {
 
@@ -291,17 +286,19 @@ router.put("/follow/:id", async (req, res) => {
 
                 // then push main user's id to other user's followers
                 otherUser.followers.push(req.user.id);
-                otherUser.save();
+                otherUser.save();   // and save it
 
                 // and push other user's id to main user's followers
                 mainUser.followings.push(req.params.id);
-                mainUser.save();
+                mainUser.save();    // and save it
 
+                // create a new info for following
                 const following = new followModel({
                   userId: req.user.id, 
                   following: req.params.id
                 });
             
+                // and save it
                 following.save(function() {
                   console.log("following")
                 });
@@ -309,18 +306,14 @@ router.put("/follow/:id", async (req, res) => {
                 res.redirect("/feeds");
               } 
             }
-
           });
-
         }
-
       });
-
     } catch (error) {
       res.status(500).json(error);
     }
 
-
+  // if you try to follow yourself, then you'll get an error
   } else {
     res.status(403).json("you CANNOT follow yourself");
   }
@@ -359,33 +352,27 @@ router.put("/unfollow/:id", (req, res) => {
 
                 // pull other user's id from main user's followings
                 mainUser.followings.pull(req.params.id);
-                mainUser.save();
+                mainUser.save();    // and save it
 
+                // delete a follower
                 followModel.deleteOne({userId: req.user.id, following: req.params.id}, (error, result)=> {
                   console.log('unfollowed', result)
                 });
 
                 res.redirect("/feeds");
               }
-
             }
-
           });
-
         }
-
       });
-
     } catch (error) {
       res.status(500).json(error);
     }
 
-  
+  // if you try to unfollow yourself, then you'll get an error
   } else {
-    res.status(403).json("you CANNOT follow yourself");
+    res.status(403).json("you CANNOT unfollow yourself");
   }
 });
-
-
 
 module.exports = router;
