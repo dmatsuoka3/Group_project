@@ -11,18 +11,31 @@
 </head>
 
 <header>
-
+ 
 	<div class="d-flex flex-row center-block" style="font-size: 15px;">
 		<a href="/feeds" class="fa-solid fa-house fa-2x p-2"></a>
 	</div>
 
-
 	<div class="container">
 		
 		<div class="profile">
-			<div class="profile-image">
-				<img src="/profilePicture/<%= data[0].profilePicture %>" alt="user profile img" width="150">
-			</div>
+
+			<% if(!data[0].profilePicture ) { %>
+				<div class="profile-image" style="font-size: 60px">
+					<i class="fa-regular fa-user"></i></a>
+				</div>
+			<% } else { %> 
+				<div class="profile-image">
+					<img src="/profilePicture/<%= data[0].profilePicture %>" alt="user profile img" width="150">
+				</div>
+			<!-- menu button to show sidebar -->
+			<% } %>
+
+
+			<!-- <div class="profile-image">
+				<img src="/profilePicture/<%=// data[0].profilePicture %>" alt="user profile img" width="150">
+			</div> -->
+
 
 			<div class="profile-user-settings">
 				<h1 class="profile-user-name"><%= data[0].username %></h1>
@@ -60,7 +73,6 @@
 			<% }); %>
 			
 		</div>
-		<div class="loader"></div>
 	</div>
 </main>
 </body>

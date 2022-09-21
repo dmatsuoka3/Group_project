@@ -38,8 +38,10 @@ const UserModel = require("../models/User");
 const followModel = require("../models/Following");
 
 // Read
+// get User data and tranfer into other '/feeds' route
 router.get('/feeds', isLoggedIn, (req, res, next)=> {
 
+    // get data from Login user
     UserModel.findById(req.user.id, (error, result)=> {
         if(error) {
             console.log(error);
@@ -50,21 +52,6 @@ router.get('/feeds', isLoggedIn, (req, res, next)=> {
     });
 });
 
-// router.get('/feeds', (req, res, next)=> {
-
-//     var ObjectId = require('mongodb').ObjectId;
-
-//     // find all users except one user (main user)
-//     UserModel.find({_id: {$ne: ObjectId(req.user.id)}}, (error, users)=> {
-//         if(error) {
-//             console.log(error);
-//         } else {
-//             req.allUsersExceptOne = users;
-//             next();
-//         }
-//     });
-// });
-
 //Made the route asyncrounous, so the results from the DB query can be used outside of its CB
 router.get('/feeds', isLoggedIn, async (req, res) => {
 
@@ -74,9 +61,11 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
     // get an object from login user
     var mainUserObject = await UserModel.findById(req.user.id).exec();
  
+    // create  a for loop for 'users' array
     for(var followusers in users) {
         var followingthem = 0;
 
+        // make a query to count document for following
         var isfollowing = await followModel.countDocuments({
             userId: req.user.id, 
             following: users[followusers].id
@@ -120,9 +109,8 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
 
     res.render('feeds.ejs', {
         data: postfeed, 
-        user: req.singleUser, 
-        // userExceptOne: req.allUsersExceptOne, 
-        allUsers: req.allUsers
+        user: req.singleUser,   // get 'req.singleUser' from one of '/feeds' routes
+        allUsers: req.allUsers  // get 'req.allUsers' from one of '/feeds' routes
     })
 
     
@@ -131,7 +119,10 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
 // Create
 router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
 
+    // make a variable for login user's id
     const userId = req.user.id;
+
+    // make a variable for login user's username
     const userName = req.user.username;
 
     console.log("\nHome page\nUsername: " + userName
@@ -141,19 +132,24 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
               // + "\n\nUserModel: " + user + "\n"
     );
     
-  if(!req.file) {
-    // res.send("File was not found.");
-    console.log("File was not found.");
+    // if uploader can't find a file...
+    if(!req.file) {
+        console.log("File was not found.");
     
-    res.redirect('/new');
-  }
+        // then redirect to '/new' route
+        res.redirect('/new');
+    }
 
+    // get info from login user
     UserModel.findById(req.user.id, (error, result)=> {
         if(error) {
             console.log(error);
         } else {
+
+            // make a variable for 'profilePicture' from login user info
             const profPic = result.profilePicture;
 
+            // create a new info for post
             const theImage = new ImageModel({
                 caption: req.body.caption,
                 img: req.file.filename,
@@ -165,6 +161,7 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                 likedByNames: req.body.likedByNames
             });
 
+            // then save it along with info
             theImage.save(function() {
                 
                 theImage.delete(function() {
@@ -174,13 +171,14 @@ router.post('/posts', isLoggedIn, upload.single('image'), async (req, res) => {
                     });
                 });
             });
-
         }
     });
 
+    // redirect to '/feeds' route
     res.redirect("/feeds");
 });
 
+// make a new post
 router.get('/new', (req, res)=> {
     res.render("newPost");
 });
@@ -188,13 +186,16 @@ router.get('/new', (req, res)=> {
 // Update
 router.get('/update/:id', (req, res)=> {
 
+    // make a variable for login user's id
     const userId = req.user.id;
+
+    // make a variable for post's id
     const imageId = req.params.id;
 
     console.log("\n\nUser's id: " + userId);
     console.log("\n\nPost's id: " + imageId);
 
-    // get the image post info
+    // get an info from image post
     ImageModel.findById(imageId, (error, resultPost)=> {
         if(error) {
             console.log(error);
@@ -205,7 +206,7 @@ router.get('/update/:id', (req, res)=> {
             
             console.log("\n\ntheImageUser: " + theImageUser);
 
-            // get the info from user
+            // get info from login user
             UserModel.findById(userId, (error, userResult)=> {
                 if(error) {
                     console.log(error);
@@ -215,9 +216,10 @@ router.get('/update/:id', (req, res)=> {
                     // get user's id
                     const theUserId = userResult._id;
 
-                    // if image post's user is equal to user's id
+                    // if this image is posted by login user...
                     if(theUserId.equals(theImageUser)) {
 
+                        // tranfer 'post' info data into 'updatePost.ejs'
                         res.render("updatePost", {data: resultPost});
                     
                     // or else
@@ -235,23 +237,26 @@ router.get('/update/:id', (req, res)=> {
 
 router.put('/update/:id', (req, res)=> {
 
-ImageModel.findByIdAndUpdate({_id: req.params.id},
+    // update the post with caption
+    ImageModel.findByIdAndUpdate({_id: req.params.id},
         {caption: req.body.caption},
         (error, result)=> {
             if(error) {
                 res.send(error.message);
             } else {
-
                 res.redirect("/feeds");
             }
         }
-);
+    );
 });
 
 // Delete
 router.get('/home/:id', (req, res)=> {
     
+    // make a variable for login user's id
     const userId = req.user.id;
+
+    // make a variable for post's id
     const imageId = req.params.id;
 
     console.log("\n\nUser's id: " + userId);
@@ -264,7 +269,7 @@ router.get('/home/:id', (req, res)=> {
         } else {
             console.log("\n\nDelete's ImageModel result: " + resultPost + "\n");
 
-            // get user from Post object
+            // make a variable for 'user' from post object
             const theImageUser = resultPost.user;
             
             console.log("\n\ntheImageUser: " + theImageUser);
@@ -276,9 +281,10 @@ router.get('/home/:id', (req, res)=> {
                 } else {
                     console.log("\n\nUserModel's result: " + userResult);
                     
+                    // make a variable for id from login user object
                     const theUserId = userResult._id;
                     
-                    // if this image is posted by login user
+                    // if this image is posted by login user...
                     if(theUserId.equals(theImageUser)) {
 
                         // then login user can delete their own post
@@ -288,81 +294,95 @@ router.get('/home/:id', (req, res)=> {
                             } else {
                                 console.log("\n\nThis post has been deleted by " + req.user.name + ".\n" + 
                                                 result);
+                                
+                                // redirect to '/feeds' route
                                 res.redirect("/feeds");
                             }
                         });
 
-                    // or else
+                    // or else if this post is not owned by login user...
                     } else {
                         console.log("\n\nYou don't have permission to delete this user's post.\n\n");
+                        // then you can delete this post
                         res.redirect("/feeds");
                     }
                 }
             });
-        
         }
     });
 });
 
-// like
+// like route
 router.put('/like/:id', (req, res)=> {
 
-    // First post's object for User's id
+    // get an object from post for User's id
     ImageModel.findById(req.params.id, (error, postObject)=> {
         if(error) {
             console.log(error);
         } else {
+            // make a variable for 'likedByIds'from 'postObject'
             const postLikedBy = postObject.likedByIds;
 
-            // Second post's object for User's name
+            // get another object from post for User's name
             ImageModel.findById(req.params.id, (error, postObjectTwo)=> {
                 if(error) {
                     console.log(error);
                 } else {
+
+                    // make a variable for 'likedByNames' from 'postObjectTwo'
                     const postLikedByName = postObjectTwo.likedByNames;
 
-                    // Getting main user's object for userLikes
+                    // Get an object from login user
                     UserModel.findById(req.user.id, (error, userObject)=> {
                         if(error) {
                             console.log(error);
                         } else {
-                            const userLikes = userObject.likes;
+
+                        // make a variable for 'likes' from 'userObject'
+                        const userLikes = userObject.likes;
                             
+                            // if login user haven't gave a like to a post...
                             if(!postLikedBy.includes(req.user.id)) {
                                 
+                                // then add login user's id into 'postLikedBy' array
                                 postLikedBy.push(req.user.id);
-                                postObject.save();
+                                postObject.save();  // and save it
         
+                                // then add login user's name into 'postLikedByName' array
                                 postLikedByName.push(req.user.name);
-                                postObjectTwo.save();
+                                postObjectTwo.save();   // and save it
         
+                                // then add post's id into 'userLikes' array
                                 userLikes.push(req.params.id);
-                                userObject.save();
+                                userObject.save();  // and save it
         
+                                // redirect to 'feeds' route
                                 res.redirect("/feeds");
+                            
+                            // or else if login user already gave a like to post...
                             } else {
         
+                                // then remove login user's id from 'postLikedBy' array
                                 postLikedBy.pull(req.user.id);
-                                postObject.save();
-        
+                                postObject.save();   // and save it
+    
+                                // then remove login user's name from 'postLikedByName' array
                                 postLikedByName.pull(req.user.name);
-                                postObjectTwo.save();
+                                postObjectTwo.save();   // and save it
         
+                                // then remove post's id from 'userLikes' array
                                 userLikes.pull(req.params.id);
-                                userObject.save();
+                                userObject.save();  // and save it
         
+                                // redirect to '/feeds' route
                                 res.redirect("/feeds");
                             }
                         }
                     });
-
                 }
-            });    
-        
+            });            
         }
     });
 });
-
-
 
 module.exports = router;

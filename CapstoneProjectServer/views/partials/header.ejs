@@ -15,6 +15,8 @@
 
     <!-- Awesome Fonts -->
     <script src="https://kit.fontawesome.com/a74d20a4cd.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/c7c9c0be45.js" crossorigin="anonymous"></script>
+
 
 </head>
 
@@ -32,10 +34,20 @@
                     <button style="cursor: pointer;">Search</button> 
                 </div>
             </form>
+
             <div class="create">
                 <a href="/logout" class="btn btn-primary">Log out</a>
-                <div class="profile-photo"><a href="/user/<%= user.username %>"><img src="/profilePicture/<%= user.profilePicture %>" alt="profile-photo"></a>
+                <% if(!user.profilePicture) { %>
+                    <div class="no-profile-photo">
+                        <a href="/user/<%= user.username %>"><i class="fa-regular fa-user"></i></a>
+                    </div>
+                <% } else { %> 
+                <div class="profile-photo">
+                    <a href="/user/<%= user.username %>">
+                    <img src="/profilePicture/<%= user.profilePicture %>" alt="profile-photo"></a>
+                </div>
                 <!-- menu button to show sidebar -->
+                <% } %>
                 <button id="menu-btn"><i class="uil uil-bars"></i></button>
             </div>
 

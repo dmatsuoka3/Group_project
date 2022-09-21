@@ -6,15 +6,28 @@
             <!--======================== LEFT ==========================-->
             <div class="left">
                 <a class="profile">
-                    <div class="profile-photo">
-                        <img src="./profilePicture/<%= user.profilePicture %> ">
-                    </div>
-                    <div class="handle">
-                        <h4>
-                            <%=user.name%>
-                        </h4>
 
-                    </div>
+                    <% if(!user.profilePicture) {%>
+                        <div class="no-profile-photo">
+                            <div style="margin-left: 38px;">
+                                <i class="fa-regular fa-user"></i>       
+                            </div>                 
+                        </div>
+                        <div class="handle">
+                            <h4>
+                                <%=user.name%>
+                            </h4>
+                        </div>
+                    <% } else { %>
+                        <div class="profile-photo">
+                            <img src="./profilePicture/<%= user.profilePicture %> ">
+                        </div>
+                        <div class="handle">
+                            <h4>
+                                <%=user.name%>
+                            </h4>
+                        </div>
+                    <% } %> 
                 </a>
 
                 <!-- close button -->
@@ -153,12 +166,12 @@
                     </div>
                 </div>
                 <!------------------- END OF STORIES -------------------->
-                <form action="/new" class="create-post">
-                    <div class="profile-photo">
-                        <img src="./profilePicture/<%= user.profilePicture %> ">
-                    </div>
-                    <%const [fname, lname]=user.name.split(' ') %>
-                <input type="text" placeholder="What' s on your mind <%= fname %>?" id="create-post">
+                <form action="/new" class="create-post" style="margin-left: 330px;">
+                    <!-- <div class="profile-photo">
+                        </img src="./profilePicture/<%=// user.profilePicture %> ">
+                    </div> -->
+                    <%//const [fname, lname]=user.name.split(' ') %>
+                <!-- <input type="text" placeholder="What' s on your mind <%=// fname %>?" id="create-post"> -->
 
                         <input type="submit" value="Post" class="btn btn-primary">
                 </form>
@@ -300,13 +313,30 @@
 
                 <!------------ FRIEND REQUESTS -------------->
                 <div class="friend-requests">
+
+
+
                     <h4>Requests</h4>
                     <!----- REQUEST 1----->
                     <% allUsers.forEach(element => { %>
                         <div class="request">
                             <div class="info">
                                 <div class="profile-photo">
-                                    <img src="./profilePicture/<%= element.user.profilePicture %> ">
+                                    <!-- <img src="./profilePicture/<%=// element.user.profilePicture %> "> -->
+
+                                    <% if(!element.user.profilePicture) {%>
+                                        <div class="no-profile-photo" style="margin-left: 28px;">
+                                            <!-- <div style="margin-left: 38px;"> -->
+                                                <i class="fa-regular fa-user"></i>       
+                                            <!-- </div>                  -->
+                                        </div>
+                                    <% } else { %>
+                                        <div class="profile-photo">
+                                            <img src="./profilePicture/<%= element.user.profilePicture %> ">
+                                        </div>
+                                    <% } %> 
+
+
                                 </div>
                                 <div>
                                     <h5><a href="/user/<%= element.user.username;%>"><%= element.user.username %></a></h5>
