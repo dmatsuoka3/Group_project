@@ -3,6 +3,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
 const multer = require("multer");
+
 const UserModel = require("../models/User");
 const ImageModel = require("../models/Post");
 const followModel = require("../models/Following");
@@ -47,15 +48,17 @@ const isLoggedIn = (req, res, next) => {
   res.redirect("/login");
 };
 
+// home
 router.get("/", (req, res) => {
   res.redirect("/home");
 });
 
+// home
 router.get("/home", (req, res) => {
   res.render("login.ejs");
 });
 
-
+// signup
 router.get("/signup", (req, res) => {
   res.render("signup.ejs");
 });
@@ -86,6 +89,7 @@ router.post("/signup", upload, (req, res) => {
   })
 });
 
+// login
 router.get("/login", (req, res) => {
   res.render("login.ejs");
 });
@@ -110,6 +114,7 @@ router.get("/logout", (req, res, next) => {
 });
 
 // Read
+// error
 router.get("/error", (req, res) => {
   res.render("error.ejs");
 });
@@ -129,6 +134,7 @@ router.get("/user/:id?", async (req, res) => {
   let userinfoId = await UserModel.findOne({username: req.params.id}).exec();
 
   let userinfoObject = await UserModel.findOne({username: userId}).exec();
+  console.log("\n\nuserinfoObject: " + userinfoObject + "\n");
 
   let mainUserInfo = await UserModel.findById(req.user.id).exec();
 
@@ -143,7 +149,7 @@ router.get("/user/:id?", async (req, res) => {
   
   
     // if user with 'username' is following to main user or if user's id is the same as main user's id
-    if(mainUserFollowings.includes(req.params.id)  || userinfoObject.id == req.user.id) {
+    if(mainUserFollowings.includes(userinfoObject.id)  || userinfoObject.id == req.user.id) {
       res.render("profile.ejs", {
         data: userinfo, 
         photos: userphoto, 
@@ -155,7 +161,7 @@ router.get("/user/:id?", async (req, res) => {
         },
       });
     } else {
-      res.render("unkownProfile.ejs", {
+      res.render("unknownFollowerProfile.ejs", {
         data: userinfo, 
         user: {isLoggedIn: isLoggedIn}, 
         count: {
@@ -188,21 +194,37 @@ router.get('/searchUser', async (req, res)=> {
     let mainUserInfo = await UserModel.findById(req.user.id).exec();
 
     // get posts from login user
-    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo._id}).exec();
+    let userphoto = await  ImageModel.find({deleted: {$nin: true}, user: userinfo._id}).sort({ timeCreated: 'desc' }).exec();
 
     // get followings from main user (login user)
     var mainUserFollowings = mainUserInfo.followings;
   
+    // var followingCount = await followModel.countDocuments({searchingUserinfo._id: userinfo[0]._id}).exec();
+    // var followerCount = await followModel.countDocuments({following: userinfo[0]._id}).exec();
+
     // if user with 'username' is following to main user or if user's id is the same as main user's id
     if(mainUserFollowings.includes(userinfo.id) || req.user.id == userinfo.id) {
       res.render("profileSearchUser.ejs", {
+        user: req.user,
         data: userinfo, 
         photos: userphoto,
-        count: {photos: userphoto.length}
+        count: {
+          photos: userphoto.length,
+          // followings: followingCount,
+          // followers: followerCount
+        }
+
       });
     // or else...
     } else {
-      res.render("unkownProfile.ejs", {data: userinfo, count: {photos: userphoto.length}});
+      res.render("unkownProfile.ejs", {
+        data: userinfo, 
+        count: {
+          photos: userphoto.length,
+          // followings: followingCount,
+          // followers: followerCount
+        }
+      });
     }  
   }
 });
