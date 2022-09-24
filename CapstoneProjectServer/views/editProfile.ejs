@@ -36,13 +36,13 @@
                         value="<%= user.username %>" required>
                 </div>
             </div>
-            <div class="mb-3 row">
+            <!-- <div class="mb-3 row">
                 <label class="col-sm-2" for="Website">Website</label>
                 <div class="col-sm-10">
                     <input id="Website" name="website" placeholder="Website" type="text" class="form-control"
-                        value="<%= user.website %>">
+                        value="<%=// user.website %>">
                 </div>
-            </div>
+            </div> -->
             <div class="mb-3 row">
                 <label class="col-sm-2" for="Bio">Bio</label>
                 <div class="col-sm-10"><textarea name="bio" rows="6" cols="50" maxlength="150"
@@ -87,18 +87,22 @@
                 <div class="col-sm-10">
                     <fieldset data-role="controlgroup">
                         <legend>Choose your gender:</legend>
-                        <label for="male">Male</label>
+
                         <input type="radio" name="gender" id="male" value="male" <%=(user.gender=='male' ? 'checked'
                             : '' ) %>>
+                        <label for="male">Male</label>
+
+                         <input type="radio" name="gender" id="female" value="female" <%=(user.gender=='female'
+                            ? 'checked' : '' ) %>>
                         <label for="female">Female</label>
-                        <input type="radio" name="gender" id="female" value="female" <%=(user.gender=='female'
-                            ? 'checked' : '' ) %>>
-                        <label for="">Nonbinary</label>
+                    
                         <input type="radio" name="gender" id="nonbinary" value="nonbinary" <%=(user.gender=='nonbinary'
-                            ? 'checked' : '' ) %>>
-                        <label for="Prefer not to say">Prefer not to say</label>
+                        ? 'checked' : '' ) %>>
+                        <label for="">Nonbinary</label>
+
                         <input type="radio" name="gender" id="na" value="na" <%=(user.gender=='na' ? 'checked' : '' )
                             %>>
+                        <label for="Prefer not to say">Prefer not to say</label>
                     </fieldset>
                 </div>
             </div>
