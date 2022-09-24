@@ -21,7 +21,6 @@
 
 		<div class="container">
 				<div class="profile">
-
 					<% if(!data[0].profilePicture ) { %>
 						<div class="profile-image" style="font-size: 60px">
 							<i class="fa-regular fa-user"></i></a>
@@ -39,30 +38,30 @@
 					</div> -->
 
 
-					<div class="profile-user-settings">
-						<h1 class="profile-user-name"><%= data[0].username %></h1>
-						<%  
-						if(user.isLoggedIn)  { %>
-						<button class="btn profile-edit-btn" type="button" style="border: solid rgb(184, 182, 182) 1px; 
-						font-size: 14px; margin-bottom: 10px;"
-						 onclick="window.location.href='/editprofile'">Edit Profile</button>
-						<% } %>
-						<button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button>
-					</div>
+						<div class="profile-user-settings">
+							<h1 class="profile-user-name"><%= data[0].username %></h1>
+							<%  
+							if(user.isLoggedIn)  { %>
+							<button class="btn profile-edit-btn" type="button" style="border: solid rgb(184, 182, 182) 1px; 
+							font-size: 14px; margin-bottom: 10px;"
+							onclick="window.location.href='/editprofile'">Edit Profile</button>
+							<% } %>
+							<button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button>
+						</div>
 
-					<div class="profile-stats">
-						<ul>
+						<div class="profile-stats">
+							<ul>
 
-							<li><span class="profile-stat-count"><%= count.photos; %></span> posts</li>
-							<li><span class="profile-stat-count"><%= count.followers; %></span> followers</li>
-							<li><span class="profile-stat-count"><%= count.followings; %></span> following</li>
-						</ul>
-					</div>
+								<li><span class="profile-stat-count"><%= count.photos; %></span> posts</li>
+								<li><span class="profile-stat-count"><%= count.followers; %></span> followers</li>
+								<li><span class="profile-stat-count"><%= count.followings; %></span> following</li>
+							</ul>
+						</div>
 
-					<div class="profile-bio">
-						<p><span class="profile-real-name"><%= data[0].name %></span></p>
-						<p><%= data[0].bio %></p>
-					</div>
+						<div class="profile-bio">
+							<p><span class="profile-real-name"><%= data[0].name %></span></p>
+							<p><%= data[0].bio %></p>
+						</div>
 				
 				</div>
 			</div>

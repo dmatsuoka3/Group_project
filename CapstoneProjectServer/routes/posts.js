@@ -5,6 +5,7 @@ const session = require('express-session')
 const multer = require("multer");
 
 const isLoggedIn = (req, res, next) => {
+    // if the user is already logged in, then return 'next'
     if (req.isAuthenticated()) {
     return next();
     }
@@ -52,7 +53,7 @@ router.get('/feeds', isLoggedIn, (req, res, next)=> {
     });
 });
 
-//Made the route asyncrounous, so the results from the DB query can be used outside of its CB
+// Made the route asyncrounous, so the results from the DB query can be used outside of its CB
 router.get('/feeds', isLoggedIn, async (req, res) => {
 
     // find all users except login user
@@ -100,7 +101,7 @@ router.get('/feeds', isLoggedIn, async (req, res) => {
     for(var posts in postfeed) {
         //Query DB search for the user info based on the posts user ID
         var postuser = await UserModel.findById(postfeed[posts].user).exec();
-        //postfeed[posts] = {userdata : postuser}
+
         //Merge the postuser data into the postdata object (per post)
         postfeed[posts] = {post: postfeed[posts], user: postuser}
     }

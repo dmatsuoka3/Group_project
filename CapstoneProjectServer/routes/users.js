@@ -4,10 +4,13 @@ const LocalStrategy = require("passport-local");
 
 const multer = require("multer");
 
+// models
 const UserModel = require("../models/User");
 const ImageModel = require("../models/Post");
 const followModel = require("../models/Following");
 
+
+// define storage for the images
 const storage = multer.diskStorage({
   // destination for image files
   destination: function (request, file, callback) {
@@ -20,6 +23,7 @@ const storage = multer.diskStorage({
   },
 });
 
+// upload parameters for multer
 let upload = multer({
   storage: storage,
   limits: {
@@ -35,7 +39,10 @@ router.use(require("express-session")({
   })
 );
 
+// a middleware that initialises 'passport'
 router.use(passport.initialize());
+
+// a middleware that alters the req object and change the 'user' value into the deserialized user object
 router.use(passport.session());
 passport.use(new LocalStrategy(UserModel.authenticate()));
 passport.serializeUser(UserModel.serializeUser());
@@ -48,12 +55,12 @@ const isLoggedIn = (req, res, next) => {
   res.redirect("/login");
 };
 
-// home
+// login page
 router.get("/", (req, res) => {
   res.redirect("/home");
 });
 
-// home
+// login page
 router.get("/home", (req, res) => {
   res.render("login.ejs");
 });
@@ -63,6 +70,7 @@ router.get("/signup", (req, res) => {
   res.render("signup.ejs");
 });
 
+// a signup route that creates new info for user account
 router.post("/signup", upload, (req, res) => {
   console.log(req)
   const newUser = new UserModel({
@@ -77,6 +85,8 @@ router.post("/signup", upload, (req, res) => {
     gender: req.body.gender,
     website: req.body.website
   });
+
+  // create a new user account in signup page
   UserModel.register(newUser, req.body.password, function (err, user) {
     if (err) {
       console.log(err);
@@ -89,14 +99,14 @@ router.post("/signup", upload, (req, res) => {
   })
 });
 
-// login
+// login page but different route name
 router.get("/login", (req, res) => {
   res.render("login.ejs");
 });
 
 router.post("/login", passport.authenticate("local", {
-  successRedirect: "/feeds",
-  failureRedirect: "/login",
+  successRedirect: "/feeds",  // if user's able to login, it'll go to 'feeds' page
+  failureRedirect: "/login",  // if user's can't login, it'll go to 'login' page again
 }),
   function (req, res) {
     console.log(req)
@@ -104,7 +114,10 @@ router.post("/login", passport.authenticate("local", {
   }
 );
 
+// logout
 router.get("/logout", (req, res, next) => {
+  
+  // if you logout of website, you'll go to 'login' page
   req.logout((err) => {
     if (err) {
       return next(err);
@@ -119,6 +132,7 @@ router.get("/error", (req, res) => {
   res.render("error.ejs");
 });
 
+// user profile
 router.get("/user/:id?", async (req, res) => {
   const userId = (req.params.id);
   // query database for username, return results to show their profile bio and their images
@@ -133,9 +147,11 @@ router.get("/user/:id?", async (req, res) => {
   let userinfo = await UserModel.find({username: userId}).exec();
   let userinfoId = await UserModel.findOne({username: req.params.id}).exec();
 
+  // get user info
   let userinfoObject = await UserModel.findOne({username: userId}).exec();
   console.log("\n\nuserinfoObject: " + userinfoObject + "\n");
 
+  // get login user info
   let mainUserInfo = await UserModel.findById(req.user.id).exec();
 
   //If users exists, then proceed to query the DB for their posts
@@ -144,6 +160,7 @@ router.get("/user/:id?", async (req, res) => {
 
     var mainUserFollowings = mainUserInfo.followings;
 
+    // get counts for follower and following
     var followingCount = await followModel.countDocuments({userId: userinfo[0]._id}).exec();
     var followerCount = await followModel.countDocuments({following: userinfo[0]._id}).exec();
   
@@ -198,9 +215,6 @@ router.get('/searchUser', async (req, res)=> {
 
     // get followings from main user (login user)
     var mainUserFollowings = mainUserInfo.followings;
-  
-    // var followingCount = await followModel.countDocuments({searchingUserinfo._id: userinfo[0]._id}).exec();
-    // var followerCount = await followModel.countDocuments({following: userinfo[0]._id}).exec();
 
     // if user with 'username' is following to main user or if user's id is the same as main user's id
     if(mainUserFollowings.includes(userinfo.id) || req.user.id == userinfo.id) {
@@ -268,8 +282,10 @@ router.post('/editprofile', isLoggedIn, upload, async (req, res) => {
   res.redirect("/editprofile");
 });
 
-// Delete
+// Delete profile
 router.get('/deleteprofile', (req, res) => {
+  
+  // delete login user
   UserModel.deleteOne({ _id: req.user._id }, (error, result) => {
     if (error) {
       console.log("Something went wrong delete from database");
@@ -325,6 +341,7 @@ router.put("/follow/:id", async (req, res) => {
                   console.log("following")
                 });
 
+                // redirect to '/feeds' route
                 res.redirect("/feeds");
               } 
             }

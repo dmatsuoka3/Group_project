@@ -251,4 +251,6 @@ closeBtn.addEventListener('click', () => {
 //     document.getElementById("search-user").innerHTML = inputValue; 
 //   }
 
+document.getElementById("date").innerHTML = Date();
+
 // THE END

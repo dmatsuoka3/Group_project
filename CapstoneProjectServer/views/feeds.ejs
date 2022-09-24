@@ -37,19 +37,19 @@
 
 
                     <a class="menu-item" id="notifications">
-                        <span><i class="uil uil-bell"><small class="notification-count">9+</small></i></span>
+                        <span><i class="uil uil-bell"><small class="notification-count"><%= allUsers.length %>+</small></i></span>
                         <h3>Notifications</h3>
                         <!-------------------- NOTIFICATION POPUP ---------------->
                         <div class="notifications-popup">
-                            <div>
-                                <div class="profile-photo">
-                                    <img src="./images/profile-2.jpg">
+                                <div>
+                                    <div class="profile-photo">
+                                        <img src="./images/profile-2.jpg">
+                                    </div>
+                                    <div class="notification-body">
+                                        <b>Keke Benjamin</b> accepted your friend request
+                                        <small class="text-muted"><p id="date"></p></small>
+                                    </div>
                                 </div>
-                                <div class="notification-body">
-                                    <b>Keke Benjamin</b> accepted your friend request
-                                    <small class="text-muted">2 DAYS AGO</small>
-                                </div>
-                            </div>
                             <div>
                                 <div class="profile-photo">
                                     <img src="./images/profile-3.jpg">
@@ -68,6 +68,8 @@
                                     <small class="text-muted">4 MINUTES AGO</small>
                                 </div>
                             </div>
+
+
                             <div>
                                 <div class="profile-photo">
                                     <img src="./images/profile-5.jpg">
@@ -220,9 +222,9 @@
                                     <!-- <span><i class="uil uil-comment-dots"></i></span>
                                     <span><i class="uil uil-share-alt"></i></span> -->
                                 </div>
-                                <div class="bookmark">
+                                <!-- <div class="bookmark">
                                     <span><i class="uil uil-bookmark-full"></i></span>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="liked-by">
