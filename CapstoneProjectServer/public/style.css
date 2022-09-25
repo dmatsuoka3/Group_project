@@ -119,16 +119,36 @@ nav .container {
 }
 
 .search-bar {
+  display: flex;
   background: var(--color-light);
   border-radius: var(--border-radius);
   padding: var(--search-padding);
+  justify-content: space-between;
+  width: 100%;
 }
 
-.search-bar input[type="search"] {
+.search-user-bar {
+  display: flex;
+  background: var(--color-light);
+  border-radius: var(--border-radius);
+  padding: var(--search-padding);
+  justify-content: space-between;
+  width: 100%;
+}
+
+.search-user-bar input[type="search"] {
   background: transparent;
   width: 30vw;
   margin-left: 1rem;
-  font-size: 0.9rem;
+  font-size: 16px;
+  color: var(--color-dark);
+}
+
+.search input[type="search"] {
+  background: transparent;
+  width: 30vw;
+  margin-left: 1rem;
+  font-size: 16px;
   color: var(--color-dark);
 }
 
@@ -364,8 +384,12 @@ main .container .left .profile {
   justify-content: space-between;
   margin-top: 1rem;
   background: var(--color-white);
-  padding: 0.4rem var(--card-padding);
+  /* padding: 0.4rem var(--card-padding); */
+  padding: 5px 9px;
   border-radius: var(--border-radius);
+  margin-left: 380px;
+  border: solid 1px rgb(210, 210, 210);
+  text-shadow: 2px 2px;
 }
 
 .middle .create-post input[type="text"] {
@@ -704,8 +728,16 @@ MEDIA QUERIES FOR SMALL LAPTOPS AND BIG TABLETS
 */
 @media screen and (max-width: 1200px) {
   .container {
-    width: 96%;
+    width: 90%;
   }
+
+  /* .container .search-bar {
+    width: 160%;
+  } */
+
+  /* nav .search-user-bar {
+
+  } */
 
   nav .create #menu-btn {
     font-size: 1.6rem;
