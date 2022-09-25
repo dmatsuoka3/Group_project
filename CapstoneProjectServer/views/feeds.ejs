@@ -167,14 +167,15 @@
                     </div>
                 </div>
                 <!------------------- END OF STORIES -------------------->
-                <form action="/new" class="create-post" style="margin-left: 330px;">
+                <form action="/new" class="create-post">
                     <!-- <div class="profile-photo">
                         </img src="./profilePicture/<%=// user.profilePicture %> ">
                     </div> -->
                     <%//const [fname, lname]=user.name.split(' ') %>
                 <!-- <input type="text" placeholder="What' s on your mind <%=// fname %>?" id="create-post"> -->
 
-                        <input type="submit" value="Post" class="btn btn-primary">
+                        <input type="submit" value="Post" class="btn btn-primary" 
+                        style="margin-left: 10px;">
                 </form>
 
                 <!------------------- FEEDS --------------------->
@@ -264,7 +265,8 @@
                     <!------------ SEARCH BAR -------------->
                     <div class="search-bar">
                         <i class="uil uil-search"></i>
-                        <input type="search" placeholder="Search messages" id="message-search">
+                        <input type="search" placeholder="Search messages" id="message-search" 
+                        style="background-color: rgb(225, 225, 225);">
                     </div>
                     <!------------ MESSAGES CATEGORY -------------->
                     <div class="category">
