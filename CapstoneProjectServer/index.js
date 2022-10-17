@@ -44,4 +44,4 @@ app.use("", postRoute);
 /* app.use("", imageRoute); */
 
 
-app.listen(port, () => console.log(`Bravo Team app is listening on http://localhost:${port}`))
+app.listen(port, () => console.log(`Group project app is listening on http://localhost:${port}`))
