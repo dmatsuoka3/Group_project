@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const connectDB = async() => {
 
-    const url = "mongodb+srv://daigompublic:daigompublic@clusterpublic.chserso.mongodb.net/?retryWrites=true&w=majority";
+    const url = "mongodb+srv://daigompublic:daigompublic@clusterpublic.fbhv1at.mongodb.net/?retryWrites=true&w=majority";
 
     mongoose
         .connect(url)
